@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="FunctionView">
+            <rect key="frame" x="0.0" y="0.0" width="400" height="200"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="d1V-Y4-SN6">
+                    <rect key="frame" x="134.5" y="0.0" width="133" height="100"/>
+                    <color key="backgroundColor" red="0.89906686400000002" green="0.83818072349999995" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                    <inset key="contentEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="20"/>
+                    <inset key="titleEdgeInsets" minX="0.0" minY="60" maxX="35" maxY="0.0"/>
+                    <inset key="imageEdgeInsets" minX="30" minY="0.0" maxX="0.0" maxY="0.0"/>
+                    <state key="normal" title="图片" image="Crying">
+                        <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="selectImage:" destination="iN0-l3-epB" eventType="touchUpInside" id="K2f-6Z-wFY"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fZe-J6-9Ae">
+                    <rect key="frame" x="0.0" y="0.0" width="133.5" height="100"/>
+                    <color key="backgroundColor" red="0.89906686400000002" green="0.83818072349999995" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                    <fontDescription key="fontDescription" name=".PingFangSC-Regular" family=".PingFang SC" pointSize="15"/>
+                    <inset key="contentEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="20"/>
+                    <inset key="titleEdgeInsets" minX="0.0" minY="60" maxX="35" maxY="0.0"/>
+                    <inset key="imageEdgeInsets" minX="30" minY="0.0" maxX="0.0" maxY="0.0"/>
+                    <state key="normal" title="拍照" image="Smile">
+                        <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="takePhoto:" destination="iN0-l3-epB" eventType="touchUpInside" id="0D7-eG-8au"/>
+                    </connections>
+                </button>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DgA-Bl-1RI">
+                    <rect key="frame" x="133.5" y="0.0" width="1" height="100"/>
+                    <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="1" id="E4l-YU-g15"/>
+                    </constraints>
+                </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UET-oy-nBo">
+                    <rect key="frame" x="268" y="0.0" width="1" height="100"/>
+                    <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="1" id="qCo-Uz-WgU"/>
+                    </constraints>
+                </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RsN-ee-PRC">
+                    <rect key="frame" x="0.0" y="100" width="400" height="1"/>
+                    <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="1" id="zU5-gH-OUF"/>
+                    </constraints>
+                </view>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4ri-iR-nsc">
+                    <rect key="frame" x="269" y="0.0" width="133.5" height="100"/>
+                    <color key="backgroundColor" red="0.89906686400000002" green="0.83818072349999995" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                    <inset key="contentEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="20"/>
+                    <inset key="titleEdgeInsets" minX="0.0" minY="60" maxX="35" maxY="0.0"/>
+                    <inset key="imageEdgeInsets" minX="30" minY="0.0" maxX="0.0" maxY="0.0"/>
+                    <state key="normal" title="位置" image="Angry">
+                        <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="shareLocation:" destination="iN0-l3-epB" eventType="touchUpInside" id="smH-iB-aBM"/>
+                    </connections>
+                </button>
+            </subviews>
+            <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstItem="DgA-Bl-1RI" firstAttribute="bottom" secondItem="fZe-J6-9Ae" secondAttribute="bottom" id="2eL-fC-Lfj"/>
+                <constraint firstItem="d1V-Y4-SN6" firstAttribute="width" secondItem="fZe-J6-9Ae" secondAttribute="width" id="2wK-hW-Eo5"/>
+                <constraint firstItem="d1V-Y4-SN6" firstAttribute="leading" secondItem="fZe-J6-9Ae" secondAttribute="trailing" id="6Hw-Tt-mnq"/>
+                <constraint firstItem="RsN-ee-PRC" firstAttribute="top" secondItem="fZe-J6-9Ae" secondAttribute="bottom" id="6LR-vF-0DP"/>
+                <constraint firstItem="4ri-iR-nsc" firstAttribute="leading" secondItem="d1V-Y4-SN6" secondAttribute="trailing" id="7Kv-Jh-xWf"/>
+                <constraint firstItem="UET-oy-nBo" firstAttribute="leading" secondItem="d1V-Y4-SN6" secondAttribute="trailing" id="7Zf-4z-PxH"/>
+                <constraint firstItem="4ri-iR-nsc" firstAttribute="height" secondItem="fZe-J6-9Ae" secondAttribute="height" id="9sS-7h-nqQ"/>
+                <constraint firstItem="DgA-Bl-1RI" firstAttribute="leading" secondItem="fZe-J6-9Ae" secondAttribute="trailing" id="ARG-hZ-EcK"/>
+                <constraint firstItem="4ri-iR-nsc" firstAttribute="width" secondItem="fZe-J6-9Ae" secondAttribute="width" id="MuF-gF-Ii0"/>
+                <constraint firstItem="4ri-iR-nsc" firstAttribute="leading" secondItem="UET-oy-nBo" secondAttribute="trailing" id="Ukm-7P-YjR"/>
+                <constraint firstItem="fZe-J6-9Ae" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="Xfu-zp-pfP"/>
+                <constraint firstItem="d1V-Y4-SN6" firstAttribute="leading" secondItem="DgA-Bl-1RI" secondAttribute="trailing" id="Xhc-9t-xfe"/>
+                <constraint firstItem="fZe-J6-9Ae" firstAttribute="height" secondItem="iN0-l3-epB" secondAttribute="height" multiplier="1:2" id="ZdW-hO-h3n"/>
+                <constraint firstItem="fZe-J6-9Ae" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="hdV-QJ-qSN"/>
+                <constraint firstItem="d1V-Y4-SN6" firstAttribute="height" secondItem="fZe-J6-9Ae" secondAttribute="height" id="j1A-9c-IAR"/>
+                <constraint firstItem="4ri-iR-nsc" firstAttribute="leading" secondItem="fZe-J6-9Ae" secondAttribute="trailing" id="jgg-FF-xPo"/>
+                <constraint firstAttribute="trailing" secondItem="RsN-ee-PRC" secondAttribute="trailing" id="lO4-mF-1bx"/>
+                <constraint firstItem="UET-oy-nBo" firstAttribute="top" secondItem="fZe-J6-9Ae" secondAttribute="top" id="nBe-3R-mUQ"/>
+                <constraint firstItem="DgA-Bl-1RI" firstAttribute="top" secondItem="fZe-J6-9Ae" secondAttribute="top" id="nbH-Th-W0a"/>
+                <constraint firstItem="d1V-Y4-SN6" firstAttribute="top" secondItem="fZe-J6-9Ae" secondAttribute="top" id="oWO-1C-brD"/>
+                <constraint firstItem="fZe-J6-9Ae" firstAttribute="width" secondItem="iN0-l3-epB" secondAttribute="width" multiplier="1:3" id="r4X-35-syD"/>
+                <constraint firstItem="UET-oy-nBo" firstAttribute="bottom" secondItem="fZe-J6-9Ae" secondAttribute="bottom" id="t9Y-lc-PZi"/>
+                <constraint firstItem="4ri-iR-nsc" firstAttribute="top" secondItem="fZe-J6-9Ae" secondAttribute="top" id="ud9-0y-OwN"/>
+                <constraint firstItem="RsN-ee-PRC" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="w2t-Zq-KNW"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <variation key="default">
+                <mask key="constraints">
+                    <exclude reference="6Hw-Tt-mnq"/>
+                    <exclude reference="7Kv-Jh-xWf"/>
+                    <exclude reference="jgg-FF-xPo"/>
+                </mask>
+            </variation>
+        </view>
+    </objects>
+    <resources>
+        <image name="Angry" width="36" height="36"/>
+        <image name="Crying" width="36" height="36"/>
+        <image name="Smile" width="36" height="36"/>
+    </resources>
+</document>

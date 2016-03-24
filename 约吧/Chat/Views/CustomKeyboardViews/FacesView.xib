@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="FacesView">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="200"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="0Cq-UR-EYq">
+                    <rect key="frame" x="0.0" y="140" width="414" height="20"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="20" id="H9N-2H-rcl"/>
+                    </constraints>
+                    <color key="pageIndicatorTintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    <color key="currentPageIndicatorTintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                </pageControl>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FCe-yF-VjA">
+                    <rect key="frame" x="0.0" y="160" width="414" height="40"/>
+                    <subviews>
+                        <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="haQ-cp-Oov">
+                            <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
+                            <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
+                            <state key="normal" image="Smile"/>
+                            <connections>
+                                <action selector="faceCatAction:" destination="iN0-l3-epB" eventType="touchUpInside" id="Fvu-gF-dLF"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="phc-Zm-igB">
+                            <rect key="frame" x="41" y="0.0" width="40" height="40"/>
+                            <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
+                            <state key="normal" image="Crying"/>
+                            <connections>
+                                <action selector="faceCatAction:" destination="iN0-l3-epB" eventType="touchUpInside" id="ikf-DK-NXK"/>
+                            </connections>
+                        </button>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wZ3-h8-3ya">
+                            <rect key="frame" x="40" y="0.0" width="1" height="40"/>
+                            <color key="backgroundColor" red="0.8157798597" green="0.83779500269999996" blue="0.86588541669999997" alpha="1" colorSpace="calibratedRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="1" id="e3S-hH-QeU"/>
+                            </constraints>
+                        </view>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dQP-Lg-WUh">
+                            <rect key="frame" x="0.0" y="0.0" width="414" height="1"/>
+                            <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="1" id="NID-Ht-y1N"/>
+                            </constraints>
+                        </view>
+                    </subviews>
+                    <color key="backgroundColor" red="0.81577985972326572" green="0.83779500274426733" blue="0.86588541666666663" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstItem="dQP-Lg-WUh" firstAttribute="top" secondItem="FCe-yF-VjA" secondAttribute="top" id="3T9-Pa-KbM"/>
+                        <constraint firstItem="haQ-cp-Oov" firstAttribute="leading" secondItem="FCe-yF-VjA" secondAttribute="leading" id="8rs-In-AFA"/>
+                        <constraint firstItem="dQP-Lg-WUh" firstAttribute="leading" secondItem="phc-Zm-igB" secondAttribute="trailing" id="LqT-ZJ-Y5o"/>
+                        <constraint firstAttribute="bottom" secondItem="haQ-cp-Oov" secondAttribute="bottom" id="Q2N-c1-A2s"/>
+                        <constraint firstAttribute="height" constant="40" id="UPm-Qu-G6q"/>
+                        <constraint firstItem="wZ3-h8-3ya" firstAttribute="bottom" secondItem="haQ-cp-Oov" secondAttribute="bottom" id="UWb-nU-710"/>
+                        <constraint firstItem="phc-Zm-igB" firstAttribute="width" secondItem="haQ-cp-Oov" secondAttribute="width" id="eGY-Yb-q95"/>
+                        <constraint firstItem="phc-Zm-igB" firstAttribute="leading" secondItem="wZ3-h8-3ya" secondAttribute="trailing" id="fqs-BC-G8N"/>
+                        <constraint firstItem="dQP-Lg-WUh" firstAttribute="leading" secondItem="FCe-yF-VjA" secondAttribute="leading" id="gSm-7O-Cu5"/>
+                        <constraint firstItem="phc-Zm-igB" firstAttribute="bottom" secondItem="haQ-cp-Oov" secondAttribute="bottom" id="gqD-Nb-uRk"/>
+                        <constraint firstItem="haQ-cp-Oov" firstAttribute="width" secondItem="FCe-yF-VjA" secondAttribute="height" id="h5P-6J-klX"/>
+                        <constraint firstAttribute="trailing" secondItem="dQP-Lg-WUh" secondAttribute="trailing" id="lDm-xu-7Fq"/>
+                        <constraint firstItem="phc-Zm-igB" firstAttribute="top" secondItem="haQ-cp-Oov" secondAttribute="top" id="mct-VB-0Ao"/>
+                        <constraint firstItem="haQ-cp-Oov" firstAttribute="top" secondItem="FCe-yF-VjA" secondAttribute="top" id="oSK-rR-Z3f"/>
+                        <constraint firstItem="phc-Zm-igB" firstAttribute="leading" secondItem="haQ-cp-Oov" secondAttribute="trailing" id="tFw-u9-ZFo"/>
+                        <constraint firstItem="wZ3-h8-3ya" firstAttribute="top" secondItem="haQ-cp-Oov" secondAttribute="top" id="xEp-1v-TI4"/>
+                        <constraint firstItem="wZ3-h8-3ya" firstAttribute="leading" secondItem="haQ-cp-Oov" secondAttribute="trailing" id="zS5-ek-BoL"/>
+                    </constraints>
+                    <variation key="default">
+                        <mask key="constraints">
+                            <exclude reference="LqT-ZJ-Y5o"/>
+                            <exclude reference="tFw-u9-ZFo"/>
+                        </mask>
+                    </variation>
+                </view>
+                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" alwaysBounceHorizontal="YES" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="fuX-uY-tmK">
+                    <rect key="frame" x="0.0" y="0.0" width="414" height="140"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="qjQ-Nj-M3B">
+                        <size key="itemSize" width="50" height="50"/>
+                        <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                        <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                        <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                    </collectionViewFlowLayout>
+                    <connections>
+                        <outlet property="dataSource" destination="iN0-l3-epB" id="KSq-Ze-7Wf"/>
+                        <outlet property="delegate" destination="iN0-l3-epB" id="Ivc-2u-gh2"/>
+                    </connections>
+                </collectionView>
+            </subviews>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="fuX-uY-tmK" secondAttribute="trailing" id="1AC-8A-0AQ"/>
+                <constraint firstItem="fuX-uY-tmK" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="OXT-nh-Z1j"/>
+                <constraint firstAttribute="trailing" secondItem="fuX-uY-tmK" secondAttribute="trailing" id="RKH-r3-g3Q"/>
+                <constraint firstAttribute="trailing" secondItem="0Cq-UR-EYq" secondAttribute="trailing" id="Vgf-a5-k6b"/>
+                <constraint firstItem="fuX-uY-tmK" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="ZNI-cE-BiV"/>
+                <constraint firstItem="FCe-yF-VjA" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="dJ2-Eo-s1P"/>
+                <constraint firstItem="fuX-uY-tmK" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="ewH-aR-wSX"/>
+                <constraint firstItem="fuX-uY-tmK" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="gjE-eC-0FL"/>
+                <constraint firstAttribute="trailing" secondItem="FCe-yF-VjA" secondAttribute="trailing" id="m2p-65-CPs"/>
+                <constraint firstItem="0Cq-UR-EYq" firstAttribute="top" secondItem="fuX-uY-tmK" secondAttribute="bottom" id="ny4-6o-hnE"/>
+                <constraint firstItem="0Cq-UR-EYq" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="olo-1x-FHJ"/>
+                <constraint firstAttribute="bottom" secondItem="FCe-yF-VjA" secondAttribute="bottom" id="qWB-7k-r3O"/>
+                <constraint firstItem="FCe-yF-VjA" firstAttribute="top" secondItem="0Cq-UR-EYq" secondAttribute="bottom" id="qlb-EZ-LWX"/>
+                <constraint firstItem="FCe-yF-VjA" firstAttribute="top" secondItem="fuX-uY-tmK" secondAttribute="bottom" id="voC-68-3SR"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <variation key="default">
+                <mask key="constraints">
+                    <exclude reference="voC-68-3SR"/>
+                </mask>
+            </variation>
+            <connections>
+                <outlet property="collectionViewFlowLayout" destination="qjQ-Nj-M3B" id="AS3-OE-BtC"/>
+                <outlet property="faceCategoriesView" destination="FCe-yF-VjA" id="HKE-a3-4hu"/>
+                <outlet property="facesCollectionView" destination="fuX-uY-tmK" id="on5-C1-Oua"/>
+                <outlet property="pageControl" destination="0Cq-UR-EYq" id="0p8-Cx-y5g"/>
+            </connections>
+            <point key="canvasLocation" x="126" y="97"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="Crying" width="36" height="36"/>
+        <image name="Smile" width="36" height="36"/>
+    </resources>
+</document>

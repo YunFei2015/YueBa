@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="rightMessageCell" rowHeight="104" id="oOH-OW-ddg" customClass="RightMessageTableViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="343" height="103"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="oOH-OW-ddg" id="g5B-6V-IOu">
+                <rect key="frame" x="0.0" y="0.0" width="343" height="102.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="小心" translatesAutoresizingMaskIntoConstraints="NO" id="qXj-3w-knB">
+                        <rect key="frame" x="293" y="52" width="40" height="40"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="40" id="eON-YH-Nex"/>
+                            <constraint firstAttribute="height" constant="40" id="ghO-fy-Sut"/>
+                        </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                <integer key="value" value="20"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </imageView>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wWl-BQ-KW7">
+                        <rect key="frame" x="188" y="10" width="100" height="82.5"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="chat_bubble_red" translatesAutoresizingMaskIntoConstraints="NO" id="zGr-ik-elW">
+                                <rect key="frame" x="0.0" y="0.0" width="100" height="82.5"/>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="SenderVoiceNodePlaying" translatesAutoresizingMaskIntoConstraints="NO" id="s0u-Oq-Dib">
+                                <rect key="frame" x="80" y="10" width="0.0" height="62.5"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" id="BGL-6e-bp7"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vmm-O3-yb0">
+                                <rect key="frame" x="10" y="10" width="70" height="62.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <gestureRecognizers/>
+                        <constraints>
+                            <constraint firstItem="Vmm-O3-yb0" firstAttribute="top" secondItem="s0u-Oq-Dib" secondAttribute="top" id="3S7-4T-1Op"/>
+                            <constraint firstAttribute="trailing" secondItem="s0u-Oq-Dib" secondAttribute="trailing" constant="20" id="Bbi-Ux-EJh"/>
+                            <constraint firstItem="s0u-Oq-Dib" firstAttribute="top" secondItem="wWl-BQ-KW7" secondAttribute="top" constant="10" id="CC7-ss-6c2"/>
+                            <constraint firstItem="Vmm-O3-yb0" firstAttribute="leading" secondItem="wWl-BQ-KW7" secondAttribute="leading" constant="10" id="GdE-tD-umb"/>
+                            <constraint firstAttribute="bottom" secondItem="zGr-ik-elW" secondAttribute="bottom" id="M6G-2i-lWW"/>
+                            <constraint firstItem="Vmm-O3-yb0" firstAttribute="bottom" secondItem="s0u-Oq-Dib" secondAttribute="bottom" id="Q51-Ay-VQ6"/>
+                            <constraint firstItem="zGr-ik-elW" firstAttribute="leading" secondItem="wWl-BQ-KW7" secondAttribute="leading" id="QqP-fK-Q0J"/>
+                            <constraint firstItem="s0u-Oq-Dib" firstAttribute="leading" secondItem="Vmm-O3-yb0" secondAttribute="trailing" id="SV3-Is-NV0"/>
+                            <constraint firstAttribute="bottom" secondItem="s0u-Oq-Dib" secondAttribute="bottom" constant="10" id="XDx-mb-T1i"/>
+                            <constraint firstAttribute="trailing" secondItem="zGr-ik-elW" secondAttribute="trailing" id="ZaM-HW-xls"/>
+                            <constraint firstAttribute="width" constant="100" id="c5I-aS-cnR"/>
+                            <constraint firstItem="zGr-ik-elW" firstAttribute="top" secondItem="wWl-BQ-KW7" secondAttribute="top" id="cSE-fg-RMW"/>
+                        </constraints>
+                    </view>
+                    <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="FG0-ta-ADp">
+                        <rect key="frame" x="126.5" y="10.5" width="161.5" height="81.5"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="255" id="s4J-5E-vyV"/>
+                        </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="s4J-5E-vyV"/>
+                            </mask>
+                        </variation>
+                    </imageView>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="FG0-ta-ADp" firstAttribute="bottom" secondItem="qXj-3w-knB" secondAttribute="bottom" id="1BY-ZG-Bdd"/>
+                    <constraint firstItem="qXj-3w-knB" firstAttribute="leading" secondItem="FG0-ta-ADp" secondAttribute="trailing" constant="5" id="38B-Iy-0Um"/>
+                    <constraint firstItem="FG0-ta-ADp" firstAttribute="leading" secondItem="g5B-6V-IOu" secondAttribute="centerX" constant="-45" id="7SI-Rj-6mK"/>
+                    <constraint firstItem="qXj-3w-knB" firstAttribute="leading" secondItem="wWl-BQ-KW7" secondAttribute="trailing" constant="5" id="Ivl-Ik-Vyr"/>
+                    <constraint firstItem="wWl-BQ-KW7" firstAttribute="top" secondItem="g5B-6V-IOu" secondAttribute="top" constant="10" id="f2U-a1-r4q"/>
+                    <constraint firstItem="FG0-ta-ADp" firstAttribute="top" secondItem="g5B-6V-IOu" secondAttribute="top" constant="10" id="srl-NJ-kFg"/>
+                    <constraint firstAttribute="trailing" secondItem="qXj-3w-knB" secondAttribute="trailing" constant="10" id="ttd-9s-tYi"/>
+                    <constraint firstAttribute="bottom" secondItem="qXj-3w-knB" secondAttribute="bottom" constant="10" id="vkt-v3-3la"/>
+                    <constraint firstItem="wWl-BQ-KW7" firstAttribute="bottom" secondItem="qXj-3w-knB" secondAttribute="bottom" id="y2E-Q4-gm8"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="iconImgView" destination="qXj-3w-knB" id="2oe-tk-dmR"/>
+                <outlet property="messageLab" destination="Vmm-O3-yb0" id="ajq-os-EMJ"/>
+                <outlet property="messageTypeImageView" destination="s0u-Oq-Dib" id="aH1-dC-L4t"/>
+                <outlet property="messageTypeImageViewWidthConstraint" destination="BGL-6e-bp7" id="pMa-Jy-rea"/>
+                <outlet property="messageView" destination="wWl-BQ-KW7" id="EP9-0m-YJM"/>
+                <outlet property="photoImageView" destination="FG0-ta-ADp" id="p5S-OI-Bjz"/>
+                <outlet property="viewWidthConstraint" destination="c5I-aS-cnR" id="7dB-PJ-Y8H"/>
+            </connections>
+            <point key="canvasLocation" x="244.5" y="479.5"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="SenderVoiceNodePlaying" width="20" height="20"/>
+        <image name="chat_bubble_red" width="37" height="35"/>
+        <image name="小心" width="200" height="200"/>
+    </resources>
+</document>

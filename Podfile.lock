@@ -1,0 +1,37 @@
+PODS:
+  - AFNetworking (3.0.4):
+    - AFNetworking/NSURLSession (= 3.0.4)
+    - AFNetworking/Reachability (= 3.0.4)
+    - AFNetworking/Security (= 3.0.4)
+    - AFNetworking/Serialization (= 3.0.4)
+    - AFNetworking/UIKit (= 3.0.4)
+  - AFNetworking/NSURLSession (3.0.4):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/Reachability (3.0.4)
+  - AFNetworking/Security (3.0.4)
+  - AFNetworking/Serialization (3.0.4)
+  - AFNetworking/UIKit (3.0.4):
+    - AFNetworking/NSURLSession
+  - AVOSCloud (3.2.3)
+  - AVOSCloudIM (3.2.3):
+    - AVOSCloud
+  - Bugtags (1.1.8)
+  - Masonry (0.6.4)
+
+DEPENDENCIES:
+  - AFNetworking
+  - AVOSCloud
+  - AVOSCloudIM
+  - Bugtags
+  - Masonry
+
+SPEC CHECKSUMS:
+  AFNetworking: a0075feb321559dc78d9d85b55d11caa19eabb93
+  AVOSCloud: f760247eb167a43c279b3a250e3ef736f9d7eb68
+  AVOSCloudIM: 870287b8717ccfb25ab6e45ed5e07d33b0affc9a
+  Bugtags: d2ddc13b8b56ed27a572dada3a1176340e0d07c9
+  Masonry: 281802d04d787ea2973179ee8bcb50500579ede2
+
+COCOAPODS: 0.39.0

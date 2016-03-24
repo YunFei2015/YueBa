@@ -1,0 +1,38 @@
+//
+//  PrefixHeader.pch
+//  即时通讯练习
+//
+//  Created by 云菲 on 16/3/9.
+//  Copyright © 2016年 云菲. All rights reserved.
+//
+
+#ifndef PrefixHeader_pch
+#define PrefixHeader_pch
+
+//block self
+#define WEAKSELF typeof(self) __weak weakSelf = self;
+#define STRONGSELF typeof(weakSelf) __strong strongSelf = weakSelf;
+
+//screen bounds
+#define kScreenW [UIScreen mainScreen].bounds.size.width
+#define kScreenH [UIScreen mainScreen].bounds.size.height
+
+//message bar bounds
+#define kMessageMaxWidth kScreenW * 2 / 3.f - 40//消息最大宽度
+#define kMessageBarHeight 40//底部工具栏高度
+#define kFunctionViewHeight 200//自定义键盘高度
+
+//cell
+#define kFaceCellNib @"FaceCell"
+#define kFaceCellIdentifier @"faceCell"
+
+//face
+#define kFaceTT @"TT"
+
+//message
+#define kMessageLimit 10
+#define kAudioPath [NSTemporaryDirectory() stringByAppendingPathComponent:@"temwwwp.aac"]
+
+//recorder
+#define kVoiceRecorderMaxTime 60.0
+#endif /* PrefixHeader_pch */

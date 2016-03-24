@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view alpha="0.5" contentMode="scaleToFill" id="iN0-l3-epB" customClass="QYVoiceRecordingView">
+            <rect key="frame" x="0.0" y="0.0" width="162" height="148"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Sending-voice-mic" translatesAutoresizingMaskIntoConstraints="NO" id="GvF-1z-JEP">
+                    <rect key="frame" x="30" y="10" width="51" height="82"/>
+                </imageView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="手指上滑，取消发送" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DAb-TX-ddt">
+                    <rect key="frame" x="0.0" y="112" width="162" height="21"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="21" id="Bgq-iA-N3I"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="RecordingSignal001" translatesAutoresizingMaskIntoConstraints="NO" id="nOh-NK-wJQ">
+                    <rect key="frame" x="81" y="10" width="25.5" height="82"/>
+                </imageView>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="DAb-TX-ddt" secondAttribute="trailing" id="2aI-Wp-vBH"/>
+                <constraint firstItem="nOh-NK-wJQ" firstAttribute="leading" secondItem="GvF-1z-JEP" secondAttribute="trailing" id="Bmh-3R-F7b"/>
+                <constraint firstItem="nOh-NK-wJQ" firstAttribute="bottom" secondItem="GvF-1z-JEP" secondAttribute="bottom" id="DXT-yr-6Tz"/>
+                <constraint firstItem="DAb-TX-ddt" firstAttribute="top" secondItem="GvF-1z-JEP" secondAttribute="bottom" constant="20" id="FQP-EC-Kqd"/>
+                <constraint firstAttribute="bottom" secondItem="DAb-TX-ddt" secondAttribute="bottom" constant="15" id="FqM-FA-BE0"/>
+                <constraint firstItem="GvF-1z-JEP" firstAttribute="leading" secondItem="DAb-TX-ddt" secondAttribute="leading" constant="30" id="H9O-HS-dfV"/>
+                <constraint firstItem="GvF-1z-JEP" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="10" id="S4j-Dq-Fk7"/>
+                <constraint firstItem="nOh-NK-wJQ" firstAttribute="width" secondItem="GvF-1z-JEP" secondAttribute="width" multiplier="0.5" id="S6B-9j-wGC"/>
+                <constraint firstItem="nOh-NK-wJQ" firstAttribute="top" secondItem="GvF-1z-JEP" secondAttribute="top" id="dna-5U-pkT"/>
+                <constraint firstItem="DAb-TX-ddt" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="ea6-Jr-2Me"/>
+                <constraint firstAttribute="centerX" secondItem="GvF-1z-JEP" secondAttribute="trailing" id="n8I-M7-dTH"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="powerValueAnimatingImgView" destination="nOh-NK-wJQ" id="tCy-zn-td9"/>
+                <outlet property="recordingStateImgView" destination="GvF-1z-JEP" id="D45-u2-ypS"/>
+                <outlet property="tipLabel" destination="DAb-TX-ddt" id="csY-vr-gHU"/>
+            </connections>
+            <point key="canvasLocation" x="36" y="194"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="RecordingSignal001" width="18" height="61"/>
+        <image name="Sending-voice-mic" width="65" height="94"/>
+    </resources>
+</document>

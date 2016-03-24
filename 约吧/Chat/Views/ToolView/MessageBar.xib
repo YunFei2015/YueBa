@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="MessageBar">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="50"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oZ1-Jg-ro1">
+                    <rect key="frame" x="5" y="5" width="30" height="40"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="30" id="4vR-Rp-kTy"/>
+                    </constraints>
+                    <state key="normal" image="messageBar_Add">
+                        <color key="titleColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                    </state>
+                    <state key="selected" image="messageBar_Keyboard"/>
+                    <connections>
+                        <action selector="buttonClickAction:" destination="iN0-l3-epB" eventType="touchUpInside" id="dT1-jX-AAD"/>
+                    </connections>
+                </button>
+                <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="o9c-4o-iuq">
+                    <rect key="frame" x="379" y="5" width="30" height="40"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="30" id="URl-KR-mBk"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                    <state key="normal" image="messageBar_Microphone">
+                        <color key="titleColor" red="0.90749198720000002" green="0.4183114141" blue="0.36228245529999997" alpha="1" colorSpace="calibratedRGB"/>
+                    </state>
+                    <state key="selected" image="messageBar_Keyboard"/>
+                    <state key="focused" title="发送"/>
+                    <connections>
+                        <action selector="buttonClickAction:" destination="iN0-l3-epB" eventType="touchUpInside" id="3Ef-Dg-V4u"/>
+                    </connections>
+                </button>
+                <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="输入聊天内容..." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2qM-n9-Iuv">
+                    <rect key="frame" x="86" y="5" width="283" height="40"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="zMM-Ha-cb8">
+                    <rect key="frame" x="80" y="5" width="289" height="40"/>
+                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences" returnKeyType="send" enablesReturnKeyAutomatically="YES"/>
+                    <connections>
+                        <outlet property="delegate" destination="iN0-l3-epB" id="nhx-13-Kee"/>
+                    </connections>
+                </textView>
+                <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ui9-SU-bZX">
+                    <rect key="frame" x="40" y="5" width="30" height="40"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="30" id="nJc-zU-3tz"/>
+                    </constraints>
+                    <state key="normal" image="messageBar_Smiley">
+                        <color key="titleColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                    </state>
+                    <state key="selected" image="messageBar_Keyboard"/>
+                    <connections>
+                        <action selector="buttonClickAction:" destination="iN0-l3-epB" eventType="touchUpInside" id="6tn-o4-1ur"/>
+                    </connections>
+                </button>
+                <button hidden="YES" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gMF-sL-jaE">
+                    <rect key="frame" x="80" y="5" width="289" height="40"/>
+                    <state key="normal" title="按住说话">
+                        <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <state key="highlighted" title="松开结束">
+                        <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                            <integer key="value" value="5"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
+                            <integer key="value" value="1"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                    <connections>
+                        <action selector="touchDownAction:" destination="iN0-l3-epB" eventType="touchDown" id="2Sw-eU-qR0"/>
+                        <action selector="touchDragExitAction:" destination="iN0-l3-epB" eventType="touchDragExit" id="RcK-1s-p1u"/>
+                        <action selector="touchDrageEnterAction:" destination="iN0-l3-epB" eventType="touchDragEnter" id="U1A-5J-LgE"/>
+                        <action selector="touchUpInsideAction:" destination="iN0-l3-epB" eventType="touchUpInside" id="Oem-eM-TUU"/>
+                        <action selector="touchUpOutsideAction:" destination="iN0-l3-epB" eventType="touchUpOutside" id="RbI-AF-UZn"/>
+                    </connections>
+                </button>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="Ui9-SU-bZX" firstAttribute="leading" secondItem="oZ1-Jg-ro1" secondAttribute="trailing" constant="5" id="1hS-da-4Ur"/>
+                <constraint firstItem="o9c-4o-iuq" firstAttribute="width" secondItem="oZ1-Jg-ro1" secondAttribute="width" id="258-j1-nU7"/>
+                <constraint firstItem="Ui9-SU-bZX" firstAttribute="top" secondItem="oZ1-Jg-ro1" secondAttribute="top" id="2o4-pk-xAl"/>
+                <constraint firstItem="gMF-sL-jaE" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="373-3n-XQ1"/>
+                <constraint firstItem="Ui9-SU-bZX" firstAttribute="bottom" secondItem="oZ1-Jg-ro1" secondAttribute="bottom" id="5uh-3W-pWg"/>
+                <constraint firstItem="gMF-sL-jaE" firstAttribute="trailing" secondItem="zMM-Ha-cb8" secondAttribute="trailing" id="6Fa-SS-rIp"/>
+                <constraint firstItem="oZ1-Jg-ro1" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="5" id="7mc-1O-aRE"/>
+                <constraint firstItem="Ui9-SU-bZX" firstAttribute="width" secondItem="oZ1-Jg-ro1" secondAttribute="width" id="81R-wL-IeC"/>
+                <constraint firstItem="gMF-sL-jaE" firstAttribute="top" secondItem="zMM-Ha-cb8" secondAttribute="top" id="CEY-dL-8i1"/>
+                <constraint firstItem="zMM-Ha-cb8" firstAttribute="top" secondItem="oZ1-Jg-ro1" secondAttribute="top" id="Dn9-6H-knK"/>
+                <constraint firstItem="zMM-Ha-cb8" firstAttribute="leading" secondItem="Ui9-SU-bZX" secondAttribute="trailing" constant="10" id="EGC-JA-5zW"/>
+                <constraint firstItem="o9c-4o-iuq" firstAttribute="leading" secondItem="zMM-Ha-cb8" secondAttribute="trailing" constant="10" id="Ha6-dv-qIF"/>
+                <constraint firstItem="Ui9-SU-bZX" firstAttribute="leading" secondItem="oZ1-Jg-ro1" secondAttribute="trailing" constant="5" id="I6N-X0-LPS"/>
+                <constraint firstItem="gMF-sL-jaE" firstAttribute="leading" secondItem="zMM-Ha-cb8" secondAttribute="leading" id="Mvg-eh-uQU"/>
+                <constraint firstItem="2qM-n9-Iuv" firstAttribute="top" secondItem="zMM-Ha-cb8" secondAttribute="top" id="QNS-pV-3Ry"/>
+                <constraint firstItem="o9c-4o-iuq" firstAttribute="bottom" secondItem="oZ1-Jg-ro1" secondAttribute="bottom" id="YK5-Ne-h3d"/>
+                <constraint firstItem="oZ1-Jg-ro1" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="5" id="cpp-FG-2Uo"/>
+                <constraint firstAttribute="trailing" secondItem="o9c-4o-iuq" secondAttribute="trailing" constant="5" id="egc-FN-s2h"/>
+                <constraint firstAttribute="bottom" secondItem="gMF-sL-jaE" secondAttribute="bottom" constant="2" id="eoQ-Ek-Vj5"/>
+                <constraint firstItem="2qM-n9-Iuv" firstAttribute="bottom" secondItem="zMM-Ha-cb8" secondAttribute="bottom" id="ezI-ed-Dgm"/>
+                <constraint firstItem="o9c-4o-iuq" firstAttribute="top" secondItem="oZ1-Jg-ro1" secondAttribute="top" id="hfT-ND-D27"/>
+                <constraint firstItem="2qM-n9-Iuv" firstAttribute="leading" secondItem="zMM-Ha-cb8" secondAttribute="leading" constant="6" id="iI4-Mf-YaU"/>
+                <constraint firstItem="2qM-n9-Iuv" firstAttribute="trailing" secondItem="zMM-Ha-cb8" secondAttribute="trailing" id="jPz-26-q7s"/>
+                <constraint firstAttribute="bottom" secondItem="zMM-Ha-cb8" secondAttribute="bottom" constant="5" id="oOf-iz-6xu"/>
+                <constraint firstItem="gMF-sL-jaE" firstAttribute="bottom" secondItem="zMM-Ha-cb8" secondAttribute="bottom" id="yOf-eY-eSt"/>
+                <constraint firstAttribute="bottom" secondItem="oZ1-Jg-ro1" secondAttribute="bottom" constant="5" id="yqk-a0-JPp"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <variation key="default">
+                <mask key="constraints">
+                    <exclude reference="CEY-dL-8i1"/>
+                    <exclude reference="yOf-eY-eSt"/>
+                </mask>
+            </variation>
+            <connections>
+                <outlet property="addBtn" destination="oZ1-Jg-ro1" id="9V1-AV-hLm"/>
+                <outlet property="faceBtn" destination="Ui9-SU-bZX" id="H5Y-v1-epC"/>
+                <outlet property="messageTextView" destination="zMM-Ha-cb8" id="MGi-mL-F0M"/>
+                <outlet property="talkBtn" destination="gMF-sL-jaE" id="Peo-Rw-Yuh"/>
+                <outlet property="tipLabel" destination="2qM-n9-Iuv" id="nX3-A5-cVR"/>
+                <outlet property="voiceBtn" destination="o9c-4o-iuq" id="Vjq-cM-kLd"/>
+            </connections>
+        </view>
+    </objects>
+    <resources>
+        <image name="messageBar_Add" width="16" height="16"/>
+        <image name="messageBar_Keyboard" width="22" height="22"/>
+        <image name="messageBar_Microphone" width="26" height="27"/>
+        <image name="messageBar_Smiley" width="22" height="22"/>
+    </resources>
+</document>
