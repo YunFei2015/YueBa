@@ -33,6 +33,11 @@
 		7C567E251C9BDCF400934F5D /* RightMessageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7C567E241C9BDCF400934F5D /* RightMessageTableViewCell.xib */; };
 		7C59D9B91CA3E0D6008EF5E9 /* UIImage+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C59D9B81CA3E0D6008EF5E9 /* UIImage+Extension.m */; };
 		7C67059F1C9F97AB001EDCCE /* QYAudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C67059E1C9F97AB001EDCCE /* QYAudioPlayer.m */; };
+		7CD7D2951CA3E8DA00B725C3 /* QYTextMessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7CD7D2941CA3E8DA00B725C3 /* QYTextMessageCell.xib */; };
+		7CD7D2971CA3E8E900B725C3 /* QYVoiceMessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7CD7D2961CA3E8E900B725C3 /* QYVoiceMessageCell.xib */; };
+		7CD7D2991CA3E8F200B725C3 /* QYPhotoMessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7CD7D2981CA3E8F200B725C3 /* QYPhotoMessageCell.xib */; };
+		7CD7D29B1CA3E8FE00B725C3 /* QYLocationMessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7CD7D29A1CA3E8FE00B725C3 /* QYLocationMessageCell.xib */; };
+		7CD7D29E1CA3E96700B725C3 /* QYMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CD7D29D1CA3E96700B725C3 /* QYMessageCell.m */; };
 		7CF833BA1CA0DA0F003D2BF1 /* QYDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CF833B91CA0DA0F003D2BF1 /* QYDataManager.m */; };
 		7CF833BD1CA128B4003D2BF1 /* QYNetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CF833BC1CA128B4003D2BF1 /* QYNetworkManager.m */; };
 		7CFB143E1C9987F900DF7A42 /* FriendModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CFB143D1C9987F900DF7A42 /* FriendModel.m */; };
@@ -88,6 +93,12 @@
 		7C59D9B81CA3E0D6008EF5E9 /* UIImage+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Extension.m"; sourceTree = "<group>"; };
 		7C67059D1C9F97AB001EDCCE /* QYAudioPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYAudioPlayer.h; sourceTree = "<group>"; };
 		7C67059E1C9F97AB001EDCCE /* QYAudioPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYAudioPlayer.m; sourceTree = "<group>"; };
+		7CD7D2941CA3E8DA00B725C3 /* QYTextMessageCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = QYTextMessageCell.xib; sourceTree = "<group>"; };
+		7CD7D2961CA3E8E900B725C3 /* QYVoiceMessageCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = QYVoiceMessageCell.xib; sourceTree = "<group>"; };
+		7CD7D2981CA3E8F200B725C3 /* QYPhotoMessageCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = QYPhotoMessageCell.xib; sourceTree = "<group>"; };
+		7CD7D29A1CA3E8FE00B725C3 /* QYLocationMessageCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = QYLocationMessageCell.xib; sourceTree = "<group>"; };
+		7CD7D29C1CA3E96700B725C3 /* QYMessageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYMessageCell.h; sourceTree = "<group>"; };
+		7CD7D29D1CA3E96700B725C3 /* QYMessageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYMessageCell.m; sourceTree = "<group>"; };
 		7CF833B81CA0DA0F003D2BF1 /* QYDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYDataManager.h; sourceTree = "<group>"; };
 		7CF833B91CA0DA0F003D2BF1 /* QYDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYDataManager.m; sourceTree = "<group>"; };
 		7CF833BB1CA128B4003D2BF1 /* QYNetworkManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYNetworkManager.h; sourceTree = "<group>"; };
@@ -225,6 +236,12 @@
 		7C30B1701C996137001EF237 /* ChatMainViews */ = {
 			isa = PBXGroup;
 			children = (
+				7CD7D29C1CA3E96700B725C3 /* QYMessageCell.h */,
+				7CD7D29D1CA3E96700B725C3 /* QYMessageCell.m */,
+				7CD7D2941CA3E8DA00B725C3 /* QYTextMessageCell.xib */,
+				7CD7D2961CA3E8E900B725C3 /* QYVoiceMessageCell.xib */,
+				7CD7D2981CA3E8F200B725C3 /* QYPhotoMessageCell.xib */,
+				7CD7D29A1CA3E8FE00B725C3 /* QYLocationMessageCell.xib */,
 				7C30B1711C996137001EF237 /* MessageTableViewCell.h */,
 				7C30B1721C996137001EF237 /* MessageTableViewCell.m */,
 				7C567E221C9BDCE700934F5D /* LeftMessageTableViewCell.xib */,
@@ -377,9 +394,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				7C30B15C1C995E2A001EF237 /* LaunchScreen.storyboard in Resources */,
+				7CD7D2971CA3E8E900B725C3 /* QYVoiceMessageCell.xib in Resources */,
 				7C30B1991C996137001EF237 /* MessageBar.xib in Resources */,
+				7CD7D2951CA3E8DA00B725C3 /* QYTextMessageCell.xib in Resources */,
 				7C567E251C9BDCF400934F5D /* RightMessageTableViewCell.xib in Resources */,
 				7C30B1591C995E2A001EF237 /* Assets.xcassets in Resources */,
+				7CD7D29B1CA3E8FE00B725C3 /* QYLocationMessageCell.xib in Resources */,
+				7CD7D2991CA3E8F200B725C3 /* QYPhotoMessageCell.xib in Resources */,
 				7C30B1971C996137001EF237 /* FunctionView.xib in Resources */,
 				7CFCF3E61CA266F300ACBD72 /* QYVoiceRecordingView.xib in Resources */,
 				7C30B1931C996137001EF237 /* FaceCell.xib in Resources */,
@@ -450,6 +471,7 @@
 				7CF833BD1CA128B4003D2BF1 /* QYNetworkManager.m in Sources */,
 				7C30B19C1C996137001EF237 /* UIView+Extension.m in Sources */,
 				7C30B1901C996137001EF237 /* MessageTableViewCell.m in Sources */,
+				7CD7D29E1CA3E96700B725C3 /* QYMessageCell.m in Sources */,
 				7C30B1981C996137001EF237 /* MessageBar.m in Sources */,
 				7C08233B1C9AAE4300C23383 /* QYAudioRecorder.m in Sources */,
 				7C30B18E1C996137001EF237 /* FaceModel.m in Sources */,

@@ -25,6 +25,8 @@
 //-(void)tapCellAction:(UITapGestureRecognizer *)tap;
 @end
 
+
+
 @interface LeftMessageTableViewCell : MessageTableViewCell
 
 @end

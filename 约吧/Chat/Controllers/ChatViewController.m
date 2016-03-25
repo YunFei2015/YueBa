@@ -10,6 +10,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import <AVFile.h>
 #import "FriendModel.h"
+#import "QYMessageCell.h"
 #import "MessageTableViewCell.h"
 #import "MessageBar.h"
 #import "FunctionView.h"
@@ -36,8 +37,8 @@
 @property (strong, nonatomic) QYVoiceRecordingView *voiceRecordingView;
 
 
-@property (strong, nonatomic) MessageTableViewCell *currentSelectedCell;
-@property (strong, nonatomic) MessageTableViewCell *lastSelectedCell;
+@property (strong, nonatomic) QYVoiceMessageCell *currentSelectedVoiceCell;
+@property (strong, nonatomic) QYVoiceMessageCell *lastSelectedVoiceCell;
 
 
 
@@ -66,7 +67,17 @@ static NSString *rightIdentifier = @"rightMessageCell";
         _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         _tableView.delegate = self;
         _tableView.dataSource = self;
-        _tableView.estimatedRowHeight = 50;
+        _tableView.estimatedRowHeight = 60;
+        
+        [_tableView registerNib:[UINib nibWithNibName:@"QYTextMessageCell" bundle:nil] forCellReuseIdentifier:kTextCell];
+        [_tableView registerNib:[UINib nibWithNibName:@"QYVoiceMessageCell" bundle:nil] forCellReuseIdentifier:kVoiceCell];
+        [_tableView registerNib:[UINib nibWithNibName:@"QYPhotoMessageCell" bundle:nil] forCellReuseIdentifier:kPhotoCell];
+        [_tableView registerNib:[UINib nibWithNibName:@"QYLocationMessageCell" bundle:nil] forCellReuseIdentifier:kLocationCell];
+        
+//        [_tableView registerClass:[QYTextMessageCell class] forCellReuseIdentifier:kTextCell];
+//        [_tableView registerClass:[QYVoiceMessageCell class] forCellReuseIdentifier:kVoiceCell];
+//        [_tableView registerClass:[QYPhotoMessageCell class] forCellReuseIdentifier:kPhotoCell];
+//        [_tableView registerClass:[QYLocationMessageCell class] forCellReuseIdentifier:kLocationCell];
         
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction:)];
         [self.tableView addGestureRecognizer:tap];
@@ -190,16 +201,32 @@ static NSString *rightIdentifier = @"rightMessageCell";
     if (!indexPath) {
         return;
     }
-    _currentSelectedCell = [self.tableView cellForRowAtIndexPath:indexPath];
-//        [_currentSelectedCell tapCellAction:sender];
-    if (![_currentSelectedCell isTapedInContent:sender]) {
+    
+    QYMessageCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+    if (![cell isTapedInContent:sender]) {
         return;
     }
     
-    if (_currentSelectedCell.typedMessage) {
-        switch (_currentSelectedCell.typedMessage.mediaType) {
-            case kAVIMMessageMediaTypeAudio:{
-                [self manageVoicePlayingWith:_currentSelectedCell.typedMessage];
+   
+        switch (cell.messageType) {
+            case kMessageTypeText:{
+
+            }
+                
+                break;
+            case kMessageTypeVoice:{
+                _currentSelectedVoiceCell = (QYVoiceMessageCell *)cell;
+                [self manageVoicePlayingWith:_currentSelectedVoiceCell.typedMessage];
+            }
+                
+                break;
+            case kMessageTypePhoto:{
+
+            }
+                
+                break;
+            case kMessageTypeLocation:{
+
             }
                 
                 break;
@@ -207,7 +234,7 @@ static NSString *rightIdentifier = @"rightMessageCell";
             default:
                 break;
         }
-    }
+    
 }
 
 -(void)manageVoicePlayingWith:(AVIMTypedMessage *)message{
@@ -238,11 +265,11 @@ static NSString *rightIdentifier = @"rightMessageCell";
 -(void)didAudioPlayerBeginPlay:(AVAudioPlayer *)player{
     NSLog(@"开始播放");
     //UI
-    if (_lastSelectedCell != _currentSelectedCell) {
-        [_lastSelectedCell.messageTypeImageView stopAnimating];
-        _lastSelectedCell = _currentSelectedCell;
+    if (_lastSelectedVoiceCell != _currentSelectedVoiceCell) {
+        [_lastSelectedVoiceCell stopAnimating];
+        _lastSelectedVoiceCell = _currentSelectedVoiceCell;
     }
-    [_currentSelectedCell.messageTypeImageView startAnimating];
+    [_currentSelectedVoiceCell startAnimating];
 }
 
 -(void)didAudioPlayerPausePlay:(AVAudioPlayer *)player{
@@ -252,7 +279,7 @@ static NSString *rightIdentifier = @"rightMessageCell";
 -(void)didAudioPlayerStopPlay:(AVAudioPlayer *)player{
     NSLog(@"====播放完成");
     player.currentTime = 0;
-    [_currentSelectedCell.messageTypeImageView stopAnimating];
+    [_currentSelectedVoiceCell stopAnimating];
 }
 
 -(void)didAudioPlayerFailedPlay:(AVAudioPlayer *)player{
@@ -456,48 +483,114 @@ static NSString *rightIdentifier = @"rightMessageCell";
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     id message = _messages[indexPath.row];
-    MessageTableViewCell *cell;
-    if ([[message clientId] isEqualToString:_userName]) {
-        cell = [tableView dequeueReusableCellWithIdentifier:rightIdentifier];
-        if (!cell) {
-            cell = [[NSBundle mainBundle] loadNibNamed:@"RightMessageTableViewCell" owner:nil options:nil][0];
-        }
-        
-    }
-    
-    if ([[message clientId] isEqualToString:_targetUserName]) {
-        cell = [tableView dequeueReusableCellWithIdentifier:leftIdentifier];
-        if (!cell) {
-            cell = [[NSBundle mainBundle] loadNibNamed:@"LeftMessageTableViewCell" owner:nil options:nil][0];
-        }
-    }
-    
-    //如果是富媒体消息，就赋值给typedMessage
+    QYMessageCell *cell;
+
     if ([message isKindOfClass:[AVIMTypedMessage class]]) {
-        cell.typedMessage = message;
-        return cell;
+        AVIMTypedMessage *typedMessage = (AVIMTypedMessage *)message;
+        switch (typedMessage.mediaType) {
+            case kAVIMMessageMediaTypeAudio:
+                cell = [tableView dequeueReusableCellWithIdentifier:kVoiceCell forIndexPath:indexPath];
+                break;
+            case kAVIMMessageMediaTypeImage:
+                cell = [tableView dequeueReusableCellWithIdentifier:kPhotoCell forIndexPath:indexPath];
+                break;
+            case kAVIMMessageMediaTypeLocation:
+                cell = [tableView dequeueReusableCellWithIdentifier:kLocationCell forIndexPath:indexPath];
+                break;
+                
+            default:
+                break;
+        }
+//        cell.typedMessage = typedMessage;
+    }else{
+        cell = [tableView dequeueReusableCellWithIdentifier:kTextCell forIndexPath:indexPath];
+//        cell.message = message;
     }
     
-    //如果是文本消息，就赋值给message
-    cell.message = message;
+//    if ([[message clientId] isEqualToString:_userName]) {
+//        [cell setMessageCellType:kMessageCellTypeSend];
+//    }else if ([[message clientId] isEqualToString:_targetUserName]){
+//        [cell setMessageCellType:kMessageCellTypeReceive];
+//    }else{
+//        NSLog(@"这不可能！");
+//    }
+    
     return cell;
+    
+//    if ([[message clientId] isEqualToString:_userName]) {
+//        cell = [tableView dequeueReusableCellWithIdentifier:rightIdentifier];
+//        if (!cell) {
+//            cell = [[NSBundle mainBundle] loadNibNamed:@"RightMessageTableViewCell" owner:nil options:nil][0];
+//        }
+//        
+//    }
+//    
+//    if ([[message clientId] isEqualToString:_targetUserName]) {
+//        cell = [tableView dequeueReusableCellWithIdentifier:leftIdentifier];
+//        if (!cell) {
+//            cell = [[NSBundle mainBundle] loadNibNamed:@"LeftMessageTableViewCell" owner:nil options:nil][0];
+//        }
+//    }
+//    
+//    //如果是富媒体消息，就赋值给typedMessage
+//    if ([message isKindOfClass:[AVIMTypedMessage class]]) {
+//        cell.typedMessage = message;
+//        return cell;
+//    }
+//    
+//    //如果是文本消息，就赋值给message
+//    cell.message = message;
+//    return cell;
 }
 
-
--(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    AVIMMessage *message = _messages[indexPath.row];
-    MessageTableViewCell *cell;
-    cell = [[NSBundle mainBundle] loadNibNamed:@"RightMessageTableViewCell" owner:nil options:nil][0];
-    
+-(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
+    QYMessageCell *messageCell = (QYMessageCell *)cell;
+    id message = _messages[indexPath.row];
     
     if ([message isKindOfClass:[AVIMTypedMessage class]]) {
         AVIMTypedMessage *typedMessage = (AVIMTypedMessage *)message;
-        [cell setTypedMessage:typedMessage];
+        messageCell.typedMessage = typedMessage;
     }else{
-        [cell setMessage:message];
+        messageCell.message = message;
     }
     
-    CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
-    return size.height + 1;
+    if ([[message clientId] isEqualToString:_userName]) {
+        [messageCell setMessageCellType:kMessageCellTypeSend];
+    }else if ([[message clientId] isEqualToString:_targetUserName]){
+        [messageCell setMessageCellType:kMessageCellTypeReceive];
+    }else{
+        NSLog(@"这不可能！");
+    }
 }
+
+//-(void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
+//    QYMessageCell *messageCell = (QYMessageCell *)cell;
+//    id message = _messages[indexPath.row];
+//    
+//    if ([[message clientId] isEqualToString:_userName]) {
+//        [messageCell setMessageCellType:kMessageCellTypeSend];
+//    }else if ([[message clientId] isEqualToString:_targetUserName]){
+//        [messageCell setMessageCellType:kMessageCellTypeReceive];
+//    }else{
+//        NSLog(@"这不可能！");
+//    }
+//}
+
+
+//-(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath{
+//    AVIMMessage *message = _messages[indexPath.row];
+//    MessageTableViewCell *cell;
+//    cell = [[NSBundle mainBundle] loadNibNamed:@"RightMessageTableViewCell" owner:nil options:nil][0];
+//    
+//    
+//    if ([message isKindOfClass:[AVIMTypedMessage class]]) {
+//        AVIMTypedMessage *typedMessage = (AVIMTypedMessage *)message;
+//        [cell setTypedMessage:typedMessage];
+//    }else{
+//        [cell setMessage:message];
+//    }
+//    
+//    CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
+//    return size.height + 1;
+//}
 @end

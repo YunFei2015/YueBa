@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="photoMessageCell" rowHeight="149" id="4zC-ed-uZS" customClass="QYPhotoMessageCell">
+            <rect key="frame" x="0.0" y="0.0" width="381" height="149"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="4zC-ed-uZS" id="kCb-QJ-7so">
+                <rect key="frame" x="0.0" y="0.0" width="381" height="148.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="小丸子" translatesAutoresizingMaskIntoConstraints="NO" id="um8-o8-i5P">
+                        <rect key="frame" x="10" y="98" width="40" height="40"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="40" id="B4p-Nr-oKo"/>
+                            <constraint firstAttribute="height" constant="40" id="W6A-zj-H0O"/>
+                        </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                <integer key="value" value="20"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </imageView>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="chat_bubble_gray" translatesAutoresizingMaskIntoConstraints="NO" id="xWM-d2-Zii">
+                        <rect key="frame" x="55" y="10" width="100" height="128.5"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="128.5" id="BAO-6p-q8e"/>
+                            <constraint firstAttribute="width" constant="100" id="xyc-Pj-GzK"/>
+                        </constraints>
+                    </imageView>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3j3-Cw-Cn1">
+                        <rect key="frame" x="55" y="10" width="100" height="129"/>
+                    </imageView>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="bottom" secondItem="um8-o8-i5P" secondAttribute="bottom" constant="10" id="3i3-Uw-1uP"/>
+                    <constraint firstItem="3j3-Cw-Cn1" firstAttribute="trailing" secondItem="xWM-d2-Zii" secondAttribute="trailing" id="Nc7-Ea-bj9"/>
+                    <constraint firstItem="xWM-d2-Zii" firstAttribute="top" secondItem="kCb-QJ-7so" secondAttribute="top" constant="10" id="aNh-3R-Pa5"/>
+                    <constraint firstItem="xWM-d2-Zii" firstAttribute="bottom" secondItem="um8-o8-i5P" secondAttribute="bottom" id="aw0-7P-LvI"/>
+                    <constraint firstItem="xWM-d2-Zii" firstAttribute="leading" secondItem="um8-o8-i5P" secondAttribute="trailing" constant="5" id="c6F-NC-O6I"/>
+                    <constraint firstItem="um8-o8-i5P" firstAttribute="leading" secondItem="kCb-QJ-7so" secondAttribute="leading" constant="10" id="cbd-jo-ebJ"/>
+                    <constraint firstItem="xWM-d2-Zii" firstAttribute="trailing" secondItem="um8-o8-i5P" secondAttribute="leading" priority="500" constant="-5" id="k1Q-KJ-zyp"/>
+                    <constraint firstItem="3j3-Cw-Cn1" firstAttribute="leading" secondItem="xWM-d2-Zii" secondAttribute="leading" id="mWd-tv-oC9"/>
+                    <constraint firstItem="3j3-Cw-Cn1" firstAttribute="top" secondItem="xWM-d2-Zii" secondAttribute="top" id="nKE-L1-X2y"/>
+                    <constraint firstAttribute="trailing" secondItem="um8-o8-i5P" secondAttribute="trailing" priority="500" constant="10" id="orc-HR-Ifw"/>
+                    <constraint firstItem="3j3-Cw-Cn1" firstAttribute="bottom" secondItem="xWM-d2-Zii" secondAttribute="bottom" id="yGK-7b-wXu"/>
+                </constraints>
+                <variation key="default">
+                    <mask key="constraints">
+                        <exclude reference="c6F-NC-O6I"/>
+                        <exclude reference="k1Q-KJ-zyp"/>
+                        <exclude reference="cbd-jo-ebJ"/>
+                        <exclude reference="orc-HR-Ifw"/>
+                    </mask>
+                </variation>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="bubbleViewHeightConstraint" destination="BAO-6p-q8e" id="gIq-Je-BMT"/>
+                <outlet property="bubbleViewLeftConstraint" destination="c6F-NC-O6I" id="Vim-Ry-CxQ"/>
+                <outlet property="bubbleViewRightConstraint" destination="k1Q-KJ-zyp" id="oQa-Xs-sjT"/>
+                <outlet property="bubbleViewWidthConstraint" destination="xyc-Pj-GzK" id="odj-O3-Eos"/>
+                <outlet property="chatBubbleView" destination="xWM-d2-Zii" id="j0q-4t-fKi"/>
+                <outlet property="iconImageView" destination="um8-o8-i5P" id="7ya-0e-RJS"/>
+                <outlet property="iconImageViewLeftConstraint" destination="cbd-jo-ebJ" id="bxj-o5-2UV"/>
+                <outlet property="iconImageViewRightConstraint" destination="orc-HR-Ifw" id="Nhr-Jq-qKA"/>
+                <outlet property="photoView" destination="3j3-Cw-Cn1" id="zPT-wu-4Qs"/>
+            </connections>
+            <point key="canvasLocation" x="215.5" y="278.5"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="chat_bubble_gray" width="37" height="24"/>
+        <image name="小丸子" width="1200" height="1200"/>
+    </resources>
+</document>

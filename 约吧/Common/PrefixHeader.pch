@@ -22,12 +22,16 @@
 #define kMessageBarHeight 40//底部工具栏高度
 #define kFunctionViewHeight 200//自定义键盘高度
 
-//cell
-#define kFaceCellNib @"FaceCell"
-#define kFaceCellIdentifier @"faceCell"
+//message cell
+#define kTextCell @"textMessageCell"
+#define kVoiceCell @"voiceMessageCell"
+#define kPhotoCell @"photoMessageCell"
+#define kLocationCell @"locationMessageCell"
 
 //face
 #define kFaceTT @"TT"
+#define kFaceCellNib @"FaceCell"
+#define kFaceCellIdentifier @"faceCell"
 
 //message
 #define kMessageLimit 10
