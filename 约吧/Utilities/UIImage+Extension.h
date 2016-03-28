@@ -9,6 +9,13 @@
 #import <UIKit/UIKit.h>
 
 @interface UIImage (Extension)
+/**
+ *  绘制图片
+ *
+ *  @param size 需要绘制的大小
+ *
+ *  @return 绘制后的图片
+ */
 -(UIImage *)resizeToSize:(CGSize)size;
 
 

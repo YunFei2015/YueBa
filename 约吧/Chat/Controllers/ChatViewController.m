@@ -10,7 +10,6 @@
 #import <AVFoundation/AVFoundation.h>
 #import <AVFile.h>
 #import "FriendModel.h"
-#import "QYMessageCell.h"
 #import "MessageTableViewCell.h"
 #import "MessageBar.h"
 #import "FunctionView.h"
@@ -37,8 +36,8 @@
 @property (strong, nonatomic) QYVoiceRecordingView *voiceRecordingView;
 
 
-@property (strong, nonatomic) QYVoiceMessageCell *currentSelectedVoiceCell;
-@property (strong, nonatomic) QYVoiceMessageCell *lastSelectedVoiceCell;
+@property (strong, nonatomic) MessageTableViewCell *currentSelectedVoiceCell;
+@property (strong, nonatomic) MessageTableViewCell *lastSelectedVoiceCell;
 
 
 
@@ -60,7 +59,7 @@ static NSString *rightIdentifier = @"rightMessageCell";
 //    return self;
 //}
 
-#pragma mark - getters
+#pragma mark - Getters
 -(UITableView *)tableView{
     if (_tableView == nil) {
         _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, kScreenW, kScreenH - 64 - kMessageBarHeight) style:UITableViewStylePlain];
@@ -109,7 +108,7 @@ static NSString *rightIdentifier = @"rightMessageCell";
     return _voiceRecordingView;
 }
 
-#pragma mark - life cycles
+#pragma mark - Life Cycles
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
@@ -132,7 +131,7 @@ static NSString *rightIdentifier = @"rightMessageCell";
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-#pragma mark - custom methods
+#pragma mark - Custom Methods
 - (void)addMessageBar{
     _messageBar = [[NSBundle mainBundle] loadNibNamed:@"MessageBar" owner:nil options:nil][0];
     [self.view addSubview:_messageBar];
@@ -144,33 +143,15 @@ static NSString *rightIdentifier = @"rightMessageCell";
 -(void)insertRowWithMessage:(id)message{
     __weak ChatViewController *weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-//        if ([message isKindOfClass:[AVIMTypedMessage class]]) {
-            NSMutableArray *messages = [NSMutableArray arrayWithArray:weakSelf.messages];
-            [messages addObject:message];
-            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:messages.count - 1 inSection:0];
-            NSArray *indexPaths = @[indexPath];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                weakSelf.messages = messages;
-                [weakSelf.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationBottom];
-                [weakSelf.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-            });
-            
-            return;
-//        }
-        
-//        if ([message isKindOfClass:[AVIMMessage class]]) {
-//            NSMutableArray *messages = [NSMutableArray arrayWithArray:weakSelf.messages];
-//            [messages addObject:message];
-//            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:messages.count - 1 inSection:0];
-//            NSArray *indexPaths = @[indexPath];
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                weakSelf.messages = messages;
-//                [weakSelf.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationBottom];
-//                [weakSelf.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-//            });
-//            
-//            return;
-//        }
+        NSMutableArray *messages = [NSMutableArray arrayWithArray:weakSelf.messages];
+        [messages addObject:message];
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:messages.count - 1 inSection:0];
+        NSArray *indexPaths = @[indexPath];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            weakSelf.messages = messages;
+            [weakSelf.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationBottom];
+            [weakSelf.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+        });
     });
 }
 
@@ -179,6 +160,8 @@ static NSString *rightIdentifier = @"rightMessageCell";
         _tableView.contentOffset = CGPointMake(0, _tableView.contentSize.height - _tableView.bounds.size.height);
     }
 }
+
+
 
 -(NSString *)getRecorderPath{
     NSDate *now = [NSDate date];
@@ -189,107 +172,10 @@ static NSString *rightIdentifier = @"rightMessageCell";
     return recorderPath;
 }
 
-#pragma mark - events
-//tableView的点击事件
-- (void)tapAction:(UITapGestureRecognizer *)sender {
-    //重置第一响应
-    [_messageBar.messageTextView resignFirstResponder];
-    
-    //如果点击的位置在某个cell上，处理该cell的数据
-    CGPoint point = [sender locationInView:self.tableView];
-    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:point];
-    if (!indexPath) {
-        return;
-    }
-    
-    QYMessageCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-    if (![cell isTapedInContent:sender]) {
-        return;
-    }
-    
-   
-        switch (cell.messageType) {
-            case kMessageTypeText:{
 
-            }
-                
-                break;
-            case kMessageTypeVoice:{
-                _currentSelectedVoiceCell = (QYVoiceMessageCell *)cell;
-                [self manageVoicePlayingWith:_currentSelectedVoiceCell.typedMessage];
-            }
-                
-                break;
-            case kMessageTypePhoto:{
-
-            }
-                
-                break;
-            case kMessageTypeLocation:{
-
-            }
-                
-                break;
-                
-            default:
-                break;
-        }
-    
-}
-
--(void)manageVoicePlayingWith:(AVIMTypedMessage *)message{
-#if 1
-    [message.file getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
-        NSLog(@"音频数据下载或从本地读取成功");
-        [[QYAudioPlayer sharedInstance] playAudioWithData:data];
-    }];
-#else
-    NSString *voicePath = [[QYDataManager sharedInstance] voiceFilePathForMessageID:message.messageId];
-    if ([[NSFileManager defaultManager] fileExistsAtPath:voicePath]) {
-        //如果本地存在，播放
-        [[QYAudioPlayer sharedInstance] playAudio:voicePath];
-        return;
-    }
-    
-    //如果本地不存在，则通过网络下载
-    NSLog(@"语音文件本地不存在，开始网络下载……");
-    //网络下载
-    [[QYNetworkManager sharedInstance] downloadWithUrl:message.file.url withMessageID:message.messageId completion:^(NSString *filePath) {
-        NSLog(@"下载成功");
-        [[QYAudioPlayer sharedInstance] playAudio:filePath];
-    }];
-#endif
-}
-
-#pragma mark - QYAudioPlayer delegate
--(void)didAudioPlayerBeginPlay:(AVAudioPlayer *)player{
-    NSLog(@"开始播放");
-    //UI
-    if (_lastSelectedVoiceCell != _currentSelectedVoiceCell) {
-        [_lastSelectedVoiceCell stopAnimating];
-        _lastSelectedVoiceCell = _currentSelectedVoiceCell;
-    }
-    [_currentSelectedVoiceCell startAnimating];
-}
-
--(void)didAudioPlayerPausePlay:(AVAudioPlayer *)player{
-    
-}
-
--(void)didAudioPlayerStopPlay:(AVAudioPlayer *)player{
-    NSLog(@"====播放完成");
-    player.currentTime = 0;
-    [_currentSelectedVoiceCell stopAnimating];
-}
-
--(void)didAudioPlayerFailedPlay:(AVAudioPlayer *)player{
-    player = nil;
-    //TODO: 语音文件下载失败，UI提示
-}
-
-#pragma mark - audio recorder methods
+#pragma mark - Custom Methods - audio recorder
 -(void)prepareRecordWithCompletion:(QYPrepareRecorderCompletion)completion{
-//    [self.voiceRecorder prepareToRecordWithPath:[self getRecorderPath] completion:completion];
+    //    [self.voiceRecorder prepareToRecordWithPath:[self getRecorderPath] completion:completion];
     NSLog(@"准备录音");
     [self.voiceRecorder prepareToRecordWithPath:kAudioPath completion:completion];
 }
@@ -341,7 +227,103 @@ static NSString *rightIdentifier = @"rightMessageCell";
     }];
 }
 
-#pragma mark - message bar delegate
+#pragma mark - Events
+//tableView的点击事件
+- (void)tapAction:(UITapGestureRecognizer *)sender {
+    //重置第一响应
+    [_messageBar.messageTextView resignFirstResponder];
+    
+    //如果点击的位置在某个cell上，处理该cell的数据
+    CGPoint point = [sender locationInView:self.tableView];
+    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:point];
+    if (!indexPath) {
+        return;
+    }
+    
+    _currentSelectedVoiceCell = [self.tableView cellForRowAtIndexPath:indexPath];
+    if (![_currentSelectedVoiceCell isTapedInContent:sender]) {
+        return;
+    }
+    
+    switch (_currentSelectedVoiceCell.messageType) {
+        case kMessageTypeVoice://播放声音
+            [self tapVoiceCellAction];
+            break;
+            
+        case kMessageTypePhoto://放大图片
+            [self tapPhotoCellAction];
+            break;
+            
+        case kMessageTypeLocation://查看地图
+            [self tapLocationCellAction];
+            break;
+            
+        default:
+            break;
+    }
+}
+
+-(void)tapVoiceCellAction{
+#if 1
+    AVIMAudioMessage *message = (AVIMAudioMessage *)_currentSelectedVoiceCell.message;
+    [message.file getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
+        NSLog(@"音频数据下载或从本地读取成功");
+        [[QYAudioPlayer sharedInstance] playAudioWithData:data];
+    }];
+#else
+    NSString *voicePath = [[QYDataManager sharedInstance] voiceFilePathForMessageID:message.messageId];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:voicePath]) {
+        //如果本地存在，播放
+        [[QYAudioPlayer sharedInstance] playAudio:voicePath];
+        return;
+    }
+    
+    //如果本地不存在，则通过网络下载
+    NSLog(@"语音文件本地不存在，开始网络下载……");
+    //网络下载
+    [[QYNetworkManager sharedInstance] downloadWithUrl:message.file.url withMessageID:message.messageId completion:^(NSString *filePath) {
+        NSLog(@"下载成功");
+        [[QYAudioPlayer sharedInstance] playAudio:filePath];
+    }];
+#endif
+}
+
+-(void)tapPhotoCellAction{
+    
+}
+
+-(void)tapLocationCellAction{
+    
+}
+
+#pragma mark - QYAudioPlayer Delegate
+-(void)didAudioPlayerBeginPlay:(AVAudioPlayer *)player{
+    NSLog(@"开始播放");
+    //UI
+    if (_lastSelectedVoiceCell != _currentSelectedVoiceCell) {
+        [_lastSelectedVoiceCell stopVoiceAnimating];
+        _lastSelectedVoiceCell = _currentSelectedVoiceCell;
+    }
+    [_currentSelectedVoiceCell startVoiceAnimating];
+}
+
+-(void)didAudioPlayerPausePlay:(AVAudioPlayer *)player{
+    
+}
+
+-(void)didAudioPlayerStopPlay:(AVAudioPlayer *)player{
+    NSLog(@"====播放完成");
+    player.currentTime = 0;
+    [_currentSelectedVoiceCell stopVoiceAnimating];
+}
+
+-(void)didAudioPlayerFailedPlay:(AVAudioPlayer *)player{
+    player = nil;
+    //TODO: 语音文件下载失败，UI提示
+}
+
+
+#pragma mark - Message Bar Delegate - voice methods
 -(void)updateTableViewHeight{
     [_tableView updateSizeHeight:_messageBar.frame.origin.y - 64];
     [self updateContentOffsetOfTableView];
@@ -411,7 +393,7 @@ static NSString *rightIdentifier = @"rightMessageCell";
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-#pragma mark - chat manager delegate
+#pragma mark - Chat Manager Delegate
 -(void)didSendMessage:(AVIMMessage *)message succeeded:(BOOL)succeeded{
     if (succeeded) {
         NSString *messageText = message.content;
@@ -466,8 +448,15 @@ static NSString *rightIdentifier = @"rightMessageCell";
 }
 
 
-#pragma mark - AVIM client delegate
+#pragma mark - AVIM Client Delegate
 -(void)conversation:(AVIMConversation *)conversation didReceiveTypedMessage:(AVIMTypedMessage *)message{
+    //下载富文本附件
+    [message.file getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
+        if (error) {
+            NSLog(@"%@", error);
+            return;
+        }
+    }];
     [self insertRowWithMessage:message];
 }
 
@@ -476,37 +465,37 @@ static NSString *rightIdentifier = @"rightMessageCell";
 }
 
 
-#pragma mark - table view delegate
+#pragma mark - Table View Delegate
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return _messages.count;
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     id message = _messages[indexPath.row];
-    QYMessageCell *cell;
-
-    if ([message isKindOfClass:[AVIMTypedMessage class]]) {
-        AVIMTypedMessage *typedMessage = (AVIMTypedMessage *)message;
-        switch (typedMessage.mediaType) {
-            case kAVIMMessageMediaTypeAudio:
-                cell = [tableView dequeueReusableCellWithIdentifier:kVoiceCell forIndexPath:indexPath];
-                break;
-            case kAVIMMessageMediaTypeImage:
-                cell = [tableView dequeueReusableCellWithIdentifier:kPhotoCell forIndexPath:indexPath];
-                break;
-            case kAVIMMessageMediaTypeLocation:
-                cell = [tableView dequeueReusableCellWithIdentifier:kLocationCell forIndexPath:indexPath];
-                break;
-                
-            default:
-                break;
-        }
+//    QYMessageCell *cell;
+//
+//    if ([message isKindOfClass:[AVIMTypedMessage class]]) {
+//        AVIMTypedMessage *typedMessage = (AVIMTypedMessage *)message;
+//        switch (typedMessage.mediaType) {
+//            case kAVIMMessageMediaTypeAudio:
+//                cell = [tableView dequeueReusableCellWithIdentifier:kVoiceCell forIndexPath:indexPath];
+//                break;
+//            case kAVIMMessageMediaTypeImage:
+//                cell = [tableView dequeueReusableCellWithIdentifier:kPhotoCell forIndexPath:indexPath];
+//                break;
+//            case kAVIMMessageMediaTypeLocation:
+//                cell = [tableView dequeueReusableCellWithIdentifier:kLocationCell forIndexPath:indexPath];
+//                break;
+//                
+//            default:
+//                break;
+//        }
 //        cell.typedMessage = typedMessage;
-    }else{
-        cell = [tableView dequeueReusableCellWithIdentifier:kTextCell forIndexPath:indexPath];
+//    }else{
+//        cell = [tableView dequeueReusableCellWithIdentifier:kTextCell forIndexPath:indexPath];
 //        cell.message = message;
-    }
-    
+//    }
+//    
 //    if ([[message clientId] isEqualToString:_userName]) {
 //        [cell setMessageCellType:kMessageCellTypeSend];
 //    }else if ([[message clientId] isEqualToString:_targetUserName]){
@@ -514,58 +503,42 @@ static NSString *rightIdentifier = @"rightMessageCell";
 //    }else{
 //        NSLog(@"这不可能！");
 //    }
-    
-    return cell;
-    
-//    if ([[message clientId] isEqualToString:_userName]) {
-//        cell = [tableView dequeueReusableCellWithIdentifier:rightIdentifier];
-//        if (!cell) {
-//            cell = [[NSBundle mainBundle] loadNibNamed:@"RightMessageTableViewCell" owner:nil options:nil][0];
-//        }
-//        
-//    }
 //    
-//    if ([[message clientId] isEqualToString:_targetUserName]) {
-//        cell = [tableView dequeueReusableCellWithIdentifier:leftIdentifier];
-//        if (!cell) {
-//            cell = [[NSBundle mainBundle] loadNibNamed:@"LeftMessageTableViewCell" owner:nil options:nil][0];
-//        }
-//    }
-//    
-//    //如果是富媒体消息，就赋值给typedMessage
-//    if ([message isKindOfClass:[AVIMTypedMessage class]]) {
-//        cell.typedMessage = message;
-//        return cell;
-//    }
-//    
-//    //如果是文本消息，就赋值给message
-//    cell.message = message;
 //    return cell;
-}
-
--(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
-    QYMessageCell *messageCell = (QYMessageCell *)cell;
-    id message = _messages[indexPath.row];
     
-    if ([message isKindOfClass:[AVIMTypedMessage class]]) {
-        AVIMTypedMessage *typedMessage = (AVIMTypedMessage *)message;
-        messageCell.typedMessage = typedMessage;
-    }else{
-        messageCell.message = message;
-    }
     
+    
+    
+    MessageTableViewCell *cell;
     if ([[message clientId] isEqualToString:_userName]) {
-        [messageCell setMessageCellType:kMessageCellTypeSend];
-    }else if ([[message clientId] isEqualToString:_targetUserName]){
-        [messageCell setMessageCellType:kMessageCellTypeReceive];
-    }else{
-        NSLog(@"这不可能！");
+        cell = [tableView dequeueReusableCellWithIdentifier:rightIdentifier];
+        if (!cell) {
+            cell = [[NSBundle mainBundle] loadNibNamed:@"RightMessageTableViewCell" owner:nil options:nil][0];
+        }
+        
     }
+    
+    if ([[message clientId] isEqualToString:_targetUserName]) {
+        cell = [tableView dequeueReusableCellWithIdentifier:leftIdentifier];
+        if (!cell) {
+            cell = [[NSBundle mainBundle] loadNibNamed:@"LeftMessageTableViewCell" owner:nil options:nil][0];
+        }
+    }
+    
+    cell.message = message;
+    return cell;
 }
 
-//-(void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
+//-(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
 //    QYMessageCell *messageCell = (QYMessageCell *)cell;
 //    id message = _messages[indexPath.row];
+//
+//    if ([message isKindOfClass:[AVIMTypedMessage class]]) {
+//        AVIMTypedMessage *typedMessage = (AVIMTypedMessage *)message;
+//        messageCell.typedMessage = typedMessage;
+//    }else{
+//        messageCell.message = message;
+//    }
 //    
 //    if ([[message clientId] isEqualToString:_userName]) {
 //        [messageCell setMessageCellType:kMessageCellTypeSend];
@@ -581,16 +554,10 @@ static NSString *rightIdentifier = @"rightMessageCell";
 //    AVIMMessage *message = _messages[indexPath.row];
 //    MessageTableViewCell *cell;
 //    cell = [[NSBundle mainBundle] loadNibNamed:@"RightMessageTableViewCell" owner:nil options:nil][0];
-//    
-//    
-//    if ([message isKindOfClass:[AVIMTypedMessage class]]) {
-//        AVIMTypedMessage *typedMessage = (AVIMTypedMessage *)message;
-//        [cell setTypedMessage:typedMessage];
-//    }else{
-//        [cell setMessage:message];
-//    }
-//    
-//    CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
-//    return size.height + 1;
+//    [cell setMessage:message];
+//
+////    CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
+////    return size.height + 1;
+//    return [cell heightWithMessage:message];
 //}
 @end

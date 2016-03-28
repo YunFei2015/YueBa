@@ -10,22 +10,34 @@
 @class AVIMMessage;
 @class AVIMTypedMessage;
 
+typedef enum {
+    kMessageTypeText,
+    kMessageTypeVoice,
+    kMessageTypePhoto,
+    kMessageTypeLocation
+}kMessageType;
+
 @interface MessageTableViewCell : UITableViewCell
 {
     AVIMMessage *_message;
-    AVIMTypedMessage *_typedMessage;
-    NSAttributedString *_attributedText;
 }
 
+@property (nonatomic) kMessageType messageType;
 @property (strong, nonatomic) AVIMMessage *message;
-@property (strong, nonatomic) AVIMTypedMessage *typedMessage;
-@property (weak, nonatomic) IBOutlet UIImageView *messageTypeImageView;
+@property (weak, nonatomic) IBOutlet UIImageView *voiceAnimatingImageView;
 
+-(CGFloat)heightWithMessage:(AVIMMessage *)message;
+
+//判断手指是否触摸在有效区域
 -(BOOL)isTapedInContent:(UITapGestureRecognizer *)tap;
-//-(void)tapCellAction:(UITapGestureRecognizer *)tap;
+
+/**
+ *  语音播放和停止
+ */
+-(void)startVoiceAnimating;
+-(void)stopVoiceAnimating;
+
 @end
-
-
 
 @interface LeftMessageTableViewCell : MessageTableViewCell
 

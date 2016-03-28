@@ -9,9 +9,19 @@
 #import <UIKit/UIKit.h>
 
 @interface UIView (Extension)
+/**
+ *  修改view的frame参数
+ */
 - (void)updateOriginX:(CGFloat)x;
 - (void)updateOriginY:(CGFloat)y;
 - (void)updateSizeWidth:(CGFloat)width;
 - (void)updateSizeHeight:(CGFloat)height;
 
+/**
+ *  裁剪视图图层
+ *
+ *  @param view  需要的图层样式
+ *  @param frame 要裁剪的图层位置和大小
+ */
+-(void)maskLayerToView:(UIView *)view withFrame:(CGRect)frame;
 @end

@@ -34,4 +34,11 @@
     frame.size.height = height;
     self.frame = frame;
 }
+
+-(void)maskLayerToView:(UIView *)view withFrame:(CGRect)frame{
+    CALayer *layer = view.layer;
+    layer.frame = frame;
+    self.layer.mask = layer;
+    [self setNeedsDisplay];
+}
 @end
