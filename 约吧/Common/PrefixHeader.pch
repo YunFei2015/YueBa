@@ -9,6 +9,8 @@
 #ifndef PrefixHeader_pch
 #define PrefixHeader_pch
 
+#define kRGBColor(r, g, b, a)  [UIColor colorWithRed:r green:g blue:b alpha:a]
+
 //block self
 #define WEAKSELF typeof(self) __weak weakSelf = self;
 #define STRONGSELF typeof(weakSelf) __strong strongSelf = weakSelf;
@@ -17,16 +19,13 @@
 #define kScreenW [UIScreen mainScreen].bounds.size.width
 #define kScreenH [UIScreen mainScreen].bounds.size.height
 
+#define kPhotoWidth kScreenW / 2.f //图片宽度
+#define kPhotoHeight kScreenH / 3.f //图片高度
+
 //message bar bounds
 #define kMessageMaxWidth kScreenW * 2 / 3.f - 40//消息最大宽度
 #define kMessageBarHeight 40//底部工具栏高度
 #define kFunctionViewHeight 200//自定义键盘高度
-
-//message cell
-#define kTextCell @"textMessageCell"
-#define kVoiceCell @"voiceMessageCell"
-#define kPhotoCell @"photoMessageCell"
-#define kLocationCell @"locationMessageCell"
 
 //face
 #define kFaceTT @"TT"
@@ -37,6 +36,30 @@
 #define kMessageLimit 10
 #define kAudioPath [NSTemporaryDirectory() stringByAppendingPathComponent:@"temwwwp.aac"]
 
+//message cell
+#define kLeftMessageCellNib @"QYLeftMessageCell"
+#define kRightMessageCellNib @"QYRightMessageCell"
+#define kLeftCellIdentifier @"leftMessageCell"
+#define kRightCellIdentifier @"rightMessageCell"
+
 //recorder
-#define kVoiceRecorderMaxTime 60.0
+#define kVoiceRecorderMaxTime 60.0 
+
+
+//Notification
+#define kAddressToLocateNotification @"addressToLocateNotification" //地理反编码
+
+//personal info category suggestions
+#define kCategorySuggestionsJsonFile @"CategorySuggestions"
+#define kOccupations @"occupation"
+#define kHometown @"hometown"
+#define kPersonality @"personality"
+#define kMusic @"music"
+#define kSports @"sports"
+#define kLiterature @"literature"
+#define kFood @"food"
+#define kJourneys @"places"
+#define kMovies @"movies"
+
+
 #endif /* PrefixHeader_pch */

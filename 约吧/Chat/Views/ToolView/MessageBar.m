@@ -64,7 +64,7 @@
     [UIView animateWithDuration:duration.floatValue animations:^{
         [self updateOriginY: kScreenH - kMessageBarHeight - keyboardBoundsValue.CGRectValue.size.height];
         [self.delegate updateTableViewHeight];
-        [NSString stringWithFormat:@""];
+//        [NSString stringWithFormat:@""];
     }];
 }
 

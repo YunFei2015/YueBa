@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-
+@class BMKMapManager;
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
+@property (strong, nonatomic) BMKMapManager *mapManager;
 
 
 @end

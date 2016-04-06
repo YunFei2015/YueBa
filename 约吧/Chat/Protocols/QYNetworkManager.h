@@ -12,5 +12,5 @@ typedef void(^QYDownloadFileCompletion)(NSString *filePath);
 
 @interface QYNetworkManager : NSObject
 +(instancetype)sharedInstance;
--(void)downloadWithUrl:(NSString *)url withMessageID:(NSString *)messageID completion:(QYDownloadFileCompletion)downloadFileCompletion;
+//-(void)downloadWithUrl:(NSString *)url withMessageID:(NSString *)messageID completion:(QYDownloadFileCompletion)downloadFileCompletion;
 @end

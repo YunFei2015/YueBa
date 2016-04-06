@@ -8,17 +8,20 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "QYPinAnnotation.h"
 @class AVIMClient;
 @class AVIMConversation;
 @class AVIMMessage;
 @class AVIMTypedMessage;
 @class AVIMAudioMessage;
 @class AVIMImageMessage;
+@class AVIMLocationMessage;
 
 @protocol QYChatManagerDelegate <NSObject>
 @optional
+//-(void)willSendLocationMessage:(AVIMLocationMessage *)message snapshot:(UIImage *)snapshot;
+-(void)willSendTypedMessage:(AVIMTypedMessage *)message;
 -(void)didSendTypedMessage:(AVIMTypedMessage *)message succeeded:(BOOL)succeeded;
--(void)didSendAudioMessage:(AVIMAudioMessage *)message succeeded:(BOOL)succeeded;
 -(void)didSendMessage:(AVIMMessage *)message succeeded:(BOOL)succeeded;
 -(void)didQueryHistoryMessages:(NSArray *)historyMessages succeeded:(BOOL)succeeded;
 @end
@@ -33,5 +36,6 @@
 -(void)sendVoiceMessage:(NSString *)voicePath voiceDuration:(NSTimeInterval)duration;
 -(void)sendVoiceMessage;
 -(void)sendImageMessageWithData:(NSData *)data;
+-(void)sendLocationMessageWithAnnotation:(QYPinAnnotation *)annotation;
 -(void)queryHistoryMessagesWith:(NSArray *)clientIDs;
 @end

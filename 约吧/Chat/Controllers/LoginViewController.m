@@ -7,7 +7,7 @@
 //
 
 #import "LoginViewController.h"
-#import "ChatViewController.h"
+#import "QYChatVC.h"
 #import "FriendModel.h"
 
 #import <AVOSCloudIM.h>
@@ -48,7 +48,7 @@
 //        [[NSUserDefaults standardUserDefaults] synchronize];
 //        FriendModel *friend = [[FriendModel alloc] init];
 //        friend.userID = _targetUserName.text;
-        ChatViewController *chatVC = [[ChatViewController alloc] init];
+        QYChatVC *chatVC = [[QYChatVC alloc] init];
         chatVC.userName = _userName.text;
         chatVC.targetUserName = _targetUserName.text;
 //        chatVC.friendModel = friend;

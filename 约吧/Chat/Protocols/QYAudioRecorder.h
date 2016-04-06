@@ -18,15 +18,6 @@ typedef void(^QYCancelRecorderCompletion)();
 typedef void(^QYPeakPowerForChannel)(float peakPowerForChannel);
 
 @interface QYAudioRecorder : NSObject
-//@property (nonatomic) id delegate;
-
-//+(instancetype)sharedInstance;
-//-(void)record;
-//-(void)play;
-//-(void)playWith:(NSData *)data;
-//-(void)stopRecord;
-//-(void)cancelRecording;
-
 @property (nonatomic, copy, readonly) NSString *recordPath;
 //@property (nonatomic, copy) NSString *recordDuration;
 
