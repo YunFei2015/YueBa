@@ -11,5 +11,5 @@
 
 @interface NSString (Extension)
 - (CGSize)sizeWithFont:(UIFont *)font forSize:(CGSize)scheduleSize attributes:(NSDictionary *)attributes;
-//- (NSArray *)rangesOfSubString:(NSString *)subString;
++(BOOL)isTelephoneNumber:(NSString *)telephone;
 @end

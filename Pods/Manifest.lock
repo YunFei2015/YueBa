@@ -23,6 +23,7 @@ PODS:
   - SDWebImage (3.7.5):
     - SDWebImage/Core (= 3.7.5)
   - SDWebImage/Core (3.7.5)
+  - SWRevealViewController (2.3.0)
 
 DEPENDENCIES:
   - AFNetworking
@@ -32,6 +33,7 @@ DEPENDENCIES:
   - Bugtags
   - Masonry
   - SDWebImage
+  - SWRevealViewController
 
 SPEC CHECKSUMS:
   AFNetworking: a0075feb321559dc78d9d85b55d11caa19eabb93
@@ -41,5 +43,6 @@ SPEC CHECKSUMS:
   Bugtags: d2ddc13b8b56ed27a572dada3a1176340e0d07c9
   Masonry: 281802d04d787ea2973179ee8bcb50500579ede2
   SDWebImage: 69c6303e3348fba97e03f65d65d4fbc26740f461
+  SWRevealViewController: 6d3fd97f70112fd7cef9de14df4260eacce4c63a
 
 COCOAPODS: 0.39.0

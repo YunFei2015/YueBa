@@ -10,6 +10,7 @@ pod 'Masonry'
 pod 'AFNetworking'
 pod 'SDWebImage'
 pod 'BaiduMapKit'
+pod 'SWRevealViewController'
 pod 'Bugtags'
 end
 

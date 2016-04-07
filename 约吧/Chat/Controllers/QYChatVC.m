@@ -362,17 +362,12 @@
 #pragma mark - Function View Delegate
 -(void)toSelectImages{
     //选择图片
-    [[QYImagesPicker sharedInstance] selectImagesWithInitPickControllerCompletion:^(UIImagePickerController *pickerController) {
-        [self presentViewController:pickerController animated:YES completion:nil];
-    }];
-    
+    [[QYImagesPicker sharedInstance] selectImageWithViewController:self];
 }
 
 -(void)toTakeAPhoto{
     //拍照
-    [[QYImagesPicker sharedInstance] takeAPhotoWithInitPickControllerCompletion:^(UIImagePickerController *pickerController) {
-        [self presentViewController:pickerController animated:YES completion:nil];
-    }];
+    [[QYImagesPicker sharedInstance] takeAPhotoWithViewController:self];
 }
 
 -(void)toShareLocation{

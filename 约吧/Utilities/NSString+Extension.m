@@ -16,16 +16,16 @@
     return rect.size;
 }
 
-//-(NSArray *)rangesOfSubString:(NSString *)subString{
-//    NSMutableArray *ranges = [NSMutableArray array];
-//    NSRange resultRange;
-//    NSRange searchRange = NSMakeRange(0, self.length);
-//    while ((resultRange = [self rangeOfString:subString options:0 range:searchRange]).location != NSNotFound) {
-//        [ranges addObject:[NSValue valueWithRange:resultRange]];
-//        searchRange = NSMakeRange(NSMaxRange(resultRange), self.length - NSMaxRange(resultRange));
-//    }
-//    
-//    return [NSArray arrayWithArray:ranges];
-//}
++(BOOL)isTelephoneNumber:(NSString *)telephone{
+    //检查是否为手机号
+    //    电信号段:133/153/180/181/189/177
+    //    联通号段:130/131/132/155/156/185/186/145/176
+    //    移动号段:134/135/136/137/138/139/150/151/152/157/158/159/182/183/184/187/188/147/178
+    //    虚拟运营商:170
+    NSString *telFormat = @"^1(3\\d|4[57]|5[0-35-9]|7[06-8]|8\\d)\\d{8}$";
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", telFormat];
+    BOOL isTel = [predicate evaluateWithObject:telephone];
+    return isTel;
+}
 
 @end

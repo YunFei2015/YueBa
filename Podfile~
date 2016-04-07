@@ -8,6 +8,7 @@ pod 'AVOSCloud'
 pod 'AVOSCloudIM'
 pod 'Masonry'
 pod 'AFNetworking'
+pod 'SDWebImage'
 pod 'BaiduMapKit'
 pod 'Bugtags'
 end

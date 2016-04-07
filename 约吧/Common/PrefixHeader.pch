@@ -9,7 +9,9 @@
 #ifndef PrefixHeader_pch
 #define PrefixHeader_pch
 
-#define kRGBColor(r, g, b, a)  [UIColor colorWithRed:r green:g blue:b alpha:a]
+#import <SWRevealViewController.h>
+
+#define kRGBColor(r, g, b, a)  [UIColor colorWithRed:r / 255.f green:g/ 255.f blue:b / 255.f alpha:a]
 
 //block self
 #define WEAKSELF typeof(self) __weak weakSelf = self;
@@ -18,9 +20,29 @@
 //screen bounds
 #define kScreenW [UIScreen mainScreen].bounds.size.width
 #define kScreenH [UIScreen mainScreen].bounds.size.height
+#define kRevealViewWidth kScreenW * 4 / 5.f
 
-#define kPhotoWidth kScreenW / 2.f //图片宽度
-#define kPhotoHeight kScreenH / 3.f //图片高度
+//network url
+#define kBaseUrl @"http://yueba.applinzi.com"
+#define kRegisterApi @"users/regist.json"
+#define kVerifyCodeApi @"users/msmCaptcha.json"
+
+//storyboard name
+#define kHomeStoryboard @"Home"
+#define kEntranceStoryboard @"Entrance"
+#define kSettingsStoryboard @"Settings"
+#define kChatStoryboard @"Chat"
+
+//storyboard ID
+#define kRevealVCIdentifier @"revealVC"
+#define kEntranceVCIdentifier @"entranceVC"
+#define kHomeNavIdentifier @"homeNav"
+#define kSettingsNavIdentifier @"settingNav"
+#define kFriendNavIdentifier @"friendNav"
+#define kUserBaseInfo @"baseInfo"
+
+//Home
+#define kFriendCellIdentifier @"friendCell"
 
 //message bar bounds
 #define kMessageMaxWidth kScreenW * 2 / 3.f - 40//消息最大宽度
@@ -41,6 +63,10 @@
 #define kRightMessageCellNib @"QYRightMessageCell"
 #define kLeftCellIdentifier @"leftMessageCell"
 #define kRightCellIdentifier @"rightMessageCell"
+
+//message cell bounds
+#define kPhotoWidth kScreenW / 2.f //图片宽度
+#define kPhotoHeight kScreenH / 3.f //图片高度
 
 //recorder
 #define kVoiceRecorderMaxTime 60.0 

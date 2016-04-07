@@ -21,7 +21,22 @@
 
 @property (nonatomic) id <QYLocationManagerDelegate> delegate;
 +(instancetype)sharedInstance;
+/**
+ *  开始更新位置
+ */
 -(void)startToUpdateLocation;
+
+/**
+ *  地理编码
+ *
+ *  @param address 地址信息
+ */
 -(void)getLocationWithAddress:(NSString *)address;
+
+/**
+ *  地理反编码
+ *  
+ *  @param location 经纬度
+ */
 -(void)getAddressWithLocation:(CLLocationCoordinate2D)location;
 @end

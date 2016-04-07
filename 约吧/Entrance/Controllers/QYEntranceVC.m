@@ -23,7 +23,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    UIColor *color = [UIColor colorWithRed:203/255.f green:55/255.f blue:43/255.f alpha:1];
+    UIColor *color = kRGBColor(203, 55, 43, 1);
     _registBtn.backgroundColor = color;
     _registBtn.layer.borderWidth = 1;
     _registBtn.layer.borderColor = color.CGColor;
@@ -32,16 +32,17 @@
     _loginBtn.layer.borderWidth = 1;
     _loginBtn.layer.borderColor = color.CGColor;
     
-    [self startAnimation];
+    
 }
 
 -(void)viewWillAppear:(BOOL)animated{
-
+    [self startAnimation];
+    [super viewWillAppear:animated];
 }
 
--(void)viewWillDisappear:(BOOL)animated{
-    
-    [super viewWillDisappear:animated];
+-(void)viewDidDisappear:(BOOL)animated{
+    [_animationView.layer removeAllAnimations];
+    [super viewDidDisappear:animated];
 }
 
 -(void)startAnimation{

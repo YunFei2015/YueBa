@@ -9,7 +9,7 @@
 #import "QYImagesPicker.h"
 
 @interface QYImagesPicker () <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
-
+@property (strong, nonatomic) UIImagePickerController *pickerController;
 @end
 
 @implementation QYImagesPicker
@@ -24,18 +24,28 @@
     return sharedInstance;
 }
 
--(void)selectImagesWithInitPickControllerCompletion:(initPickControllerCompletion)initPickControllerCompletion{
+//-(void)selectImagesWithInitPickControllerCompletion:(initPickControllerCompletion)initPickControllerCompletion{
+//    self.pickerController.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+//    if (initPickControllerCompletion) {
+//        initPickControllerCompletion(_pickerController);
+//    }
+//}
+//
+//-(void)takeAPhotoWithInitPickControllerCompletion:(initPickControllerCompletion)initPickControllerCompletion{
+//    self.pickerController.sourceType = UIImagePickerControllerSourceTypeCamera;
+//    if (initPickControllerCompletion) {
+//        initPickControllerCompletion(_pickerController);
+//    }
+//}
+
+-(void)selectImageWithViewController:(UIViewController *)viewController{
     self.pickerController.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-    if (initPickControllerCompletion) {
-        initPickControllerCompletion(_pickerController);
-    }
+    [viewController presentViewController:self.pickerController animated:YES completion:^{}];
 }
 
--(void)takeAPhotoWithInitPickControllerCompletion:(initPickControllerCompletion)initPickControllerCompletion{
+-(void)takeAPhotoWithViewController:(UIViewController *)viewController{
     self.pickerController.sourceType = UIImagePickerControllerSourceTypeCamera;
-    if (initPickControllerCompletion) {
-        initPickControllerCompletion(_pickerController);
-    }
+    [viewController presentViewController:self.pickerController animated:YES completion:^{}];
 }
 
 #pragma mark - Getters
@@ -49,18 +59,20 @@
 
 #pragma mark - UIImagePickerControllerDelegate
 -(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info{
-//    UIImage *image = info[UIImagePickerControllerOriginalImage];
-//    NSURL *url = info[UIImagePickerControllerReferenceURL];
-//    NSArray *images = @[image];
-    if ([self.delegate respondsToSelector:@selector(didFinishSelectImages:)]) {
-        [self.delegate didFinishSelectImages:info];
-    }
+    [picker dismissViewControllerAnimated:YES completion:^{
+        if ([self.delegate respondsToSelector:@selector(didFinishSelectImages:)]) {
+            [self.delegate didFinishSelectImages:info];
+        }
+    }];
 }
 
 -(void)imagePickerControllerDidCancel:(UIImagePickerController *)picker{
-    if ([self.delegate respondsToSelector:@selector(didCancelSelectImages)]) {
-        [self.delegate didCancelSelectImages];
-    }
+    [picker dismissViewControllerAnimated:YES completion:^{
+        if ([self.delegate respondsToSelector:@selector(didCancelSelectImages)]) {
+            [self.delegate didCancelSelectImages];
+        }
+    }];
+    
 }
 
 @end

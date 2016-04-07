@@ -13,6 +13,7 @@
 @property (strong, nonatomic) UIWindow *window;
 @property (strong, nonatomic) BMKMapManager *mapManager;
 
-
+-(void)setRootViewControllerToHome;
+-(void)setRootViewControllerToEntrance;
 @end
 

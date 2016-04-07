@@ -11,22 +11,23 @@
 
 @protocol QYImagesPickerDelegate <NSObject>
 
+@optional
 -(void)didFinishSelectImages:(NSDictionary *)info;
 -(void)didCancelSelectImages;
 
 @end
 
-typedef void(^initPickControllerCompletion)(UIImagePickerController *pickerController);
+//typedef void(^initPickControllerCompletion)(UIImagePickerController *pickerController);
 //typedef void(^selectImagesCompletion)(NSArray *);
 //typedef void(^cancelSelectImagesCompletion)();
 
 @interface QYImagesPicker : NSObject
 @property (nonatomic) id <QYImagesPickerDelegate> delegate;
-@property (strong, nonatomic) UIImagePickerController *pickerController;
-//@property (weak, nonatomic) selectImagesCompletion selectImagesCompletion;
-//@property (weak, nonatomic) cancelSelectImagesCompletion cancelSelectImagesCompletion;
 
 +(instancetype)sharedInstance;
--(void)selectImagesWithInitPickControllerCompletion:(initPickControllerCompletion)initPickControllerCompletion;
--(void)takeAPhotoWithInitPickControllerCompletion:(initPickControllerCompletion)initPickControllerCompletion;
+//-(void)selectImagesWithInitPickControllerCompletion:(initPickControllerCompletion)initPickControllerCompletion;
+//-(void)takeAPhotoWithInitPickControllerCompletion:(initPickControllerCompletion)initPickControllerCompletion;
+
+-(void)selectImageWithViewController:(UIViewController *)viewController;
+-(void)takeAPhotoWithViewController:(UIViewController *)viewController;
 @end

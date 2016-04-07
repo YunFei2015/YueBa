@@ -36,7 +36,25 @@
     if (!ret) {
         NSLog(@"manager start failed!");
     }
+    
+    //TODO: 判断用户是否已登录
+    BOOL isLogin = NO;
+    if (!isLogin) {
+        [self setRootViewControllerToEntrance];
+    }
     return YES;
+}
+
+-(void)setRootViewControllerToHome{
+    UIStoryboard *homeStoryboard = [UIStoryboard storyboardWithName:kHomeStoryboard bundle:nil];
+    UIViewController *revealVC = [homeStoryboard instantiateViewControllerWithIdentifier:kRevealVCIdentifier];
+    self.window.rootViewController = revealVC;
+}
+
+-(void)setRootViewControllerToEntrance{
+    UIStoryboard *entranceStoryboard = [UIStoryboard storyboardWithName:kEntranceStoryboard bundle:nil];
+    UIViewController *entranceVC = [entranceStoryboard instantiateViewControllerWithIdentifier:kEntranceVCIdentifier];
+    _window.rootViewController = entranceVC;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
