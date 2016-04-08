@@ -141,16 +141,18 @@
 }
 
 -(void)insertRowWithMessage:(id)message{
-    __weak QYChatVC *weakSelf = self;
+//    __weak QYChatVC *weakSelf = self;
+    WEAKSELF
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSMutableArray *messages = [NSMutableArray arrayWithArray:weakSelf.messages];
         [messages addObject:message];
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:messages.count - 1 inSection:0];
         NSArray *indexPaths = @[indexPath];
         dispatch_async(dispatch_get_main_queue(), ^{
-            weakSelf.messages = messages;
-            [weakSelf.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationBottom];
-            [weakSelf.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+            STRONGSELF
+            strongSelf.messages = messages;
+            [strongSelf.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationBottom];
+            [strongSelf.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
         });
     });
 }
@@ -416,6 +418,7 @@
 }
 
 -(void)willSendTypedMessage:(AVIMTypedMessage *)message{
+    [message.file getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {}];
     [self insertRowWithMessage:message];
     //TODO: 风火轮，正在发送
 }
@@ -443,23 +446,24 @@
     }];
     NSMutableArray *messages = [[NSMutableArray alloc] initWithArray:self.messages];
     [messages insertObjects:historyMessages atIndexes:indexSet];
+    WEAKSELF
     dispatch_async(dispatch_get_main_queue(), ^{
-        self.messages = messages;
-        [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationBottom];
-        [self.tableView scrollToRowAtIndexPath:indexPaths.lastObject atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+        weakSelf.messages = messages;
+        [weakSelf.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationBottom];
+        [weakSelf.tableView scrollToRowAtIndexPath:indexPaths.lastObject atScrollPosition:UITableViewScrollPositionBottom animated:YES];
     });
 }
 
 
 #pragma mark - AVIM Client Delegate
 -(void)conversation:(AVIMConversation *)conversation didReceiveTypedMessage:(AVIMTypedMessage *)message{
-//    //下载富文本附件
-//    [message.file getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
-//        if (error) {
-//            NSLog(@"%@", error);
-//            return;
-//        }
-//    }];
+    //下载富文本附件
+    [message.file getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
+        if (error) {
+            NSLog(@"%@", error);
+            return;
+        }
+    }];
     
     [self insertRowWithMessage:message];
 }

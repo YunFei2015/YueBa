@@ -309,7 +309,7 @@
             </objects>
             <point key="canvasLocation" x="719" y="360"/>
         </scene>
-        <!--HomeVC-->
+        <!--约吧-->
         <scene sceneID="8cC-JB-MPl">
             <objects>
                 <viewController id="CsB-3F-8jO" customClass="QYHomeVC" sceneMemberID="viewController">
@@ -320,21 +320,71 @@
                     <view key="view" contentMode="scaleToFill" id="R9S-ja-uee">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" red="0.90749198720000002" green="0.4183114141" blue="0.36228245529999997" alpha="1" colorSpace="calibratedRGB"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Bav-W4-35u">
+                                <rect key="frame" x="0.0" y="64" width="414" height="672"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PCl-Hv-64P" customClass="QYHomeAnimationView">
+                                        <rect key="frame" x="20" y="20" width="374" height="438"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    </view>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sZH-hJ-F79">
+                                        <rect key="frame" x="54" y="522" width="100" height="100"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="100" id="F7q-bA-mcL"/>
+                                            <constraint firstAttribute="width" constant="100" id="Oxj-Tg-mOh"/>
+                                        </constraints>
+                                        <state key="normal" title="unlike"/>
+                                        <connections>
+                                            <action selector="unlikeAction:" destination="CsB-3F-8jO" eventType="touchUpInside" id="c8k-4S-WPl"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="61G-JI-pKd">
+                                        <rect key="frame" x="261" y="522" width="100" height="100"/>
+                                        <state key="normal" title="like"/>
+                                        <connections>
+                                            <action selector="likeAction:" destination="CsB-3F-8jO" eventType="touchUpInside" id="WJr-0V-gTG"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="sZH-hJ-F79" secondAttribute="bottom" constant="50" id="6q5-Zc-T5p"/>
+                                    <constraint firstItem="61G-JI-pKd" firstAttribute="height" secondItem="sZH-hJ-F79" secondAttribute="height" id="Qpt-bD-zsZ"/>
+                                    <constraint firstItem="sZH-hJ-F79" firstAttribute="centerX" secondItem="Bav-W4-35u" secondAttribute="centerX" multiplier="1:2" id="U2A-gu-RrU"/>
+                                    <constraint firstItem="61G-JI-pKd" firstAttribute="width" secondItem="sZH-hJ-F79" secondAttribute="width" id="VjY-0G-3Rt"/>
+                                    <constraint firstItem="61G-JI-pKd" firstAttribute="centerX" secondItem="Bav-W4-35u" secondAttribute="centerX" multiplier="1.5" id="YrO-Bb-e9o"/>
+                                    <constraint firstAttribute="trailing" secondItem="PCl-Hv-64P" secondAttribute="trailing" constant="20" id="fnb-sZ-X8L"/>
+                                    <constraint firstItem="61G-JI-pKd" firstAttribute="centerY" secondItem="sZH-hJ-F79" secondAttribute="centerY" id="oLO-VQ-jJb"/>
+                                    <constraint firstItem="PCl-Hv-64P" firstAttribute="top" secondItem="Bav-W4-35u" secondAttribute="top" constant="20" id="tGk-62-xeD"/>
+                                    <constraint firstItem="PCl-Hv-64P" firstAttribute="leading" secondItem="Bav-W4-35u" secondAttribute="leading" constant="20" id="xD6-Ux-Ksm"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="Bav-W4-35u" firstAttribute="leading" secondItem="R9S-ja-uee" secondAttribute="leading" id="6x3-Ch-aa3"/>
+                            <constraint firstItem="PCl-Hv-64P" firstAttribute="height" secondItem="R9S-ja-uee" secondAttribute="height" multiplier="1:2" constant="70" id="D6A-mO-4yQ"/>
+                            <constraint firstItem="Bav-W4-35u" firstAttribute="top" secondItem="zzD-OO-e3a" secondAttribute="bottom" id="NhR-gc-a3E"/>
+                            <constraint firstAttribute="trailing" secondItem="Bav-W4-35u" secondAttribute="trailing" id="OH1-fI-Zg8"/>
+                            <constraint firstItem="hfF-2N-HIU" firstAttribute="top" secondItem="Bav-W4-35u" secondAttribute="bottom" id="kY1-Vl-yY9"/>
+                        </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="tYP-HN-pon">
+                    <navigationItem key="navigationItem" title="约吧" id="tYP-HN-pon">
                         <barButtonItem key="leftBarButtonItem" title="菜单" id="qZO-lP-h78"/>
                         <barButtonItem key="rightBarButtonItem" title="消息" id="wzJ-z4-aIl"/>
                     </navigationItem>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina55"/>
                     <connections>
                         <outlet property="leftBarButtonItem" destination="qZO-lP-h78" id="9Nb-hC-Vwc"/>
+                        <outlet property="likeBtn" destination="61G-JI-pKd" id="fMp-wq-9uq"/>
                         <outlet property="rightBarButtonItem" destination="wzJ-z4-aIl" id="Oc6-GQ-VTD"/>
+                        <outlet property="unlickBtn" destination="sZH-hJ-F79" id="UPz-k9-1gB"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vmG-66-saY" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1998" y="-635"/>
+            <point key="canvasLocation" x="2085" y="-552"/>
         </scene>
         <!--Messages ListVC-->
         <scene sceneID="3Fz-We-TEQ">
@@ -459,6 +509,11 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="liW-f4-avR">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="barTintColor" red="0.90749198720000002" green="0.4183114141" blue="0.36228245529999997" alpha="1" colorSpace="calibratedRGB"/>
+                        <textAttributes key="titleTextAttributes">
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        </textAttributes>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>

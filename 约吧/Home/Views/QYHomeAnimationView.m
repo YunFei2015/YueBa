@@ -6,7 +6,8 @@
 //  Copyright © 2016年 qing. All rights reserved.
 //
 
-#import "DanimationView.h"
+#import "QYHomeAnimationView.h"
+#import "QYUserInfoView.h"
 #import <QuartzCore/QuartzCore.h>
 
 
@@ -15,19 +16,30 @@
 //间隙
 #define Kspace 10
 
-@interface DanimationView ()
+@interface QYHomeAnimationView ()
 @property(nonatomic,strong)NSArray *arr;
 @end
 
 
-@implementation DanimationView
+@implementation QYHomeAnimationView
 
+/*
 -(instancetype)initWithFrame:(CGRect)frame{
     if (self=[super initWithFrame:frame]) {
         _arr=@[[UIColor redColor],[UIColor blueColor],[UIColor greenColor]];
         [self addSubviewForDisplay];
     }
     
+    return self;
+}
+*/
+
+-(instancetype)initWithCoder:(NSCoder *)aDecoder{
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        _arr = @[[UIColor redColor],[UIColor blueColor],[UIColor greenColor]];
+        [self addSubviewForDisplay];
+    }
     return self;
 }
 
@@ -88,12 +100,12 @@
                  damping: 弹簧阻尼系数 (0-1) 1：为最大阻尼，意味着没有弹簧效果
                  velocity: 初始动力大小 通常设为0，就会根据duration和damping自动调整动画效果
                  */
-            [UIView animateWithDuration:.6 delay:0 usingSpringWithDamping:.4 initialSpringVelocity:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
-                //恢复到原来的位置
-                gesture.view.center=CGPointMake(self.frame.size.width/2.0,self.frame.size.height/2.0);
-            } completion:^(BOOL finished) {
-                
-            }];
+                [UIView animateWithDuration:.6 delay:0 usingSpringWithDamping:.4 initialSpringVelocity:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+                    //恢复到原来的位置
+                    gesture.view.center=CGPointMake(self.frame.size.width/2.0,self.frame.size.height/2.0);
+                } completion:^(BOOL finished) {
+                    
+                }];
             }
         }
          break;
@@ -103,18 +115,21 @@
 }
 -(void)addSubviewForDisplay{
     for (int i=4; i>0;i--) {
-         UIImageView *view=[[UIImageView alloc] initWithFrame:CGRectMake(0,0,self.frame.size.width,self.frame.size.height)];
-         view.image=[UIImage imageNamed:[NSString stringWithFormat:@"%d.jpg",i]];
-         view.userInteractionEnabled=YES;
-         [view addGestureRecognizer:[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(Action:)]];
+        
+        QYUserInfoView *view = [[NSBundle mainBundle] loadNibNamed:@"QYUserInfoView" owner:nil options:nil][0];
+        view.frame = CGRectMake(0,0,self.frame.size.width,self.frame.size.height);
+        view.image=[UIImage imageNamed:[NSString stringWithFormat:@"%d.jpg",i]];
+        [view addGestureRecognizer:[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(Action:)]];
         view.tag=i+1;
-       // view.layer.borderWidth=1;
+        view.layer.borderWidth=1;
         view.layer.cornerRadius=10;
         view.layer.masksToBounds=YES;
         view.transform=CGAffineTransformMakeScale(1-.05*i, 1-.05*i);
         view.transform=CGAffineTransformMakeTranslation(0,i*Kspace);
     
         [self addSubview:view];
+        
+       
     }
 }
 

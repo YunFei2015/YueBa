@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "QYAccount.h"
 #import <AVOSCloud.h>
 #import <BaiduMapAPI_Base/BMKMapManager.h>
 #import <Bugtags/Bugtags.h>
@@ -37,11 +38,12 @@
         NSLog(@"manager start failed!");
     }
     
-    //TODO: 判断用户是否已登录
-    BOOL isLogin = NO;
+    //判断用户是否已登录
+    BOOL isLogin = [[QYAccount currentAccount] isLogin];
     if (!isLogin) {
         [self setRootViewControllerToEntrance];
     }
+    
     return YES;
 }
 

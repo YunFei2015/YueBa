@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="QYUserInfoView">
+            <rect key="frame" x="0.0" y="0.0" width="439" height="530"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EEX-EH-BzH">
+                    <rect key="frame" x="0.0" y="0.0" width="439" height="530"/>
+                    <subviews>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Pmb-Or-xA5">
+                            <rect key="frame" x="0.0" y="0.0" width="439" height="439"/>
+                        </imageView>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="3km" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BMT-Oc-mRB">
+                            <rect key="frame" x="20" y="505" width="24.5" height="14.5"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                            <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="阿宝，28" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MiS-vF-GPv">
+                            <rect key="frame" x="20" y="480" width="71.5" height="20.5"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="21" id="kbA-do-nGn"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstItem="BMT-Oc-mRB" firstAttribute="leading" secondItem="EEX-EH-BzH" secondAttribute="leading" constant="20" id="ABx-RL-c06"/>
+                        <constraint firstAttribute="bottom" secondItem="BMT-Oc-mRB" secondAttribute="bottom" constant="10" id="EsQ-08-gzr"/>
+                        <constraint firstItem="MiS-vF-GPv" firstAttribute="leading" secondItem="BMT-Oc-mRB" secondAttribute="leading" id="HWE-wg-PQX"/>
+                        <constraint firstAttribute="trailing" secondItem="Pmb-Or-xA5" secondAttribute="trailing" id="IiH-2r-6VX"/>
+                        <constraint firstItem="Pmb-Or-xA5" firstAttribute="leading" secondItem="EEX-EH-BzH" secondAttribute="leading" id="Qfx-RG-QUQ"/>
+                        <constraint firstAttribute="trailing" secondItem="Pmb-Or-xA5" secondAttribute="trailing" id="Urx-BS-Qgs"/>
+                        <constraint firstItem="Pmb-Or-xA5" firstAttribute="top" secondItem="EEX-EH-BzH" secondAttribute="top" constant="29" id="V83-iL-DHc"/>
+                        <constraint firstItem="BMT-Oc-mRB" firstAttribute="top" secondItem="MiS-vF-GPv" secondAttribute="bottom" constant="5" id="aDY-l5-MbU"/>
+                        <constraint firstItem="Pmb-Or-xA5" firstAttribute="leading" secondItem="EEX-EH-BzH" secondAttribute="leading" id="nGL-Uf-qUM"/>
+                        <constraint firstItem="Pmb-Or-xA5" firstAttribute="height" secondItem="EEX-EH-BzH" secondAttribute="width" id="s6l-H0-unD"/>
+                        <constraint firstItem="Pmb-Or-xA5" firstAttribute="top" secondItem="EEX-EH-BzH" secondAttribute="top" id="xOd-Ym-9Xj"/>
+                    </constraints>
+                    <variation key="default">
+                        <mask key="constraints">
+                            <exclude reference="Urx-BS-Qgs"/>
+                            <exclude reference="V83-iL-DHc"/>
+                            <exclude reference="nGL-Uf-qUM"/>
+                        </mask>
+                    </variation>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="EEX-EH-BzH" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="2Hc-wH-0ij"/>
+                <constraint firstAttribute="bottom" secondItem="EEX-EH-BzH" secondAttribute="bottom" id="Urf-Jy-Otl"/>
+                <constraint firstItem="EEX-EH-BzH" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="uDg-To-W2E"/>
+                <constraint firstAttribute="trailing" secondItem="EEX-EH-BzH" secondAttribute="trailing" id="vFu-wY-EcA"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="distanceLabel" destination="BMT-Oc-mRB" id="6Cd-k8-kue"/>
+                <outlet property="iconImageView" destination="Pmb-Or-xA5" id="qEU-x6-uBJ"/>
+                <outlet property="nameAndAgeLabel" destination="MiS-vF-GPv" id="ML1-72-Viw"/>
+            </connections>
+            <point key="canvasLocation" x="173.5" y="119"/>
+        </view>
+    </objects>
+</document>

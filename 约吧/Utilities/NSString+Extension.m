@@ -28,4 +28,10 @@
     return isTel;
 }
 
++(NSString *)pathInDocumentWithFileName:(NSString *)fileName{
+    NSString *documentPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject;
+    NSString *filePath = [documentPath stringByAppendingPathComponent:fileName];
+    return filePath;
+}
+
 @end

@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface DanimationView : UIView
+@interface QYHomeAnimationView : UIView
 
 @end

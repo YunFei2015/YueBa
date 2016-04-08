@@ -8,10 +8,11 @@
 
 #import "QYLoginVC.h"
 #import "AppDelegate.h"
+#import "QYAccount.h"
 
 #import <AFNetworking.h>
 
-@interface QYLoginVC ()
+@interface QYLoginVC () <QYNetworkDelegate>
 @property (weak, nonatomic) IBOutlet UITextField *telNumTf;
 @property (weak, nonatomic) IBOutlet UITextField *passwdTf;
 
@@ -22,6 +23,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    [QYNetworkManager sharedInstance].delegate = self;
     [_telNumTf becomeFirstResponder];
 }
 
@@ -29,37 +31,36 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+//登录
 - (IBAction)loginAction:(UIButton *)sender {
-    [self dismissViewControllerAnimated:YES completion:^{}];
-    AppDelegate *app = [UIApplication sharedApplication].delegate;
-    [app setRootViewControllerToHome];
+    [SVProgressHUD showWithStatus:kLoging];
     
-    
-    //TODO: 请求登录
-//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-//    NSString *url = [kBaseUrl stringByAppendingPathComponent:kRegisterApi];
-//    NSDictionary *parames = @{@"telephone" : _telNumTf.text,
-//                              @"password" : _passwdTf.text};
-//    [manager POST:url parameters:parames progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-//        NSLog(@"%@", responseObject);
-//        if ([responseObject[@"success"] integerValue] == 1) {
-//            //TODO: 提示用户登录成功
-//            
-//            //进入主页
-//            UINavigationController *homeNav = [self.storyboard instantiateViewControllerWithIdentifier:kHomeNavIdentifier];
-//            [self presentViewController:homeNav animated:YES completion:^{
-//                
-//            }];
-//            
-//        }else{
-//            //TODO: 提示用户注册失败，说明失败原因
-//            
-//        }
-//    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-//        NSLog(@"%@", error);
-//        //TODO: 提示用户网络不可用
-//        
-//    }];
+    //网络请求
+    NSDictionary *params = @{kNetworkKeyTel : _telNumTf.text,
+                             kNetworkKeyPasswd : _passwdTf.text};
+    [[QYNetworkManager sharedInstance] loginWithParameters:params];
+}
+
+-(void)didFinishLogin:(id)responseObject success:(BOOL)success{
+    if (success) {
+        //TODO: 保存登录信息
+        NSDictionary *dict = @{kAccountKeyToken : @"token", kAccountKeyUid : @1};
+//        NSDictionary *dict = @{kAccountKeyToken : responseObject[kAccountKeyToken], kAccountKeyUid : responseObject[kAccountKeyUid]};
+        [[QYAccount currentAccount] saveAccount:dict];
+        
+        [self dismissViewControllerAnimated:YES completion:^{}];
+        
+        //更改当前应用的根视图控制器
+        AppDelegate *app = [UIApplication sharedApplication].delegate;
+        [app setRootViewControllerToHome];
+    }else{
+        if (responseObject) {
+            [SVProgressHUD showErrorWithStatus:responseObject[kResponseKeyData]];
+        }else{
+            [SVProgressHUD showErrorWithStatus:kNetworkFail];
+        }
+        
+    }
 }
 
 

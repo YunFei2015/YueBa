@@ -9,11 +9,11 @@
 #import "QYEntranceVC.h"
 
 @interface QYEntranceVC ()
-@property (weak, nonatomic) IBOutlet UIButton *registBtn;
-@property (weak, nonatomic) IBOutlet UIButton *loginBtn;
-@property (weak, nonatomic) IBOutlet UIImageView *animationView;
-@property (strong, nonatomic) NSTimer *timer;
-@property (nonatomic) CGFloat angle;
+@property (weak, nonatomic  ) IBOutlet UIButton    *registBtn;
+@property (weak, nonatomic  ) IBOutlet UIButton    *loginBtn;
+@property (weak, nonatomic  ) IBOutlet UIImageView *animationView;
+@property (strong, nonatomic) NSTimer     *timer;
+@property (nonatomic        ) CGFloat     angle;
 
 @end
 

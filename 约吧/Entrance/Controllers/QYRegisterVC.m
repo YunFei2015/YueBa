@@ -10,20 +10,21 @@
 #import "QYVerifyCodeBtn.h"
 #import "NSString+Extension.h"
 #import <AFNetworking.h>
+#import <SVProgressHUD.h>
 
-@interface QYRegisterVC () <UITextFieldDelegate>
+@interface QYRegisterVC () <UITextFieldDelegate, QYNetworkDelegate>
 @property (weak, nonatomic) IBOutlet QYVerifyCodeBtn *getVerifyCodeBtn;
-@property (weak, nonatomic) IBOutlet UITextField *telNumberTf;
-@property (weak, nonatomic) IBOutlet UITextField *verifyCodeTf;
+@property (weak, nonatomic) IBOutlet UITextField     *telNumberTf;
+@property (weak, nonatomic) IBOutlet UITextField     *verifyCodeTf;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *nextItem;
-@property (weak, nonatomic) IBOutlet UITextField *passwdTf;
-@property (weak, nonatomic) IBOutlet UITextField *passwdAgainTf;
-@property (weak, nonatomic) IBOutlet UILabel *countDownLabel;
-@property (weak, nonatomic) IBOutlet UIButton *registerBtn;
+@property (weak, nonatomic) IBOutlet UITextField     *passwdTf;
+@property (weak, nonatomic) IBOutlet UITextField     *passwdAgainTf;
+@property (weak, nonatomic) IBOutlet UILabel         *countDownLabel;
+@property (weak, nonatomic) IBOutlet UIButton        *registerBtn;
 
-@property (strong, nonatomic) NSTimer *countDownTimer;//60s计时器
-@property (nonatomic) NSInteger second;//秒数
-@property (strong, nonatomic) NSString *telephone;//合法的手机号
+@property (strong, nonatomic) NSTimer   *countDownTimer;//60s计时器
+@property (nonatomic        ) NSInteger second;//秒数
+@property (strong, nonatomic) NSString  *telephone;//合法的手机号
 
 @end
 
@@ -32,6 +33,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    [QYNetworkManager sharedInstance].delegate = self;
 
     //设置第一响应
     [_telNumberTf becomeFirstResponder];
@@ -39,6 +41,7 @@
     //注册通知
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textFieldDidChanged:) name:UITextFieldTextDidChangeNotification object:nil];
     
+    //禁用获取验证码按钮
     _getVerifyCodeBtn.codeState = kVerifyCodeStateInactive;
 }
 
@@ -72,54 +75,28 @@
     //更新按钮外观，修改按钮状态为“已发送”
     sender.codeState = kVerifyCodeStateSent;
     
-    //请求获取验证码
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    NSString *url = [kBaseUrl stringByAppendingPathComponent:kVerifyCodeApi];
-    NSDictionary *parames = @{@"telephone" : _telephone};
-    [manager POST:url parameters:parames progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSLog(@"%@", responseObject);
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        NSLog(@"%@", error);
-    }];
-    
     //开始计时，60s
-    _second = 60;
-//    _countDownLabel.text = [NSString stringWithFormat:@"%ld秒后可重新发送验证码", _second];
-//    _countDownLabel.hidden = NO;
+    _second = kMsmCodeSeconds;
+    //    _countDownLabel.text = [NSString stringWithFormat:@"%ld秒后可重新发送验证码", _second];
+    //    _countDownLabel.hidden = NO;
     _countDownTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(countDown60s) userInfo:nil repeats:YES];
+    
+    //请求获取验证码
+    NSDictionary *params = @{kNetworkKeyTel : _telephone};
+    [[QYNetworkManager sharedInstance] getVerifyCodeWithParameters:params];
     
     //验证码输入框接受第一响应
     [_verifyCodeTf becomeFirstResponder];
 }
 
+//注册
 - (IBAction)registerAction:(UIButton *)sender {
-    //进入下一界面，完善个人信息
-    UIViewController *baseInfoVC = [self.storyboard instantiateViewControllerWithIdentifier:kUserBaseInfo];
-    [self.navigationController pushViewController:baseInfoVC animated:YES];
+    [SVProgressHUD showWithStatus:kResistering];
     
-    //TODO: 请求注册
-//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-//    NSString *url = [kBaseUrl stringByAppendingPathComponent:kRegisterApi];
-//    NSDictionary *parames = @{@"telephone" : _telNumberTf.text,
-//                              @"password" : _passwdTf.text,
-//                              @"msmCoden" : _verifyCodeTf.text};
-//    [manager POST:url parameters:parames progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-//        NSLog(@"%@", responseObject);
-//        if ([responseObject[@"success"] integerValue] == 1) {
-//            //TODO: 提示用户注册成功
-//            
-//            //进入下一界面，完善个人信息
-//            UIViewController *baseInfoVC = [self.storyboard instantiateViewControllerWithIdentifier:kUserBaseInfo];
-//            [self.navigationController pushViewController:baseInfoVC animated:YES];
-//        }else{
-//            //TODO: 提示用户注册失败，说明失败原因
-//            
-//        }
-//    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-//        NSLog(@"%@", error);
-//        //TODO: 提示用户网络不可用
-//        
-//    }];
+    NSDictionary *params = @{kNetworkKeyTel : _telNumberTf.text,
+                              kNetworkKeyPasswd : _passwdTf.text,
+                              kNetworkKeyMsmCode : _verifyCodeTf.text};
+    [[QYNetworkManager sharedInstance] registerWithParameters:params];
 }
 
 
@@ -167,36 +144,74 @@
     if (_second == 0) {//60s倒计时结束
         [_countDownTimer invalidate];
         _countDownTimer = nil;
-        _countDownLabel.hidden = YES;
+//        _countDownLabel.hidden = YES;
         _getVerifyCodeBtn.codeState = kVerifyCodeStateReGet;//标记为重新获取验证码状态
         return;
     }
     
-    [_getVerifyCodeBtn setEnabled:NO];
     [_getVerifyCodeBtn setTitle:[NSString stringWithFormat:@"%lds", _second] forState:UIControlStateDisabled];
 //     _countDownLabel.text = [NSString stringWithFormat:@"%ld秒后可重新发送验证码", _second];
 }
 
+#pragma mark - QYNetwork Delegate
+-(void)didGetVerifyCode:(id)responseObject success:(BOOL)success{
+    if (!success) {
+        [_countDownTimer invalidate];
+        _countDownTimer = nil;
+        _getVerifyCodeBtn.codeState = kVerifyCodeStateActive;
+        if (responseObject) {
+            [SVProgressHUD showErrorWithStatus:responseObject[kResponseKeyError]];
+        }else{
+            [SVProgressHUD showErrorWithStatus:kNetworkFail];
+        }
+    }
+}
+
+-(void)didFinishRegister:(id)responseObject success:(BOOL)success{
+    if (success) {
+        //提示用户注册成功
+        [SVProgressHUD showSuccessWithStatus:kRegisterSuccess];
+        
+        //TODO: 保存登录信息
+        //            NSDictionary *data = responseObject[kResponseKeyData];
+        //            NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:data[kAccountKeyToken], kAccountKeyToken, data[kAccountKeyUid], kAccountKeyUid, nil];
+        //            [[QYAccount currentAccount] saveAccount:dict];
+        
+        //进入下一界面
+        NSNumber *userId = responseObject[kResponseKeyData][kNetworkKeyUserId];
+        UIViewController *baseInfoVC = [self.storyboard instantiateViewControllerWithIdentifier:kUserBaseInfo];
+        [baseInfoVC setValue:userId forKey:@"userId"];
+        [self.navigationController pushViewController:baseInfoVC animated:YES];
+    }else{
+        //提示用户注册失败，说明失败原因
+        if (responseObject) {
+            [SVProgressHUD showErrorWithStatus:responseObject[kResponseKeyError]];
+        }else{
+            [SVProgressHUD showErrorWithStatus:kNetworkFail];
+        }
+        
+    }
+}
 
 #pragma mark - Navigation
 // In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-    
-    
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    NSString *url = [kBaseUrl stringByAppendingPathComponent:kRegisterApi];
-    NSDictionary *parames = @{@"telephone" : _telNumberTf.text,
-                              @"password" : _passwdTf.text,
-                              @"msmCoden" : _verifyCodeTf.text};
-    [manager POST:url parameters:parames progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSLog(@"%@", responseObject);
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        NSLog(@"%@", error);
-    }];
-    
-}
+//- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+//    // Get the new view controller using [segue destinationViewController].
+//    // Pass the selected object to the new view controller.
+//    
+//    
+//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//    NSString *url = [kBaseUrl stringByAppendingPathComponent:kRegisterApi];
+//    NSDictionary *parames = @{@"telephone" : _telNumberTf.text,
+//                              @"password" : _passwdTf.text,
+//                              @"msmCoden" : _verifyCodeTf.text};
+//    [manager POST:url parameters:parames progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+//        NSLog(@"%@", responseObject);
+//    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+//        NSLog(@"%@", error);
+//    }];
+//    
+//}
 
 
 @end

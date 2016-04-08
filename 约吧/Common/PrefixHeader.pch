@@ -10,8 +10,17 @@
 #define PrefixHeader_pch
 
 #import <SWRevealViewController.h>
+#import <SVProgressHUD.h>
+#import "QYAccount.h"
+#import "QYNetworkManager.h"
 
 #define kRGBColor(r, g, b, a)  [UIColor colorWithRed:r / 255.f green:g/ 255.f blue:b / 255.f alpha:a]
+#define kMsmCodeSeconds 60 //验证码倒计时秒数
+
+//Account
+#define kAccountFileName @"account"
+#define kAccountKeyUid @"userId"
+#define kAccountKeyToken @"token"
 
 //block self
 #define WEAKSELF typeof(self) __weak weakSelf = self;
@@ -26,6 +35,26 @@
 #define kBaseUrl @"http://yueba.applinzi.com"
 #define kRegisterApi @"users/regist.json"
 #define kVerifyCodeApi @"users/msmCaptcha.json"
+
+//network key
+#define kResponseKeySuccess @"success"
+#define kResponseKeyError @"errors"
+#define kResponseKeyData @"data"
+#define kNetworkKeyUserId @"userId"
+#define kNetworkKeyName @"name"
+#define kNetworkKeyAge @"age"
+#define kNetworkKeySex @"sex"
+#define kNetworkKeyTel @"telephone"
+#define kNetworkKeyPasswd @"password"
+#define kNetworkKeyMsmCode @"msmCode"
+
+//progress hint
+#define kNetworkFail @"网络不可用"
+#define kLoging @"正在登录"
+#define kRegisterSuccess @"注册成功"
+#define kResistering @"正在注册"
+#define kEditBaseInfo @"存在未填信息"
+#define kCommitBaseInfo @"正在提交"
 
 //storyboard name
 #define kHomeStoryboard @"Home"

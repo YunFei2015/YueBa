@@ -11,14 +11,16 @@
 #import "NSDate+Extension.h"
 #import "AppDelegate.h"
 
+#import <SVProgressHUD.h>
+
 @interface QYEditBaseInfoVC () <QYImagesPickerDelegate>
-@property (weak, nonatomic) IBOutlet UIImageView *iconImageView;
-@property (strong, nonatomic) UIView *birthdayInputView;
+@property (weak, nonatomic  ) IBOutlet UIImageView  *iconImageView;
+@property (weak, nonatomic  ) IBOutlet UITextField  *nameTf;
+@property (weak, nonatomic  ) IBOutlet UITextField  *birthdayTf;
+@property (strong, nonatomic) UIView       *birthdayInputView;
 @property (strong, nonatomic) UIDatePicker *datePicker;
-@property (strong, nonatomic) NSDate *birthday;
-@property (weak, nonatomic) IBOutlet UITextField *nameTf;
-@property (weak, nonatomic) IBOutlet UITextField *birthdayTf;
-@property (nonatomic) BOOL isWoman;
+@property (strong, nonatomic) NSDate       *birthday;
+@property (nonatomic        ) BOOL         isWoman;
 @end
 
 @implementation QYEditBaseInfoVC
@@ -31,26 +33,35 @@
 
 #pragma mark - Events
 - (IBAction)leftBarButtonItemAction:(UIBarButtonItem *)sender {
-    //TODO: 提示用户：若不编辑基本信息，系统将会屏蔽盖用户
+    //TODO: 提示用户：若不编辑基本信息，系统将会屏蔽该用户
+    UIAlertController *controller = [UIAlertController alertControllerWithTitle:@"警告" message:@"若跳过此页，系统将会将您屏蔽，确定要跳过吗？" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        //确定跳过，切换到主页
+        [self presentToHomeViewController];
+    }];
+    [controller addAction:action1];
     
-    [self presentToHomeViewController];
+    UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}];
+    [controller addAction:action2];
+    [self presentViewController:controller animated:YES completion:nil];
+    
 }
 
 - (IBAction)rightBarButtonItemAction:(UIBarButtonItem *)sender {
     [_nameTf resignFirstResponder];
     [_birthdayTf resignFirstResponder];
     
-    //TODO: 检查是否有未填项
-    
-    //若有未填项，提示用户将会被屏蔽
-    
-    //TODO: 提示用户注册成功
-    
-    
-    //若成功，跳转到主页
-    [self presentToHomeViewController];
-}
+    if (_nameTf.text.length == 0 || _birthdayTf.text.length == 0) {
+        [SVProgressHUD showErrorWithStatus:kEditBaseInfo];
+    }else{
+        [SVProgressHUD showWithStatus:kCommitBaseInfo];
+        //TODO: 网络请求
+        
+        //若成功，跳转到主页
+        [self presentToHomeViewController];
+    }
 
+}
 
 -(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     [_nameTf resignFirstResponder];

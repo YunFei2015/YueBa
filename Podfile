@@ -11,6 +11,8 @@ pod 'AFNetworking'
 pod 'SDWebImage'
 pod 'BaiduMapKit'
 pod 'SWRevealViewController'
+pod 'SVProgressHUD'
+pod 'MJRefresh'
 pod 'Bugtags'
 end
 

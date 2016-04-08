@@ -9,6 +9,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>MJRefresh.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Masonry.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -24,6 +29,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>SVProgressHUD.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>SWRevealViewController.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -32,7 +42,7 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>10F905399CEAF6A4CDAF458E91F45495</key>
+		<key>50603FD9B2FAB833C7C4DC6C47A5C124</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -42,7 +52,12 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>57E10BA72563BB5A5DC98A93C4BF1301</key>
+		<key>78460AA2A9F5B8FE8DFA79A95F9841FC</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>8F74D9EA91F4C43190670066BAC37D44</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -52,7 +67,12 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>A7411596EF2A7E9C050592927622E8B9</key>
+		<key>946A96FE665C2C7DDFC9EB7E1ADD401F</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>FD920EA0190F8DE8705C09EF80F9AB2C</key>
 		<dict>
 			<key>primary</key>
 			<true/>

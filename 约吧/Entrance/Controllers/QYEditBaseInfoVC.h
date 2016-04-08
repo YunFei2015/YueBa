@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface QYEditBaseInfoVC : UIViewController
-
+@property (nonatomic) NSInteger userId;
 @end

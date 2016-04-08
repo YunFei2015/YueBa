@@ -20,9 +20,11 @@ PODS:
   - BaiduMapKit (2.10.0)
   - Bugtags (1.1.8)
   - Masonry (0.6.4)
+  - MJRefresh (3.1.0)
   - SDWebImage (3.7.5):
     - SDWebImage/Core (= 3.7.5)
   - SDWebImage/Core (3.7.5)
+  - SVProgressHUD (1.1.3)
   - SWRevealViewController (2.3.0)
 
 DEPENDENCIES:
@@ -32,7 +34,9 @@ DEPENDENCIES:
   - BaiduMapKit
   - Bugtags
   - Masonry
+  - MJRefresh
   - SDWebImage
+  - SVProgressHUD
   - SWRevealViewController
 
 SPEC CHECKSUMS:
@@ -42,7 +46,9 @@ SPEC CHECKSUMS:
   BaiduMapKit: 5df028c6b455d29e68e89694adbcf9d37a4bcc99
   Bugtags: d2ddc13b8b56ed27a572dada3a1176340e0d07c9
   Masonry: 281802d04d787ea2973179ee8bcb50500579ede2
+  MJRefresh: 743e6404967d1c2c688472ea3ecfde247d872db4
   SDWebImage: 69c6303e3348fba97e03f65d65d4fbc26740f461
+  SVProgressHUD: 748080e4f36e603f6c02aec292664239df5279c1
   SWRevealViewController: 6d3fd97f70112fd7cef9de14df4260eacce4c63a
 
 COCOAPODS: 0.39.0

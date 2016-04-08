@@ -91,11 +91,11 @@
 }
 
 -(void)sendImageMessageWithData:(NSData *)data{
-    NSString *path = [NSTemporaryDirectory() stringByAppendingPathComponent:@"image"];
-    NSURL *url = [NSURL fileURLWithPath:path];
-    [data writeToURL:url atomically:YES];
-    AVFile *file = [AVFile fileWithURL:path];
-//    AVFile *file = [AVFile fileWithData:data];
+//    NSString *path = [NSTemporaryDirectory() stringByAppendingPathComponent:@"image"];
+//    NSURL *url = [NSURL fileURLWithPath:path];
+//    [data writeToURL:url atomically:YES];
+//    AVFile *file = [AVFile fileWithURL:path];
+    AVFile *file = [AVFile fileWithData:data];
     
     AVIMImageMessage *message = [AVIMImageMessage messageWithText:nil file:file attributes:nil];
     [self sendTypedMessage:message];
