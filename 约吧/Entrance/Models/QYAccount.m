@@ -7,10 +7,13 @@
 //
 
 #import "QYAccount.h"
+#import "QYUserInfo.h"
 #import "NSString+Extension.h"
 
 @interface QYAccount () <NSCoding>
-
+@property (strong, nonatomic) NSString *userId;
+@property (strong, nonatomic) NSString *token;
+@property (strong, nonatomic) NSDictionary *userInfo;
 @end
 
 @implementation QYAccount
@@ -32,6 +35,7 @@
 -(void)saveAccount:(NSDictionary *)info{
     self.userId = info[kAccountKeyUid];
     self.token = info[kAccountKeyToken];
+    self.userInfo = info[kAccountKeyUserInfo];
     NSString *filePath = [NSString pathInDocumentWithFileName:kAccountFileName];
     [NSKeyedArchiver archiveRootObject:self toFile:filePath];
 }
@@ -39,6 +43,7 @@
 -(void)logout{
     self.userId = nil;
     self.token = nil;
+    self.userInfo = nil;
     NSString *filePath = [NSString pathInDocumentWithFileName:kAccountFileName];
     NSError *error;
     [[NSFileManager defaultManager] removeItemAtPath:filePath error:&error];
@@ -56,14 +61,22 @@
 }
 
 -(NSMutableDictionary *)accountParameters{
-    NSMutableDictionary *accountParams = [NSMutableDictionary dictionaryWithObjectsAndKeys:self.token, kAccountKeyToken, self.userId, kAccountKeyUid, nil];
+    NSMutableDictionary *accountParams = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                          self.token, kAccountKeyToken,
+                                          self.userId, kAccountKeyUid,
+                                          nil];
     return accountParams;
+}
+
+-(QYUserInfo *)myInfo{
+    return [QYUserInfo userWithDictionary:self.userInfo];
 }
 
 #pragma mark - NSCoding
 -(void)encodeWithCoder:(NSCoder *)aCoder{
     [aCoder encodeObject:self.token forKey:kAccountKeyToken];
     [aCoder encodeObject:self.userId forKey:kAccountKeyUid];
+    [aCoder encodeObject:self.userInfo forKey:kAccountKeyUserInfo];
 }
 
 -(instancetype)initWithCoder:(NSCoder *)aDecoder{
@@ -71,6 +84,7 @@
     if (self) {
         self.token = [aDecoder decodeObjectForKey:kAccountKeyToken];
         self.userId = [aDecoder decodeObjectForKey:kAccountKeyUid];
+        self.userInfo = [aDecoder decodeObjectForKey:kAccountKeyUserInfo];
     }
     return self;
 }

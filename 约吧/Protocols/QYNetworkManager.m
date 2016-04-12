@@ -7,7 +7,6 @@
 //
 
 #import "QYNetworkManager.h"
-#import "QYDataManager.h"
 #import <AFNetworking.h>
 
 @interface QYNetworkManager ()
@@ -36,8 +35,12 @@
 
 //TODO: 登录
 -(void)loginWithParameters:(NSDictionary *)params{
+    NSString *userId = params[kNetworkKeyTel];
+    NSDictionary *responseObject = @{kAccountKeyToken : @"token",
+                                     kAccountKeyUid : userId,
+                                     kAccountKeyUserInfo : @{kAccountKeyUid : userId}};
     if ([self.delegate respondsToSelector:@selector(didFinishLogin:success:)]) {
-        [self.delegate didFinishLogin:nil success:YES];
+        [self.delegate didFinishLogin:responseObject success:YES];
     }
 }
 
@@ -83,6 +86,16 @@
             [self.delegate didGetVerifyCode:nil success:NO];
         }
     }];
+}
+
+-(void)getUserInfoWithParameters:(NSDictionary *)parameters{
+    //TODO: 等待网络接口
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSDictionary *responseObject;
+        if ([self.delegate respondsToSelector:@selector(didGetUserInfo:success:)]) {
+            [self.delegate didGetUserInfo:responseObject success:YES];
+        }
+    });
 }
 
 

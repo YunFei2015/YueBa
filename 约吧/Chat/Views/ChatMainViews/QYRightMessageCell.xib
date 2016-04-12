@@ -63,7 +63,7 @@
                             <constraint firstItem="zGr-ik-elW" firstAttribute="top" secondItem="wWl-BQ-KW7" secondAttribute="top" id="cSE-fg-RMW"/>
                         </constraints>
                     </view>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FG0-ta-ADp">
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="message_image_placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="FG0-ta-ADp">
                         <rect key="frame" x="126" y="92" width="161.5" height="0.0"/>
                         <constraints>
                             <constraint firstAttribute="height" id="3H0-0l-uRV"/>
@@ -147,6 +147,7 @@
     <resources>
         <image name="SenderVoiceNodePlaying" width="20" height="20"/>
         <image name="chat_bubble_red" width="37" height="35"/>
+        <image name="message_image_placeholder" width="50" height="50"/>
         <image name="小心" width="200" height="200"/>
     </resources>
 </document>

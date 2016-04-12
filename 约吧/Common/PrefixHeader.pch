@@ -21,6 +21,7 @@
 #define kAccountFileName @"account"
 #define kAccountKeyUid @"userId"
 #define kAccountKeyToken @"token"
+#define kAccountKeyUserInfo @"userInfo"
 
 //block self
 #define WEAKSELF typeof(self) __weak weakSelf = self;
@@ -54,7 +55,7 @@
 #define kRegisterSuccess @"注册成功"
 #define kResistering @"正在注册"
 #define kEditBaseInfo @"存在未填信息"
-#define kCommitBaseInfo @"正在提交"
+#define kCommitBaseInfo @"正在保存"
 
 //storyboard name
 #define kHomeStoryboard @"Home"

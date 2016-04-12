@@ -43,6 +43,7 @@
     
     //禁用获取验证码按钮
     _getVerifyCodeBtn.codeState = kVerifyCodeStateInactive;
+    
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
@@ -91,7 +92,19 @@
 
 //注册
 - (IBAction)registerAction:(UIButton *)sender {
-    [SVProgressHUD showWithStatus:kResistering];
+    if (_passwdTf.text.length < 6) {
+        [SVProgressHUD showWithStatus:@"密码长度不得少于6位"];
+        [_passwdTf becomeFirstResponder];
+        return;
+    }
+    
+    if (![_passwdTf.text isEqualToString:_passwdAgainTf.text]) {
+        [SVProgressHUD showWithStatus:@"两次密码必须相同"];
+        [_passwdAgainTf becomeFirstResponder];
+        return;
+    }
+    
+    [SVProgressHUD showWithStatus:kResistering];//注册中……
     
     NSDictionary *params = @{kNetworkKeyTel : _telNumberTf.text,
                               kNetworkKeyPasswd : _passwdTf.text,

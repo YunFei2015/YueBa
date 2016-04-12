@@ -7,14 +7,18 @@
 //
 
 #import <Foundation/Foundation.h>
+@class QYUserInfo;
 
 @interface QYAccount : NSObject
-@property (strong, nonatomic) NSString *userId;
-@property (strong, nonatomic) NSString *token;
+
+@property (strong, nonatomic) QYUserInfo *myInfo;
+
+
 
 +(instancetype)currentAccount;
 -(void)saveAccount:(NSDictionary *)info;
 -(void)logout;
 -(BOOL)isLogin;
 -(NSMutableDictionary *)accountParameters;
+
 @end

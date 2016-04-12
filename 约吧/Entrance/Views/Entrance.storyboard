@@ -51,9 +51,6 @@
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="message_spinner" translatesAutoresizingMaskIntoConstraints="NO" id="R1S-nQ-lB7">
                                 <rect key="frame" x="10" y="40" width="394" height="394"/>
                             </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="chat_unread_message_icon" translatesAutoresizingMaskIntoConstraints="NO" id="CnL-Tg-33c">
-                                <rect key="frame" x="141.5" y="171" width="131" height="132"/>
-                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MsP-FF-yNB">
                                 <rect key="frame" x="50" y="640" width="314" height="45"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -67,6 +64,9 @@
                                     <segue destination="mpx-2e-cRQ" kind="show" id="mRL-PO-T3L"/>
                                 </connections>
                             </button>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Undecided" translatesAutoresizingMaskIntoConstraints="NO" id="CnL-Tg-33c">
+                                <rect key="frame" x="142" y="171" width="131" height="132"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
@@ -839,7 +839,7 @@
     </scenes>
     <resources>
         <image name="5519-11" width="2560" height="1600"/>
-        <image name="chat_unread_message_icon" width="19" height="19"/>
+        <image name="Undecided" width="36" height="36"/>
         <image name="message_spinner" width="14" height="14"/>
     </resources>
 </document>

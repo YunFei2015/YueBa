@@ -8,6 +8,24 @@
 
 #import <UIKit/UIKit.h>
 
-@interface QYHomeAnimationView : UIView
+typedef enum : NSUInteger {
+    like,   //right
+    dislike,//left
+} ENLIKETYPE ;
 
+
+@protocol DanimationPro <NSObject>
+
+-(void)ChangeValueType:(ENLIKETYPE)type;
+-(void)FinishendValueType;
+-(void)noMoreUser;
+
+@end
+
+@interface QYHomeAnimationView : UIView
+@property(nonatomic,assign)id<DanimationPro>delegate;
+@property (strong, nonatomic) NSMutableArray *users;
+
+//喜欢不喜欢
+-(void)selectLikeOnce:(ENLIKETYPE)dlike;
 @end

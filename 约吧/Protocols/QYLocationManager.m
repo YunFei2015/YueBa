@@ -9,10 +9,13 @@
 #import "QYLocationManager.h"
 #import <BaiduMapAPI_Location/BMKLocationComponent.h>
 #import <BaiduMapAPI_Search/BMKSearchComponent.h>
+#import <BaiduMapAPI_Radar/BMKRadarComponent.h>
 
-@interface QYLocationManager () <BMKLocationServiceDelegate, BMKGeoCodeSearchDelegate>
+@interface QYLocationManager () <BMKLocationServiceDelegate, BMKGeoCodeSearchDelegate, BMKRadarManagerDelegate>
 @property (strong, nonatomic) BMKLocationService *locationService;
 @property (strong, nonatomic) BMKGeoCodeSearch *geocodeSearch;
+@property (strong, nonatomic) BMKRadarManager *radarManager;
+
 
 @end
 
@@ -27,9 +30,14 @@
     return sharedInstance;
 }
 
--(void)dealloc{
-    self.locationService.delegate = nil;
-    self.geocodeSearch.delegate = nil;
+-(void)setDelegate:(id<QYLocationManagerDelegate>)delegate{
+    if (delegate == nil) {
+        self.locationService.delegate = nil;
+        self.geocodeSearch.delegate = nil;
+        [self.radarManager removeRadarManagerDelegate:self];
+    }
+    
+    _delegate = delegate;
 }
 
 -(void)startToUpdateLocation{
@@ -44,8 +52,6 @@
     }else{
         NSLog(@"发起地理编码失败");
     }
-    
-    option = nil;
 }
 
 -(void)getAddressWithLocation:(CLLocationCoordinate2D)location{
@@ -56,7 +62,32 @@
     }else{
         NSLog(@"发起地理反编码失败");
     }
-    option = nil;
+}
+
+-(void)searchNearByUsersWithLocation:(CLLocationCoordinate2D)location{
+    BMKRadarNearbySearchOption *option = [[BMKRadarNearbySearchOption alloc] init];
+    option.radius = 1000;
+    option.sortType = BMK_RADAR_SORT_TYPE_DISTANCE_FROM_NEAR_TO_FAR;
+    option.centerPt = location;
+    BOOL result = [self.radarManager getRadarNearbySearchRequest:option];
+    if (result) {
+        NSLog(@"发起雷达检索成功");
+    }else{
+        NSLog(@"发起雷达检索失败");
+    }
+}
+
+-(void)uploadUserInfoWithLocation:(CLLocationCoordinate2D)location{
+    BMKRadarUploadInfo *myinfo = [[BMKRadarUploadInfo alloc] init];
+    myinfo.extInfo = @"hello,world";//扩展信息
+    myinfo.pt = location;
+    //上传我的位置信息
+    BOOL res = [self.radarManager uploadInfoRequest:myinfo];
+    if (res) {
+        NSLog(@"上传我的位置信息成功");
+    } else {
+        NSLog(@"上传我的位置信息失败");
+    }
 }
 
 #pragma mark - BMKLocation Service Delegate
@@ -67,7 +98,6 @@
     if ([self.delegate respondsToSelector:@selector(didFinishUpdateLocation:success:)]) {
         [self.delegate didFinishUpdateLocation:location success:YES];
     }
-    
 }
 
 -(void)didFailToLocateUserWithError:(NSError *)error{
@@ -106,6 +136,23 @@
     }
 }
 
+-(void)onGetRadarNearbySearchResult:(BMKRadarNearbyResult *)result error:(BMKRadarErrorCode)error{
+    if (error == BMK_RADAR_NO_ERROR) {
+        if ([self.delegate respondsToSelector:@selector(didFinishSearchNearbyUsers:success:)]) {
+            [self.delegate didFinishSearchNearbyUsers:result success:YES];
+        }
+    }else if (error == BMK_RADAR_NO_RESULT){
+        if ([self.delegate respondsToSelector:@selector(didFinishSearchNearbyUsers:success:)]) {
+            [self.delegate didFinishSearchNearbyUsers:nil success:YES];
+        }
+    }else{
+        if ([self.delegate respondsToSelector:@selector(didFinishSearchNearbyUsers:success:)]) {
+            NSLog(@"雷达检索失败：%u", error);
+            [self.delegate didFinishSearchNearbyUsers:nil success:NO];
+        }
+    }
+}
+
 #pragma mark - Getters
 -(BMKLocationService *)locationService{
     if (_locationService == nil) {
@@ -123,6 +170,20 @@
         _geocodeSearch.delegate = self;
     }
     return _geocodeSearch;
+}
+
+-(BMKRadarManager *)radarManager{
+    if (_radarManager == nil) {
+        _radarManager = [BMKRadarManager getRadarManagerInstance];
+        [_radarManager addRadarManagerDelegate:self];
+        //TODO: 用户Id需要从bundle中读取
+        NSString *myId = [[QYAccount currentAccount] valueForKeyPath:@"myInfo.userId"];
+        if (myId) {
+            _radarManager.userId = myId;
+        }
+        
+    }
+    return _radarManager;
 }
 
 @end

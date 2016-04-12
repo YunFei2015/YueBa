@@ -11,6 +11,6 @@
 @interface QYDataManager : NSObject
 
 +(instancetype)sharedInstance;
--(BOOL)saveVoiceFileWithMessageID:(NSString *)messageID;
--(NSString *)voiceFilePathForMessageID:(NSString *)messageID;
+//-(BOOL)saveVoiceFileWithMessageID:(NSString *)messageID;
+//-(NSString *)voiceFilePathForMessageID:(NSString *)messageID;
 @end

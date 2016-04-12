@@ -14,6 +14,7 @@
 -(void)didFinishLogin:(id)responseObject success:(BOOL)success;
 -(void)didFinishRegister:(id)responseObject success:(BOOL)success;
 -(void)didGetVerifyCode:(id)responseObject success:(BOOL)success;
+-(void)didGetUserInfo:(id)responseObject success:(BOOL)success;
 
 @end
 
@@ -23,5 +24,6 @@
 -(void)loginWithParameters:(NSDictionary *)params;
 -(void)registerWithParameters:(NSDictionary *)params;
 -(void)getVerifyCodeWithParameters:(NSDictionary *)params;
+-(void)getUserInfoWithParameters:(NSDictionary *)parameters;
 
 @end

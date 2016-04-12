@@ -7,6 +7,7 @@
 //
 
 #import "QYUserInfoView.h"
+#import "QYUserInfo.h"
 
 @interface QYUserInfoView ()
 @property (weak, nonatomic) IBOutlet UIImageView *iconImageView;
@@ -21,6 +22,13 @@
     _image = image;
     
     _iconImageView.image = image;
+}
+
+-(void)setUserInfo:(QYUserInfo *)userInfo{
+    _userInfo = userInfo;
+    
+    _iconImageView.image = userInfo.iconImage;
+    _nameAndAgeLabel.text = [NSString stringWithFormat:@"%@, %ld", userInfo.name, userInfo.age];
 }
 
 @end

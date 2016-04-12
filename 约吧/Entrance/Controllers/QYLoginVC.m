@@ -9,6 +9,7 @@
 #import "QYLoginVC.h"
 #import "AppDelegate.h"
 #import "QYAccount.h"
+#import "QYUserInfo.h"
 
 #import <AFNetworking.h>
 
@@ -44,9 +45,10 @@
 -(void)didFinishLogin:(id)responseObject success:(BOOL)success{
     if (success) {
         //TODO: 保存登录信息
-        NSDictionary *dict = @{kAccountKeyToken : @"token", kAccountKeyUid : @1};
-//        NSDictionary *dict = @{kAccountKeyToken : responseObject[kAccountKeyToken], kAccountKeyUid : responseObject[kAccountKeyUid]};
-        [[QYAccount currentAccount] saveAccount:dict];
+//        NSDictionary *dict = @{kAccountKeyToken : responseObject[kAccountKeyToken],
+//                               kAccountKeyUid : responseObject[kAccountKeyUid],
+//                               kAccountKeyUserInfo : responseObject[kAccountKeyUserInfo]};
+        [[QYAccount currentAccount] saveAccount:responseObject];
         
         [self dismissViewControllerAnimated:YES completion:^{}];
         

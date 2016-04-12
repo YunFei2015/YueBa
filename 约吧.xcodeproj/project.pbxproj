@@ -30,6 +30,7 @@
 		7C30B19B1C996137001EF237 /* NSString+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C30B1881C996137001EF237 /* NSString+Extension.m */; };
 		7C30B19C1C996137001EF237 /* UIView+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C30B18A1C996137001EF237 /* UIView+Extension.m */; };
 		7C3B9AE21CB7B71400C6C30E /* QYUserInfoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C3B9AE11CB7B71400C6C30E /* QYUserInfoView.m */; };
+		7C491FDB1CBCD78500873480 /* QYUserStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C491FDA1CBCD78500873480 /* QYUserStorage.m */; };
 		7C4BB3A91CA8C28400136C75 /* QYMapVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C4BB3A81CA8C28400136C75 /* QYMapVC.m */; };
 		7C4BB3AC1CA8C94F00136C75 /* QYMapSearchResultVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C4BB3AB1CA8C94F00136C75 /* QYMapSearchResultVC.m */; };
 		7C4BB3B11CA8CD2500136C75 /* QYMapAddrCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C4BB3AF1CA8CD2500136C75 /* QYMapAddrCell.m */; };
@@ -61,6 +62,8 @@
 		7C6671E61CB4F99500E7C20A /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7C6671E51CB4F99500E7C20A /* Settings.storyboard */; };
 		7C6671E91CB4FDB500E7C20A /* QYSettingsTableVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C6671E81CB4FDB500E7C20A /* QYSettingsTableVC.m */; };
 		7C67059F1C9F97AB001EDCCE /* QYAudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C67059E1C9F97AB001EDCCE /* QYAudioPlayer.m */; };
+		7C719A051CBB3B5300BE5039 /* QYHomeSearchView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C719A041CBB3B5300BE5039 /* QYHomeSearchView.m */; };
+		7C719A0A1CBB3C3F00BE5039 /* QYUserInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C719A091CBB3C3F00BE5039 /* QYUserInfo.m */; };
 		7CF813941CB0CF4700CC79E8 /* CategorySuggestions.json in Resources */ = {isa = PBXBuildFile; fileRef = 7CF813921CB0CF4700CC79E8 /* CategorySuggestions.json */; };
 		7CF813951CB0CF4700CC79E8 /* countries.json in Resources */ = {isa = PBXBuildFile; fileRef = 7CF813931CB0CF4700CC79E8 /* countries.json */; };
 		7CF8139B1CB1435F00CC79E8 /* QYPaopaoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CF8139A1CB1435F00CC79E8 /* QYPaopaoView.m */; };
@@ -117,6 +120,8 @@
 		7C30B18A1C996137001EF237 /* UIView+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Extension.m"; sourceTree = "<group>"; };
 		7C3B9AE01CB7B71400C6C30E /* QYUserInfoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYUserInfoView.h; sourceTree = "<group>"; };
 		7C3B9AE11CB7B71400C6C30E /* QYUserInfoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYUserInfoView.m; sourceTree = "<group>"; };
+		7C491FD91CBCD78500873480 /* QYUserStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYUserStorage.h; sourceTree = "<group>"; };
+		7C491FDA1CBCD78500873480 /* QYUserStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYUserStorage.m; sourceTree = "<group>"; };
 		7C4BB3A71CA8C28400136C75 /* QYMapVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYMapVC.h; sourceTree = "<group>"; };
 		7C4BB3A81CA8C28400136C75 /* QYMapVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYMapVC.m; sourceTree = "<group>"; };
 		7C4BB3AA1CA8C94F00136C75 /* QYMapSearchResultVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYMapSearchResultVC.h; sourceTree = "<group>"; };
@@ -173,6 +178,11 @@
 		7C6671E81CB4FDB500E7C20A /* QYSettingsTableVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYSettingsTableVC.m; sourceTree = "<group>"; };
 		7C67059D1C9F97AB001EDCCE /* QYAudioPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYAudioPlayer.h; sourceTree = "<group>"; };
 		7C67059E1C9F97AB001EDCCE /* QYAudioPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYAudioPlayer.m; sourceTree = "<group>"; };
+		7C719A031CBB3B5300BE5039 /* QYHomeSearchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYHomeSearchView.h; sourceTree = "<group>"; };
+		7C719A041CBB3B5300BE5039 /* QYHomeSearchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYHomeSearchView.m; sourceTree = "<group>"; };
+		7C719A081CBB3C3F00BE5039 /* QYUserInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYUserInfo.h; sourceTree = "<group>"; };
+		7C719A091CBB3C3F00BE5039 /* QYUserInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYUserInfo.m; sourceTree = "<group>"; };
+		7C719A0B1CBB559500BE5039 /* Location.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Location.gpx; sourceTree = "<group>"; };
 		7CF813921CB0CF4700CC79E8 /* CategorySuggestions.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = CategorySuggestions.json; sourceTree = "<group>"; };
 		7CF813931CB0CF4700CC79E8 /* countries.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = countries.json; sourceTree = "<group>"; };
 		7CF813991CB1435F00CC79E8 /* QYPaopaoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYPaopaoView.h; sourceTree = "<group>"; };
@@ -243,6 +253,7 @@
 				7C30B15A1C995E2A001EF237 /* LaunchScreen.storyboard */,
 				7C30B15D1C995E2A001EF237 /* Info.plist */,
 				7C30B14C1C995E2A001EF237 /* Supporting Files */,
+				7C719A0B1CBB559500BE5039 /* Location.gpx */,
 			);
 			path = "约吧";
 			sourceTree = "<group>";
@@ -402,6 +413,15 @@
 			path = Vendors;
 			sourceTree = "<group>";
 		};
+		7C491FD51CBCD0B900873480 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				7C491FD91CBCD78500873480 /* QYUserStorage.h */,
+				7C491FDA1CBCD78500873480 /* QYUserStorage.m */,
+			);
+			path = CoreData;
+			sourceTree = "<group>";
+		};
 		7C4BB3AD1CA8CCB300136C75 /* MapViews */ = {
 			isa = PBXGroup;
 			children = (
@@ -479,6 +499,8 @@
 			children = (
 				7C506FBF1CB761CB0037EAED /* QYAccount.h */,
 				7C506FC01CB761CB0037EAED /* QYAccount.m */,
+				7C719A081CBB3C3F00BE5039 /* QYUserInfo.h */,
+				7C719A091CBB3C3F00BE5039 /* QYUserInfo.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -496,6 +518,7 @@
 		7C8A39FB1CB3F6E90008C6E6 /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				7C491FD51CBCD0B900873480 /* CoreData */,
 				7C8A39FC1CB3F6E90008C6E6 /* Controllers */,
 				7C8A39FD1CB3F6E90008C6E6 /* Models */,
 				7C8A39FE1CB3F6E90008C6E6 /* Views */,
@@ -527,6 +550,8 @@
 			isa = PBXGroup;
 			children = (
 				7C5FBA951CB4AB8700714310 /* Home.storyboard */,
+				7C719A031CBB3B5300BE5039 /* QYHomeSearchView.h */,
+				7C719A041CBB3B5300BE5039 /* QYHomeSearchView.m */,
 				7C5FBA9D1CB4AD0200714310 /* QYHomeAnimationView.h */,
 				7C5FBA9E1CB4AD0200714310 /* QYHomeAnimationView.m */,
 				7C3B9AE01CB7B71400C6C30E /* QYUserInfoView.h */,
@@ -733,9 +758,11 @@
 				7C4D3B8D1CB3F8160040FF73 /* QYEntranceVC.m in Sources */,
 				7C4D3B931CB3F8CC0040FF73 /* QYEditBaseInfoVC.m in Sources */,
 				7C30B1511C995E2A001EF237 /* AppDelegate.mm in Sources */,
+				7C719A051CBB3B5300BE5039 /* QYHomeSearchView.m in Sources */,
 				7C4BB3AC1CA8C94F00136C75 /* QYMapSearchResultVC.m in Sources */,
 				7C30B19C1C996137001EF237 /* UIView+Extension.m in Sources */,
 				7C30B1901C996137001EF237 /* QYMessageCell.m in Sources */,
+				7C719A0A1CBB3C3F00BE5039 /* QYUserInfo.m in Sources */,
 				7CFF65951CAA5FC60068987A /* QYPinAnnotation.m in Sources */,
 				7C54E7C41CB67A9900A289A5 /* NSDate+Extension.m in Sources */,
 				7C30B1981C996137001EF237 /* MessageBar.m in Sources */,
@@ -753,6 +780,7 @@
 				7C506FA21CB74C200037EAED /* SDWaitingView.m in Sources */,
 				7C6671E11CB4E78300E7C20A /* QYMenuVC.m in Sources */,
 				7C6671E91CB4FDB500E7C20A /* QYSettingsTableVC.m in Sources */,
+				7C491FDB1CBCD78500873480 /* QYUserStorage.m in Sources */,
 				7C30B19B1C996137001EF237 /* NSString+Extension.m in Sources */,
 				7C30B14E1C995E2A001EF237 /* main.m in Sources */,
 				7C506FCB1CB788590037EAED /* QYDataManager.m in Sources */,

@@ -8,21 +8,24 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CLLocation.h>
+@class BMKRadarNearbyResult;
 
 @protocol QYLocationManagerDelegate <NSObject>
 
+@optional
 -(void)didFinishUpdateLocation:(CLLocation *)location success:(BOOL)success;
 -(void)didGetLocation:(CLLocationCoordinate2D)location success:(BOOL)success;
 -(void)didGetAddress:(NSString *)address nearBy:(NSArray *)nearByList success:(BOOL)success;
+-(void)didFinishSearchNearbyUsers:(BMKRadarNearbyResult *)result success:(BOOL)success;
 
 @end
 
 @interface QYLocationManager : NSObject
 
-@property (nonatomic) id <QYLocationManagerDelegate> delegate;
+@property (nonatomic, weak) id <QYLocationManagerDelegate> delegate;
 +(instancetype)sharedInstance;
 /**
- *  开始更新位置
+ *  开始定位
  */
 -(void)startToUpdateLocation;
 
@@ -39,4 +42,19 @@
  *  @param location 经纬度
  */
 -(void)getAddressWithLocation:(CLLocationCoordinate2D)location;
+
+/**
+ *  雷达搜索周围使用该app的用户
+ *
+ *  @param location 当前位置
+ *  @param userId   当前用户Id
+ */
+-(void)searchNearByUsersWithLocation:(CLLocationCoordinate2D)location;
+
+/**
+ *  上传我的位置
+ *
+ *  @param location 当前位置
+ */
+-(void)uploadUserInfoWithLocation:(CLLocationCoordinate2D)location;
 @end
