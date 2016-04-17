@@ -7,6 +7,7 @@
 //
 
 #import "NSString+Extension.h"
+#import "FaceModel.h"
 
 @implementation NSString (Extension)
 
@@ -32,6 +33,35 @@
     NSString *documentPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject;
     NSString *filePath = [documentPath stringByAppendingPathComponent:fileName];
     return filePath;
+}
+
++(NSAttributedString *)faceAttributeTextWithMessage:(NSString *)message withAttributes:(NSDictionary *)attributes faceSize:(CGFloat)faceSize{
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"Faces" ofType:@"plist"];
+    NSArray *faces = [NSDictionary dictionaryWithContentsOfFile:path][kFaceTT];
+    
+    NSMutableAttributedString *messageAttriText = [[NSMutableAttributedString alloc] initWithString:message attributes:attributes];
+    [faces enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        FaceModel *face = [FaceModel faceModelWithDictionary:obj];
+        if ([message containsString:face.text]) {
+            UIFont *font = attributes[NSFontAttributeName];
+            //创建富文本
+            NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
+            UIImage *image = [UIImage imageNamed:face.imgName];
+            attachment.image = image;
+            attachment.bounds = CGRectMake(0, -8, faceSize, faceSize);
+            NSAttributedString *attributeStr = [NSAttributedString attributedStringWithAttachment:attachment];
+            
+            //用富文本替换表情文本
+            NSRange resultRange;
+            NSRange searchRange = NSMakeRange(0, messageAttriText.length);
+            while ((resultRange = [[messageAttriText string] rangeOfString:face.text options:0 range:searchRange]).location != NSNotFound) {
+                [messageAttriText replaceCharactersInRange:resultRange withAttributedString:attributeStr];
+                resultRange.length = 1;
+                searchRange = NSMakeRange(NSMaxRange(resultRange), messageAttriText.length - NSMaxRange(resultRange));
+            }
+        }
+    }];
+    return messageAttriText;
 }
 
 @end

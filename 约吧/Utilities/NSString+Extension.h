@@ -29,4 +29,13 @@
  *  @return 文件路径
  */
 +(NSString *)pathInDocumentWithFileName:(NSString *)fileName;
+
+/**
+ *  获取表情
+ *
+ *  @param message 表情字符串
+ *
+ *  @return 表情文本
+ */
++(NSAttributedString *)faceAttributeTextWithMessage:(NSString *)message withAttributes:(NSDictionary *)attributes faceSize:(CGFloat)faceSize;
 @end

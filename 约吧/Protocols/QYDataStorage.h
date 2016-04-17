@@ -8,9 +8,15 @@
 
 #import <Foundation/Foundation.h>
 
-@interface QYDataManager : NSObject
+@interface QYDataStorage : NSObject
 
 +(instancetype)sharedInstance;
-//-(BOOL)saveVoiceFileWithMessageID:(NSString *)messageID;
-//-(NSString *)voiceFilePathForMessageID:(NSString *)messageID;
+
+-(void)saveUsers:(NSArray *)users;
+
+-(void)deleteUser:(NSString *)userId;
+
+-(QYUserInfo *)getUser:(NSString *)userId;
+
+-(NSArray *)getAllUsers;
 @end

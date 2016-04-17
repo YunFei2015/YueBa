@@ -92,10 +92,8 @@
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-//    [self dismissViewControllerAnimated:YES completion:^{
-        BMKPoiInfo *info = _results[indexPath.row];
-         [[NSNotificationCenter defaultCenter] postNotificationName:kAddressToLocateNotification object:self userInfo:@{@"info" : info}];
-//    }];
+    BMKPoiInfo *info = _results[indexPath.row];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kAddressToLocateNotification object:self userInfo:@{@"info" : info}];
 }
 
 #pragma mark - Getters

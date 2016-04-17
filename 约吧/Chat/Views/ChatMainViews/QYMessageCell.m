@@ -8,13 +8,16 @@
 
 #import "QYMessageCell.h"
 #import "FaceModel.h"
+
 #import <AVFile.h>
 #import <AVIMAudioMessage.h>
 #import <AVIMFileMessage.h>
 #import <AVIMLocationMessage.h>
 #import <AVIMImageMessage.h>
 #import <UIImageView+WebCache.h>
+
 #import "UIView+Extension.h"
+#import "NSString+Extension.h"
 
 
 #define kLocationViewWidth kScreenW * 0.75 //位置视图宽度
@@ -112,7 +115,7 @@
 //填充文本内容
 -(void)configTextMessage{
     self.messageType = kMessageTypeText;
-    _messageLab.attributedText = [self faceAttributeTextWithMessage:[_message content]];
+    _messageLab.attributedText = [NSString faceAttributeTextWithMessage:[_message content] withAttributes:@{NSFontAttributeName : [UIFont systemFontOfSize:17]} faceSize:20];
     [self calculateLayoutWith:_messageLab.attributedText];
 }
 
@@ -150,33 +153,33 @@
 
 }
 
--(NSAttributedString *)faceAttributeTextWithMessage:(NSString *)message{
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"Faces" ofType:@"plist"];
-    NSArray *faces = [NSDictionary dictionaryWithContentsOfFile:path][kFaceTT];
-    
-    NSMutableAttributedString *messageAttriText = [[NSMutableAttributedString alloc] initWithString:message attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:17]}];
-    [faces enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        FaceModel *face = [FaceModel faceModelWithDictionary:obj];
-        if ([message containsString:face.text]) {
-            //创建富文本
-            NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
-            UIImage *image = [UIImage imageNamed:face.imgName];
-            attachment.image = image;
-            attachment.bounds = CGRectMake(0, -8, image.size.width, image.size.height);
-            NSAttributedString *attributeStr = [NSAttributedString attributedStringWithAttachment:attachment];
-            
-            //用富文本替换表情文本
-            NSRange resultRange;
-            NSRange searchRange = NSMakeRange(0, messageAttriText.length);
-            while ((resultRange = [[messageAttriText string] rangeOfString:face.text options:0 range:searchRange]).location != NSNotFound) {
-                [messageAttriText replaceCharactersInRange:resultRange withAttributedString:attributeStr];
-                resultRange.length = 1;
-                searchRange = NSMakeRange(NSMaxRange(resultRange), messageAttriText.length - NSMaxRange(resultRange));
-            }
-        }
-    }];
-    return messageAttriText;
-}
+//-(NSAttributedString *)faceAttributeTextWithMessage:(NSString *)message{
+//    NSString *path = [[NSBundle mainBundle] pathForResource:@"Faces" ofType:@"plist"];
+//    NSArray *faces = [NSDictionary dictionaryWithContentsOfFile:path][kFaceTT];
+//    
+//    NSMutableAttributedString *messageAttriText = [[NSMutableAttributedString alloc] initWithString:message attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:17]}];
+//    [faces enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+//        FaceModel *face = [FaceModel faceModelWithDictionary:obj];
+//        if ([message containsString:face.text]) {
+//            //创建富文本
+//            NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
+//            UIImage *image = [UIImage imageNamed:face.imgName];
+//            attachment.image = image;
+//            attachment.bounds = CGRectMake(0, -8, image.size.width, image.size.height);
+//            NSAttributedString *attributeStr = [NSAttributedString attributedStringWithAttachment:attachment];
+//            
+//            //用富文本替换表情文本
+//            NSRange resultRange;
+//            NSRange searchRange = NSMakeRange(0, messageAttriText.length);
+//            while ((resultRange = [[messageAttriText string] rangeOfString:face.text options:0 range:searchRange]).location != NSNotFound) {
+//                [messageAttriText replaceCharactersInRange:resultRange withAttributedString:attributeStr];
+//                resultRange.length = 1;
+//                searchRange = NSMakeRange(NSMaxRange(resultRange), messageAttriText.length - NSMaxRange(resultRange));
+//            }
+//        }
+//    }];
+//    return messageAttriText;
+//}
 
 -(void)calculateLayoutWith:(NSAttributedString *)text{
     //根据文本内容调整布局

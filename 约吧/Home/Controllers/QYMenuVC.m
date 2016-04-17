@@ -39,6 +39,7 @@
                 [revealVC rightRevealToggleAnimated:YES];
                 break;
             case 2:{
+//                [self.revealViewController setFrontViewPosition:FrontViewPositionRightMost animated:YES];
                 UIStoryboard *settingsStoryboard = [UIStoryboard storyboardWithName:@"Settings" bundle:nil];
                 UINavigationController *navigationController = [settingsStoryboard instantiateViewControllerWithIdentifier:kSettingsNavIdentifier];
                 [revealVC pushFrontViewController:navigationController animated:YES];

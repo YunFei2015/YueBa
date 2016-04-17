@@ -15,7 +15,7 @@
 -(void)didFinishRegister:(id)responseObject success:(BOOL)success;
 -(void)didGetVerifyCode:(id)responseObject success:(BOOL)success;
 -(void)didGetUserInfo:(id)responseObject success:(BOOL)success;
-
+-(void)didGetFriendsList:(id)responseObject success:(BOOL)success;
 @end
 
 @interface QYNetworkManager : NSObject
@@ -25,5 +25,6 @@
 -(void)registerWithParameters:(NSDictionary *)params;
 -(void)getVerifyCodeWithParameters:(NSDictionary *)params;
 -(void)getUserInfoWithParameters:(NSDictionary *)parameters;
+-(void)getFriendsListWithParameters:(NSDictionary *)parameters;
 
 @end

@@ -16,6 +16,12 @@
 -(void)didFinishUpdateLocation:(CLLocation *)location success:(BOOL)success;
 -(void)didGetLocation:(CLLocationCoordinate2D)location success:(BOOL)success;
 -(void)didGetAddress:(NSString *)address nearBy:(NSArray *)nearByList success:(BOOL)success;
+
+
+@end
+
+@protocol QYRadarDelegate <NSObject>
+
 -(void)didFinishSearchNearbyUsers:(BMKRadarNearbyResult *)result success:(BOOL)success;
 
 @end
@@ -23,6 +29,7 @@
 @interface QYLocationManager : NSObject
 
 @property (nonatomic, weak) id <QYLocationManagerDelegate> delegate;
+@property (nonatomic, weak) id <QYRadarDelegate> radarDelegate;
 +(instancetype)sharedInstance;
 /**
  *  开始定位

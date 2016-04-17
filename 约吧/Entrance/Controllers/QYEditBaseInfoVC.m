@@ -78,7 +78,7 @@
 
 //选择出生日期
 -(void)selectDate:(UIDatePicker *)sender{
-    _birthdayTf.text = [sender.date dateToStringWithFormatter:@"dd/MM/yyyy"];
+    _birthdayTf.text = [sender.date stringFromDateWithFormatter:@"dd/MM/yyyy"];
 }
 
 //选择照片

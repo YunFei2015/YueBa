@@ -19,6 +19,9 @@ PODS:
     - AVOSCloud
   - BaiduMapKit (2.10.0)
   - Bugtags (1.1.8)
+  - FMDB (2.6):
+    - FMDB/standard (= 2.6)
+  - FMDB/standard (2.6)
   - Masonry (0.6.4)
   - MJRefresh (3.1.0)
   - SDWebImage (3.7.5):
@@ -33,6 +36,7 @@ DEPENDENCIES:
   - AVOSCloudIM
   - BaiduMapKit
   - Bugtags
+  - FMDB
   - Masonry
   - MJRefresh
   - SDWebImage
@@ -45,6 +49,7 @@ SPEC CHECKSUMS:
   AVOSCloudIM: 870287b8717ccfb25ab6e45ed5e07d33b0affc9a
   BaiduMapKit: 5df028c6b455d29e68e89694adbcf9d37a4bcc99
   Bugtags: d2ddc13b8b56ed27a572dada3a1176340e0d07c9
+  FMDB: c1968bab3ab0aed38f66cb778ae1e7fa9a652b6e
   Masonry: 281802d04d787ea2973179ee8bcb50500579ede2
   MJRefresh: 743e6404967d1c2c688472ea3ecfde247d872db4
   SDWebImage: 69c6303e3348fba97e03f65d65d4fbc26740f461

@@ -7,14 +7,19 @@
 //
 
 #import <Foundation/Foundation.h>
-//#import <CoreData/CoreData.h>
 
 @interface QYUserInfo : NSObject
 @property (strong, nonatomic) NSString *userId;
 @property (nonatomic) BOOL isMan;
 @property (nonatomic) NSInteger age;
-@property (strong, nonatomic) UIImage *iconImage;
+@property (strong, nonatomic) NSString *iconUrl;
 @property (strong, nonatomic) NSString *name;
+@property (strong, nonatomic) NSDate *matchTime;
+@property (strong, nonatomic) NSString *message;
+@property (nonatomic) NSInteger messageTime;
+
+
+
 
 -(instancetype)initWithDictionary:(NSDictionary *)dict;
 +(instancetype)userWithDictionary:(NSDictionary *)dict;

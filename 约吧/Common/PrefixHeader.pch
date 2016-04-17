@@ -22,6 +22,12 @@
 #define kAccountKeyUid @"userId"
 #define kAccountKeyToken @"token"
 #define kAccountKeyUserInfo @"userInfo"
+#define kUserId @"userId"
+#define kUserName @"name"
+#define kUserAge @"age"
+#define kUserSex @"isMan"
+#define kUserIconUrl @"iconUrl"
+#define kUserMatchTime @"matchTime"
 
 //block self
 #define WEAKSELF typeof(self) __weak weakSelf = self;
@@ -104,6 +110,7 @@
 
 //Notification
 #define kAddressToLocateNotification @"addressToLocateNotification" //地理反编码
+#define kLastMessageDidChangedNotification @"lastMessageDidChangedNotification"
 
 //personal info category suggestions
 #define kCategorySuggestionsJsonFile @"CategorySuggestions"
@@ -116,6 +123,11 @@
 #define kFood @"food"
 #define kJourneys @"places"
 #define kMovies @"movies"
+
+//directory path
+#define kDocumentDirectory NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0]
+#define kTempDirectory NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)[0]
+#define kLibraryDirectory NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES)[0]
 
 
 #endif /* PrefixHeader_pch */

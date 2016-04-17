@@ -64,13 +64,14 @@
     [self addSubview:_tipLabel];
     
     self.hasMore = YES;
+    [self startRotating];
 }
 
 
 -(void)setHasMore:(BOOL)hasMore{
     _hasMore = hasMore;
     
-    [self startRotating];
+//    [self startRotating];
     if (_hasMore) {
         _tipLabel.text = @"正在查找附近的人...";
     }else{

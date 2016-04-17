@@ -9,9 +9,11 @@
 #import "QYLoginVC.h"
 #import "AppDelegate.h"
 #import "QYAccount.h"
-#import "QYUserInfo.h"
+
+#import "QYChatManager.h"
 
 #import <AFNetworking.h>
+#import <AVIMClient.h>
 
 @interface QYLoginVC () <QYNetworkDelegate>
 @property (weak, nonatomic) IBOutlet UITextField *telNumTf;
@@ -45,16 +47,21 @@
 -(void)didFinishLogin:(id)responseObject success:(BOOL)success{
     if (success) {
         //TODO: 保存登录信息
-//        NSDictionary *dict = @{kAccountKeyToken : responseObject[kAccountKeyToken],
-//                               kAccountKeyUid : responseObject[kAccountKeyUid],
-//                               kAccountKeyUserInfo : responseObject[kAccountKeyUserInfo]};
         [[QYAccount currentAccount] saveAccount:responseObject];
-        
-        [self dismissViewControllerAnimated:YES completion:^{}];
-        
-        //更改当前应用的根视图控制器
-        AppDelegate *app = [UIApplication sharedApplication].delegate;
-        [app setRootViewControllerToHome];
+        //leanCloud上线
+        NSString *userId = [QYAccount currentAccount].userId;
+        [QYChatManager sharedManager].client = [[AVIMClient alloc] initWithClientId:userId];
+        [[QYChatManager sharedManager].client openWithCallback:^(BOOL succeeded, NSError *error) {
+            if (error) {
+                NSLog(@"client open failed : %@", error);
+                return;
+            }
+            [self dismissViewControllerAnimated:YES completion:^{}];
+            
+            //更改当前应用的根视图控制器
+            AppDelegate *app = [UIApplication sharedApplication].delegate;
+            [app setRootViewControllerToHome];
+        }];
     }else{
         if (responseObject) {
             [SVProgressHUD showErrorWithStatus:responseObject[kResponseKeyData]];

@@ -91,11 +91,21 @@
 -(void)getUserInfoWithParameters:(NSDictionary *)parameters{
     //TODO: 等待网络接口
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSDictionary *responseObject;
+        NSString *path = [[NSBundle mainBundle] pathForResource:@"users" ofType:@"plist"];
+        NSDictionary *responseObject = [NSDictionary dictionaryWithContentsOfFile:path];
         if ([self.delegate respondsToSelector:@selector(didGetUserInfo:success:)]) {
             [self.delegate didGetUserInfo:responseObject success:YES];
         }
     });
+}
+
+-(void)getFriendsListWithParameters:(NSDictionary *)parameters{
+    //TODO: 等待网络接口
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"users" ofType:@"plist"];
+    NSDictionary *responseObject = [NSDictionary dictionaryWithContentsOfFile:path];
+    if ([self.delegate respondsToSelector:@selector(didGetFriendsList:success:)]) {
+        [self.delegate didGetFriendsList:responseObject success:YES];
+    }
 }
 
 

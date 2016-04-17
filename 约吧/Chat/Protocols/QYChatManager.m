@@ -7,6 +7,8 @@
 //
 
 #import "QYChatManager.h"
+#import "QYAccount.h"
+#import "QYUserInfo.h"
 #import <AVOSCloudIM.h>
 #import <AVFile.h>
 
@@ -28,6 +30,9 @@
 
 -(void)sendMessage:(id)message{
     if ([message isKindOfClass:[NSString class]]) {
+        if ([self.delegate respondsToSelector:@selector(willSendMessage:)]) {
+            [self.delegate willSendMessage:message];
+        }
         [self sendCommonMessage:message];
         return;
     }
@@ -127,29 +132,102 @@
         
     }];
 }
+//
+//-(void)queryMessageFromCacheWithConversation:(AVIMConversation *)conversation limit:(NSInteger)limit completion:(QYQueryMessagesFromCacheCompletion)queryMessagesFromCacheCompletion{
+//    NSArray *objects = [_conversation queryMessagesFromCacheWithLimit:limit];
+//    if (queryMessagesFromCacheCompletion) {
+//        queryMessagesFromCacheCompletion(objects);
+//    }
+//}
 
-
--(void)queryHistoryMessagesWith:(NSArray *)clientIDs{
-    [_conversation queryMessagesWithLimit:kMessageLimit callback:^(NSArray *objects, NSError *error) {
+-(void)queryMessagesFromServerWithConversation:(AVIMConversation *)conversation beforeId:(NSString *)messageId limit:(NSInteger)limit{
+    [_conversation queryMessagesBeforeId:messageId timestamp:0 limit:20 callback:^(NSArray *objects, NSError *error) {
         if (!error) {
-            if ([self.delegate respondsToSelector:@selector(didQueryHistoryMessages:succeeded:)]) {
-                [self.delegate didQueryHistoryMessages:objects succeeded:YES];
+            if ([self.delegate respondsToSelector:@selector(didQueryMessagesFromServer:succeeded:)]) {
+                [self.delegate didQueryMessagesFromServer:objects succeeded:YES];
             }
             return;
         }
         
-        if ([self.delegate respondsToSelector:@selector(didQueryHistoryMessages:succeeded:)]) {
+        if ([self.delegate respondsToSelector:@selector(didQueryMessagesFromServer:succeeded:)]) {
             NSLog(@"%@", error);
-            [self.delegate didQueryHistoryMessages:nil succeeded:NO];
+            [self.delegate didQueryMessagesFromServer:nil succeeded:NO];
         }
     }];
+}
+
+-(void)createConversationWithUser:(NSString *)userId{
+    AVIMConversationQuery *query = [self.client conversationQuery];
+    [query whereKey:@"m" containsAllObjectsInArray:@[self.client.clientId, userId]];
+    [query whereKey:@"m" sizeEqualTo:2];
+    [query findConversationsWithCallback:^(NSArray *objects, NSError *error) {
+        if (objects.count == 0) {
+            NSString *conversationName = [NSString stringWithFormat:@"%@ and %@", self.client.clientId, userId];
+            [self.client createConversationWithName:conversationName clientIds:@[userId] attributes:nil options:AVIMConversationOptionNone callback:^(AVIMConversation *conversation, NSError *error) {
+                _conversation = conversation;
+            }];
+        }else{
+            _conversation = objects.firstObject;
+        }
+        
+        if ([self.delegate respondsToSelector:@selector(didCreateConversation:succeeded:)]) {
+            [self.delegate didCreateConversation:_conversation succeeded:YES];
+        }
+    }];
+    
+}
+
+-(void)findConversationWithUser:(NSString *)userId{
+//    [self.client openWithCallback:^(BOOL succeeded, NSError *error) {
+        AVIMConversationQuery *query = [self.client conversationQuery];
+        [query whereKey:@"m" containsAllObjectsInArray:@[self.client.clientId, userId]];
+        [query whereKey:@"m" sizeEqualTo:2];
+        [query findConversationsWithCallback:^(NSArray *objects, NSError *error) {
+            if (error) {
+                if ([self.delegate respondsToSelector:@selector(didFindConversation:succeeded:)]) {
+                    [self.delegate didFindConversation:objects.firstObject succeeded:NO];
+                }
+            }else{
+                if ([self.delegate respondsToSelector:@selector(didFindConversation:succeeded:)]) {
+                    [self.delegate didFindConversation:objects.firstObject succeeded:YES];
+                }
+            }
+        }];
+//    }];
+    
+}
+
+-(void)conversation:(AVIMConversation *)conversation didReceiveUnread:(NSInteger)unread{
+    //TODO: 未读消息显示/
+}
+
+-(void)conversation:(AVIMConversation *)conversation didReceiveCommonMessage:(AVIMMessage *)message{
+    if ([self.delegate respondsToSelector:@selector(didReceiveMessage:inConversation:)]) {
+        [self.delegate didReceiveMessage:message inConversation:conversation];
+    }else{
+        //TODO: 提示有新消息
+    }
+}
+
+-(void)conversation:(AVIMConversation *)conversation didReceiveTypedMessage:(AVIMTypedMessage *)message{
+    if ([self.delegate respondsToSelector:@selector(didReceiveTypedMessage:inConversation:)]) {
+        [self.delegate didReceiveTypedMessage:message inConversation:conversation];
+    }else{
+        //TODO: 提示有新消息
+    }
 }
 
 #pragma mark - setters
 -(void)setDelegate:(id)delegate{
     _delegate = delegate;
-    _client.delegate = delegate;
+//    self.client.delegate = delegate;
 }
+
+-(void)setClient:(AVIMClient *)client{
+    _client = client;
+    _client.delegate = self;
+}
+
 
 
 @end

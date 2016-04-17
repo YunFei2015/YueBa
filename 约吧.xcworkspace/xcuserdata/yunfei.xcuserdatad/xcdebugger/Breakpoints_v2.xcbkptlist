@@ -6,16 +6,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "&#x7ea6;&#x5427;/Chat/Protocols/QYChatManager.m"
-            timestampString = "481532240.939791"
+            filePath = "Pods/SWRevealViewController/SWRevealViewController/SWRevealViewController.m"
+            timestampString = "482392537.095"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "100"
-            endingLineNumber = "100"
-            landmarkName = "-sendImageMessageWithData:"
+            startingLineNumber = "1496"
+            endingLineNumber = "1496"
+            landmarkName = "-_frontViewDeploymentForNewFrontViewPosition:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

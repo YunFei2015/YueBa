@@ -41,4 +41,11 @@
     self.layer.mask = layer;
     [self setNeedsDisplay];
 }
+
++(void)drawRoundCornerOnImageView:(UIImageView *)imageView{
+    UIGraphicsBeginImageContextWithOptions(imageView.bounds.size, NO, 1.0);
+    [[UIBezierPath bezierPathWithRoundedRect:imageView.bounds cornerRadius:imageView.bounds.size.width] addClip];
+    [imageView drawRect:imageView.bounds];
+    imageView.image = UIGraphicsGetImageFromCurrentImageContext();
+}
 @end

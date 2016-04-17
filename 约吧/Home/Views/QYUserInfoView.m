@@ -27,7 +27,7 @@
 -(void)setUserInfo:(QYUserInfo *)userInfo{
     _userInfo = userInfo;
     
-    _iconImageView.image = userInfo.iconImage;
+    _iconImageView.image = [UIImage imageNamed:userInfo.iconUrl];
     _nameAndAgeLabel.text = [NSString stringWithFormat:@"%@, %ld", userInfo.name, userInfo.age];
 }
 

@@ -19,6 +19,9 @@
 @property(nonatomic,strong)NSArray *arr;
 //标记当前是已经高亮 left Or right
 @property(nonatomic)ENLIKETYPE type;
+
+@property (strong, nonatomic) QYUserInfo *currentUser;
+
 @end
 
 
@@ -71,7 +74,6 @@
             }
         }
     }
-    
 }
 
 #pragma mark 左右滑动
@@ -86,18 +88,22 @@
         view.alpha = .2;
         
     }completion:^(BOOL finished) {
+        //按钮动画
+        if ([self.delegate respondsToSelector:@selector(ChangeValueType:)]) {
+            [self.delegate ChangeValueType:dlike];
+        }
+        
+        //将当前用户标记为like或dislike
+        if ([self.delegate respondsToSelector:@selector(markUser:asLike:)]) {
+            [self.delegate markUser:_currentUser asLike:dlike];
+        }
+        
+        //显示下一个用户
         [self nextUserBehindView:view];
-//        [self sendSubviewToBack:view];
-//        view.center    = CGPointMake(self.frame.size.width/2.0,self.frame.size.height/2.0);
-//        view.transform = CGAffineTransformMakeScale(1-.05*4, 1-.05*4);
-//        view.transform = CGAffineTransformMakeTranslation(0,3*Kspace);
-//        view.alpha     = 1;
-//        [self changeTransform:view.center];
-
         [self FinishedInit];
     }];
-    
 }
+
 
 -(void)Action:(UIPanGestureRecognizer *)gesture{
     switch (gesture.state) {
@@ -119,23 +125,8 @@
             NSLog(@"=====结束");
             CGPoint point=[gesture velocityInView:gesture.view.superview];
             if (ABS(point.x)>1500){
-            //快速滑动
-               [UIView animateWithDuration:.3 animations:^{
-             //当前试图移除屏幕
-               float moveX         = point.x>0?kScreenW*1.5:kScreenW/2.0*-1;
-               gesture.view.center = CGPointMake(moveX, gesture.view.center.y);
-               gesture.view.alpha=.2;
-           }completion:^(BOOL finished) {
-               UIView *view = gesture.view;
-               [self nextUserBehindView:view];
-//               [self sendSubviewToBack:gesture.view];
-//               gesture.view.center = CGPointMake(self.frame.size.width/2.0,self.frame.size.height/2.0);
-//               view.transform      = CGAffineTransformMakeScale(1-.05*4, 1-.05*4);
-//               view.transform      = CGAffineTransformMakeTranslation(0,3*Kspace);
-//               gesture.view.alpha  = 1;
-//               [self changeTransform:gesture.view.center];
-           }];
-            
+                ENLIKETYPE isLike = point.x > 0 ? like : dislike;
+                [self selectLikeOnce:isLike];
         }else{
                 /**
                  duration: 动画时长
@@ -163,7 +154,6 @@
         QYUserInfoView *view = [[NSBundle mainBundle] loadNibNamed:@"QYUserInfoView" owner:nil options:nil][0];
         view.frame = CGRectMake(0,0,self.frame.size.width,self.frame.size.height);
 //        view.image=[UIImage imageNamed:[NSString stringWithFormat:@"%ld.jpg",i]];
-//        view.image = [_users[i] iconImage];
         view.userInfo = _users[count - i];
         [view addGestureRecognizer:[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(Action:)]];
         view.tag=i+1;
@@ -175,23 +165,18 @@
     
         [self addSubview:view];
     }
-    [_users removeObjectsInRange:NSMakeRange(0, count)];
+    _currentUser = _users.firstObject;
 }
 
 -(void)setUsers:(NSMutableArray *)users{
     _users = users;
-
+    
     [self addSubviewForDisplay];
 }
 
 -(void)nextUserBehindView:(UIView *)view{
-    if (_users.count == 0) {
+    if (_users.count < 4) {//如果当前已经是倒数第4个用户了，就把该视图直接删除
         [view removeFromSuperview];
-        if (self.subviews.count == 0) {
-            if ([self.delegate respondsToSelector:@selector(noMoreUser)]) {
-                [self.delegate noMoreUser];
-            }
-        }
     }else{
         //UI
         [self sendSubviewToBack:view];
@@ -201,12 +186,14 @@
         view.alpha  = 1;
         [self changeTransform:view.center];
         
-        //data
-        QYUserInfoView *userInfoView = (QYUserInfoView *)view;
-        userInfoView.userInfo = _users.firstObject;
-        [_users removeObjectAtIndex:0];
+        //视图被移到最后方后，填充内容
+        //视图内容永远对应数组中第4个元素（每次移除最上面都会同步移除对应数据）
+        QYUserInfoView *infoView = (QYUserInfoView *)view;
+        infoView.userInfo = _users[3];
     }
     
+    //注意：由于_users是强引用，因此_users和users是指向同一个内存地址的两个指针，like或dislike一个用户后，在homeVC已经删除了users[0]，因此_users的第0个元素就随之后移。
+    _currentUser = _users.firstObject;
 }
 
 

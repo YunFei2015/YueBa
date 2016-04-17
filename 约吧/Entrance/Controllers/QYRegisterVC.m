@@ -8,9 +8,12 @@
 
 #import "QYRegisterVC.h"
 #import "QYVerifyCodeBtn.h"
+#import "QYAccount.h"
+#import "QYChatManager.h"
 #import "NSString+Extension.h"
 #import <AFNetworking.h>
 #import <SVProgressHUD.h>
+#import <AVIMClient.h>
 
 @interface QYRegisterVC () <UITextFieldDelegate, QYNetworkDelegate>
 @property (weak, nonatomic) IBOutlet QYVerifyCodeBtn *getVerifyCodeBtn;
@@ -189,12 +192,21 @@
         //            NSDictionary *data = responseObject[kResponseKeyData];
         //            NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:data[kAccountKeyToken], kAccountKeyToken, data[kAccountKeyUid], kAccountKeyUid, nil];
         //            [[QYAccount currentAccount] saveAccount:dict];
+        //leanCloud上线
+        NSString *userId = [QYAccount currentAccount].userId;
+        [QYChatManager sharedManager].client = [[AVIMClient alloc] initWithClientId:userId];
+        [[QYChatManager sharedManager].client openWithCallback:^(BOOL succeeded, NSError *error) {
+            if (error) {
+                NSLog(@"client open failed : %@", error);
+                return;
+            }
+            //进入下一界面
+            NSNumber *userId = responseObject[kResponseKeyData][kNetworkKeyUserId];
+            UIViewController *baseInfoVC = [self.storyboard instantiateViewControllerWithIdentifier:kUserBaseInfo];
+            [baseInfoVC setValue:userId forKey:@"userId"];
+            [self.navigationController pushViewController:baseInfoVC animated:YES];
+        }];
         
-        //进入下一界面
-        NSNumber *userId = responseObject[kResponseKeyData][kNetworkKeyUserId];
-        UIViewController *baseInfoVC = [self.storyboard instantiateViewControllerWithIdentifier:kUserBaseInfo];
-        [baseInfoVC setValue:userId forKey:@"userId"];
-        [self.navigationController pushViewController:baseInfoVC animated:YES];
     }else{
         //提示用户注册失败，说明失败原因
         if (responseObject) {

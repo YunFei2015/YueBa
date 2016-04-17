@@ -24,4 +24,6 @@
  *  @param frame 要裁剪的图层位置和大小
  */
 -(void)maskLayerToView:(UIView *)view withFrame:(CGRect)frame;
+
++(void)drawRoundCornerOnImageView:(UIImageView *)imageView;
 @end

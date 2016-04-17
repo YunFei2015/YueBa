@@ -73,8 +73,9 @@
     if (result) {
         NSLog(@"发起雷达检索成功");
     }else{
-        NSLog(@"发起雷达检索失败");
+        NSLog(@"发起雷达检索失败,%f,%f", location.latitude, location.longitude);
     }
+    
 }
 
 -(void)uploadUserInfoWithLocation:(CLLocationCoordinate2D)location{
@@ -93,7 +94,7 @@
 #pragma mark - BMKLocation Service Delegate
 -(void)didUpdateBMKUserLocation:(BMKUserLocation *)userLocation{
     CLLocation *location = userLocation.location;
-    [self.locationService stopUserLocationService];
+//    [self.locationService stopUserLocationService];
     NSLog(@"%f,%f", location.coordinate.latitude, location.coordinate.longitude);
     if ([self.delegate respondsToSelector:@selector(didFinishUpdateLocation:success:)]) {
         [self.delegate didFinishUpdateLocation:location success:YES];
@@ -138,17 +139,17 @@
 
 -(void)onGetRadarNearbySearchResult:(BMKRadarNearbyResult *)result error:(BMKRadarErrorCode)error{
     if (error == BMK_RADAR_NO_ERROR) {
-        if ([self.delegate respondsToSelector:@selector(didFinishSearchNearbyUsers:success:)]) {
-            [self.delegate didFinishSearchNearbyUsers:result success:YES];
+        if ([self.radarDelegate respondsToSelector:@selector(didFinishSearchNearbyUsers:success:)]) {
+            [self.radarDelegate didFinishSearchNearbyUsers:result success:YES];
         }
     }else if (error == BMK_RADAR_NO_RESULT){
-        if ([self.delegate respondsToSelector:@selector(didFinishSearchNearbyUsers:success:)]) {
-            [self.delegate didFinishSearchNearbyUsers:nil success:YES];
+        if ([self.radarDelegate respondsToSelector:@selector(didFinishSearchNearbyUsers:success:)]) {
+            [self.radarDelegate didFinishSearchNearbyUsers:nil success:YES];
         }
     }else{
-        if ([self.delegate respondsToSelector:@selector(didFinishSearchNearbyUsers:success:)]) {
+        if ([self.radarDelegate respondsToSelector:@selector(didFinishSearchNearbyUsers:success:)]) {
             NSLog(@"雷达检索失败：%u", error);
-            [self.delegate didFinishSearchNearbyUsers:nil success:NO];
+            [self.radarDelegate didFinishSearchNearbyUsers:nil success:NO];
         }
     }
 }

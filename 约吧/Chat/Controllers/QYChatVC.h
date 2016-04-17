@@ -7,17 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-@class FriendModel;
-@class AVIMConversation;
+@class QYUserInfo;
 
 @interface QYChatVC : UIViewController
-@property (strong, nonatomic) NSString *userName;
-@property (strong, nonatomic) NSString *targetUserName;
-@property (strong, nonatomic) AVIMConversation *conversation;
-@property (strong, nonatomic) FriendModel *friendModel;
+@property (strong, nonatomic) QYUserInfo *user;
 
-
-//-(instancetype)initWithFriend:(FriendModel *)friendModel;
 
 @end
 

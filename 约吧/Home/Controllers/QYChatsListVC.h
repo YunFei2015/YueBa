@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface QYMessagesListVC : UIViewController
+@interface QYChatsListVC : UIViewController
 
 @end

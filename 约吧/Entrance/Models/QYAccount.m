@@ -11,7 +11,6 @@
 #import "NSString+Extension.h"
 
 @interface QYAccount () <NSCoding>
-@property (strong, nonatomic) NSString *userId;
 @property (strong, nonatomic) NSString *token;
 @property (strong, nonatomic) NSDictionary *userInfo;
 @end

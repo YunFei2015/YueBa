@@ -17,13 +17,25 @@
 @class AVIMImageMessage;
 @class AVIMLocationMessage;
 
+//typedef void(^QYQueryMessagesFromCacheCompletion)(NSArray *);
+
 @protocol QYChatManagerDelegate <NSObject>
 @optional
-//-(void)willSendLocationMessage:(AVIMLocationMessage *)message snapshot:(UIImage *)snapshot;
+-(void)didQueryMessagesFromCache:(NSArray *)messages succeeded:(BOOL)succeeded;
+-(void)didQueryMessagesFromServer:(NSArray *)messages succeeded:(BOOL)succeeded;
+-(void)didCreateConversation:(AVIMConversation *)conversation succeeded:(BOOL)succeeded;
+-(void)didFindConversation:(AVIMConversation *)conversation succeeded:(BOOL)succeeded;
+
+//发送消息代理
+-(void)willSendMessage:(AVIMMessage *)message;
 -(void)willSendTypedMessage:(AVIMTypedMessage *)message;
 -(void)didSendTypedMessage:(AVIMTypedMessage *)message succeeded:(BOOL)succeeded;
 -(void)didSendMessage:(AVIMMessage *)message succeeded:(BOOL)succeeded;
--(void)didQueryHistoryMessages:(NSArray *)historyMessages succeeded:(BOOL)succeeded;
+
+//接收消息代理
+-(void)didReceiveMessage:(AVIMMessage *)message inConversation:(AVIMConversation *)conversation;
+-(void)didReceiveTypedMessage:(AVIMTypedMessage *)message inConversation:(AVIMConversation *)conversation;
+-(void)didReceiveUnread:(NSInteger)unread inConversation:(AVIMConversation *)conversation;
 @end
 
 @interface QYChatManager : NSObject
@@ -32,10 +44,20 @@
 @property (nonatomic) id delegate;
 
 +(instancetype)sharedManager;
+/**
+ *  创建会话
+ *
+ *  @param userId 目标用户ID
+ */
+-(void)createConversationWithUser:(NSString *)userId;
+
+-(void)findConversationWithUser:(NSString *)userId;
+
 -(void)sendMessage:(id)message;
--(void)sendVoiceMessage:(NSString *)voicePath voiceDuration:(NSTimeInterval)duration;
+//-(void)sendVoiceMessage:(NSString *)voicePath voiceDuration:(NSTimeInterval)duration;
 -(void)sendVoiceMessage;
 -(void)sendImageMessageWithData:(NSData *)data;
 -(void)sendLocationMessageWithAnnotation:(QYPinAnnotation *)annotation;
--(void)queryHistoryMessagesWith:(NSArray *)clientIDs;
+//-(void)queryMessageFromCacheWithConversation:(AVIMConversation *)conversation limit:(NSInteger)limit completion:(QYQueryMessagesFromCacheCompletion)queryMessagesFromCacheCompletion;
+-(void)queryMessagesFromServerWithConversation:(AVIMConversation *)conversation beforeId:(NSString *)messageId limit:(NSInteger)limit;
 @end

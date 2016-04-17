@@ -8,12 +8,14 @@
 
 #import "AppDelegate.h"
 #import "QYAccount.h"
+#import "QYLocationManager.h"
+#import "QYChatManager.h"
 #import <AVOSCloud.h>
 #import <BaiduMapAPI_Base/BMKMapManager.h>
 #import <Bugtags/Bugtags.h>
 //如果使用了实时通信模块，请添加下列导入语句到头部：
 #import <AVOSCloudIM.h>
-@interface AppDelegate ()
+@interface AppDelegate () <QYLocationManagerDelegate>
 
 @end
 
@@ -22,13 +24,15 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    _nearbyUsers = [NSMutableArray array];
+    [self updateLocation];
     
     //Bugtags
     [Bugtags startWithAppKey:@"e827b69f5adfec0463738ac7521f7824" invocationEvent:BTGInvocationEventBubble];
     
     //AVOSCloud
-    [AVOSCloud setApplicationId:@"B7wqGimTT20zaEdIavRzNWa0-gzGzoHsz"
-                      clientKey:@"dpt10aYiTbW4K1r3lznYWcrr"];
+    [AVOSCloud setApplicationId:@"aMH46TYlke0QkgVqjDCFOWfW-gzGzoHsz"
+                      clientKey:@"wAHzxY32rrdxx0JVB1VM2BWo"];
     
     //百度地图
     _mapManager = [[BMKMapManager alloc]init];
@@ -42,6 +46,16 @@
     BOOL isLogin = [[QYAccount currentAccount] isLogin];
     if (!isLogin) {
         [self setRootViewControllerToEntrance];
+    }else{
+        //leanCloud上线
+        NSString *userId = [QYAccount currentAccount].userId;
+        [QYChatManager sharedManager].client = [[AVIMClient alloc] initWithClientId:userId];
+        [[QYChatManager sharedManager].client openWithCallback:^(BOOL succeeded, NSError *error) {
+            if (error) {
+                NSLog(@"client open failed : %@", error);
+                return;
+            }
+        }];
     }
     
     return YES;
@@ -54,9 +68,29 @@
 }
 
 -(void)setRootViewControllerToEntrance{
+    //切换到入口界面
     UIStoryboard *entranceStoryboard = [UIStoryboard storyboardWithName:kEntranceStoryboard bundle:nil];
     UIViewController *entranceVC = [entranceStoryboard instantiateViewControllerWithIdentifier:kEntranceVCIdentifier];
     _window.rootViewController = entranceVC;
+}
+
+-(void)updateLocation{
+    [QYLocationManager sharedInstance].delegate = self;
+    [[QYLocationManager sharedInstance] startToUpdateLocation];
+}
+
+-(void)didFinishUpdateLocation:(CLLocation *)location success:(BOOL)success{
+    _location = location;
+    if (_location) {
+        [[QYLocationManager sharedInstance] uploadUserInfoWithLocation:location.coordinate];
+        //内存中没有之前扫描过的记录，才将新的位置传给homeVC
+        if (self.nearbyUsers.count == 0 && self.locationSuccess) {
+            self.locationSuccess(_location);
+        }
+    }else{
+        NSLog(@"定位失败，请打开定位服务");
+    }
+    
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -79,6 +113,7 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    _locationSuccess = nil;
 }
 
 @end

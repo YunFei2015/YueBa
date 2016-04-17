@@ -7,10 +7,13 @@
 //
 
 #import "QYChatVC.h"
+#import "AppDelegate.h"
+
+//controllers
 #import "QYMapVC.h"
 
 //Models
-#import "FriendModel.h"
+#import "QYUserInfo.h"
 
 //Views
 #import "QYMessageCell.h"
@@ -22,7 +25,8 @@
 #import "QYChatManager.h"
 #import "QYAudioRecorder.h"
 #import "QYAudioPlayer.h"
-#import "QYDataManager.h"
+#import "QYDataStorage.h"
+#import "QYUserStorage.h"
 #import "QYNetworkManager.h"
 #import "QYImagesPicker.h"
 
@@ -30,6 +34,7 @@
 #import "UIView+Extension.h"
 #import <AVOSCloudIM.h>
 #import <AVFile.h>
+#import <AVObject.h>
 #import <Masonry.h>
 
 @interface QYChatVC () <AVIMClientDelegate, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, QYChatManagerDelegate, MessageBarDelegate, QYAudioPlayerDelegate, QYFunctionViewDelegate, QYImagesPickerDelegate>
@@ -41,29 +46,18 @@
 @property (strong, nonatomic) QYAudioRecorder *voiceRecorder;
 @property (strong, nonatomic) QYVoiceRecordingView *voiceRecordingView;
 
-
+@property (strong, nonatomic) AVIMConversation *conversation;
 @property (strong, nonatomic) QYMessageCell *currentSelectedVoiceCell;
 @property (strong, nonatomic) QYMessageCell *lastSelectedVoiceCell;
+
+@property (strong, nonatomic) id lastMessage;
+@property (nonatomic) NSInteger lastMessageTime;
 
 
 
 @end
 
 @implementation QYChatVC
-
-//#pragma mark - init
-//-(instancetype)initWithFriend:(FriendModel *)friendModel{
-//    self = [super init];
-//    if (self) {
-//        _userName = [[NSUserDefaults standardUserDefaults] valueForKey:@"userID"];
-//        [ChatManager sharedManager].userID = _userName;
-//        [ChatManager sharedManager].targetUserID = _targetUserName;
-//        [ChatManager sharedManager].delegate = self;
-//        [[ChatManager sharedManager] queryHistoryMessagesWith:@[_targetUserName]];
-//    }
-//    return self;
-//}
-
 #pragma mark - Getters
 -(UITableView *)tableView{
     if (_tableView == nil) {
@@ -107,19 +101,17 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    
+    [self configNavigationBar];
     [self addMessageBar];
     [self.view addSubview:self.tableView];
     
     _messages = [NSMutableArray array];
     
-//    _userName = [[NSUserDefaults standardUserDefaults] valueForKey:@"userID"];
-//    _targetUserName = _friendModel.userID;
-    [QYChatManager sharedManager].conversation = _conversation;
     [QYChatManager sharedManager].delegate = self;
-    [[QYChatManager sharedManager] queryHistoryMessagesWith:@[_targetUserName]];
- 
     [QYAudioPlayer sharedInstance].delegate = self;
     [QYImagesPicker sharedInstance].delegate = self;
+    [[QYChatManager sharedManager] createConversationWithUser:_user.userId];
 }
 
 -(void)dealloc{
@@ -131,7 +123,32 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
 }
 
+-(void)viewWillDisappear:(BOOL)animated{
+    [self postLastMessageDidChangedNotification];
+    
+    //取消静音，开始接收此对话的离线推送
+    [_conversation unmuteWithCallback:^(BOOL succeeded, NSError *error) {
+        if (error) {
+            NSLog(@"%@", error);
+        }
+    }];
+    
+    [super viewWillDisappear:animated];
+    
+}
+
+
 #pragma mark - Custom Methods
+-(void)configNavigationBar{
+    UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:self action:@selector(backAction)];
+    self.navigationItem.leftBarButtonItem = leftItem;
+}
+
+-(void)backAction{
+    [self.navigationController popViewControllerAnimated:YES];
+    self.revealViewController.frontViewPosition = FrontViewPositionLeftSide;
+}
+
 - (void)addMessageBar{
     _messageBar = [[NSBundle mainBundle] loadNibNamed:@"MessageBar" owner:nil options:nil][0];
     [self.view addSubview:_messageBar];
@@ -141,7 +158,6 @@
 }
 
 -(void)insertRowWithMessage:(id)message{
-//    __weak QYChatVC *weakSelf = self;
     WEAKSELF
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSMutableArray *messages = [NSMutableArray arrayWithArray:weakSelf.messages];
@@ -163,8 +179,6 @@
     }
 }
 
-
-
 -(NSString *)getRecorderPath{
     NSDate *now = [NSDate date];
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
@@ -174,6 +188,35 @@
     return recorderPath;
 }
 
+-(void)postLastMessageDidChangedNotification{
+    if (_lastMessage) {
+        if ([_lastMessage isKindOfClass:[AVIMTypedMessage class]]) {
+            AVIMTypedMessage *typedMessage = (AVIMTypedMessage *)_lastMessage;
+            switch (typedMessage.mediaType) {
+                case kAVIMMessageMediaTypeAudio:
+                    _user.message = @"[语音]";
+                    break;
+                    
+                case kAVIMMessageMediaTypeImage:
+                    _user.message = @"[图片]";
+                    break;
+                    
+                case kAVIMMessageMediaTypeLocation:
+                    _user.message = @"[位置]";
+                    break;
+                    
+                default:
+                    break;
+            }
+        }else{
+            AVIMMessage *commonMessage = (AVIMMessage *)_lastMessage;
+            _user.message = commonMessage.content;
+        }
+        _user.messageTime = _lastMessageTime;
+        [[QYUserStorage sharedInstance] updateUserMessage:_user.message time:_user.messageTime withUserId:_user.userId];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kLastMessageDidChangedNotification object:self userInfo:nil];
+    }
+}
 
 #pragma mark - Custom Methods - audio recorder
 -(void)prepareRecordWithCompletion:(QYPrepareRecorderCompletion)completion{
@@ -374,9 +417,23 @@
 
 -(void)toShareLocation{
     //共享位置
-    QYMapVC *mapVC = [[QYMapVC alloc] init];
-    UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:mapVC];
-    [self presentViewController:navVC animated:YES completion:nil];
+    AppDelegate *app = [UIApplication sharedApplication].delegate;
+    if (app.location) {
+        QYMapVC *mapVC = [[QYMapVC alloc] init];
+        UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:mapVC];
+        [self presentViewController:navVC animated:YES completion:nil];
+    }else{
+        UIAlertController *controller = [UIAlertController alertControllerWithTitle:@"提示" message:@"请打开定位服务" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *action = [UIAlertAction actionWithTitle:@"知道了" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+            //TODO: 跳转到设置界面
+        }];
+        [controller addAction:action];
+        
+        UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"稍后再说" style:UIAlertActionStyleCancel handler:nil];
+        [controller addAction:action1];
+        [self presentViewController:controller animated:YES completion:nil];
+    }
+    
 }
 
 #pragma mark - QYImagesPicker Delegate
@@ -394,8 +451,64 @@
 }
 
 #pragma mark - Chat Manager Delegate
+-(void)didCreateConversation:(AVIMConversation *)conversation succeeded:(BOOL)succeeded{
+    if (succeeded) {
+        _conversation = conversation;
+        //开启静音，不再接收此对话的离线推送
+        [_conversation muteWithCallback:^(BOOL succeeded, NSError *error) {
+            if (error) {
+                NSLog(@"%@", error);
+            }
+        }];
+        
+        //查询聊天记录
+        NSArray *messages = [_conversation queryMessagesFromCacheWithLimit:20];
+        if (messages.count == 0) {
+            return;
+        }
+        
+        NSMutableArray *indexPaths = [[NSMutableArray alloc] initWithCapacity:messages.count];
+        NSMutableIndexSet *indexSet = [[NSMutableIndexSet alloc] init];
+        [messages enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:idx inSection:0];
+            [indexPaths addObject:indexPath];
+            [indexSet addIndex:idx];
+        }];
+        NSMutableArray *muMessages = [[NSMutableArray alloc] initWithArray:self.messages];
+        [muMessages insertObjects:messages atIndexes:indexSet];
+        WEAKSELF
+        dispatch_async(dispatch_get_main_queue(), ^{
+            weakSelf.messages = muMessages;
+            [weakSelf.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationBottom];
+            [weakSelf.tableView scrollToRowAtIndexPath:indexPaths.lastObject atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+        });
+    }
+}
+
+
+
+-(void)willSendMessage:(AVIMMessage *)message{
+    
+//    AVObject *object = [AVObject objectWithClassName:@"QYCommonMessage"];
+//    [object setObject:message forKey:@"messsage"];
+//    [object setObject:_conversation.conversationId forKey:@"conversationId"];
+//    [object setObject:@(message.sendTimestamp) forKey:@"timeStamp"];
+}
+
+-(void)willSendTypedMessage:(AVIMTypedMessage *)message{
+    
+    //将文件上传至云端
+    [message.file saveInBackground];
+    [message.file getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {}];
+    [self insertRowWithMessage:message];
+    //TODO: 风火轮，正在发送
+}
+
 -(void)didSendMessage:(AVIMMessage *)message succeeded:(BOOL)succeeded{
     if (succeeded) {
+        _lastMessage = message;
+        _lastMessageTime = message.sendTimestamp;
+        
         NSString *messageText = message.content;
         //FIXME: 空格的检测要在在发送成功之前处理
         NSString *regex = @" *";//任意个空格
@@ -417,46 +530,25 @@
     [self presentViewController:controller animated:YES completion:nil];
 }
 
--(void)willSendTypedMessage:(AVIMTypedMessage *)message{
-    [message.file getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {}];
-    [self insertRowWithMessage:message];
-    //TODO: 风火轮，正在发送
-}
+
 
 -(void)didSendTypedMessage:(AVIMTypedMessage *)message succeeded:(BOOL)succeeded{
+    _lastMessage = message;
+    _lastMessageTime = message.sendTimestamp;
+
     //TODO: 发送成功，风火轮停止；发送失败，提示发送失败
     
 }
 
--(void)didQueryHistoryMessages:(NSArray *)historyMessages succeeded:(BOOL)succeeded{
-    if (!succeeded) {
-        NSLog(@"历史消息查询失败");
-        return;
-    }
-    if (historyMessages.count == 0) {
-        return;
-    }
-    
-    NSMutableArray *indexPaths = [[NSMutableArray alloc] initWithCapacity:historyMessages.count];
-    NSMutableIndexSet *indexSet = [[NSMutableIndexSet alloc] init];
-    [historyMessages enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:idx inSection:0];
-        [indexPaths addObject:indexPath];
-        [indexSet addIndex:idx];
-    }];
-    NSMutableArray *messages = [[NSMutableArray alloc] initWithArray:self.messages];
-    [messages insertObjects:historyMessages atIndexes:indexSet];
-    WEAKSELF
-    dispatch_async(dispatch_get_main_queue(), ^{
-        weakSelf.messages = messages;
-        [weakSelf.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationBottom];
-        [weakSelf.tableView scrollToRowAtIndexPath:indexPaths.lastObject atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-    });
+-(void)didReceiveMessage:(AVIMMessage *)message inConversation:(AVIMConversation *)conversation{
+    _lastMessage = message;
+    _lastMessageTime = message.deliveredTimestamp;
+    [self insertRowWithMessage:message];
 }
 
-
-#pragma mark - AVIM Client Delegate
--(void)conversation:(AVIMConversation *)conversation didReceiveTypedMessage:(AVIMTypedMessage *)message{
+-(void)didReceiveTypedMessage:(AVIMTypedMessage *)message inConversation:(AVIMConversation *)conversation{
+    _lastMessage = message;
+    _lastMessageTime = message.deliveredTimestamp;
     //下载富文本附件
     [message.file getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
         if (error) {
@@ -467,11 +559,6 @@
     
     [self insertRowWithMessage:message];
 }
-
--(void)conversation:(AVIMConversation *)conversation didReceiveCommonMessage:(AVIMMessage *)message{
-    [self insertRowWithMessage:message];
-}
-
 
 #pragma mark - Table View Delegate
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
@@ -518,7 +605,7 @@
     
     
     QYMessageCell *cell;
-    if ([[message clientId] isEqualToString:_userName]) {
+    if ([[message clientId] isEqualToString:[QYAccount currentAccount].userId]) {
         cell = [tableView dequeueReusableCellWithIdentifier:kRightCellIdentifier];
         if (!cell) {
             cell = [[NSBundle mainBundle] loadNibNamed:kRightMessageCellNib owner:nil options:nil][0];
@@ -526,7 +613,7 @@
         
     }
     
-    if ([[message clientId] isEqualToString:_targetUserName]) {
+    if ([[message clientId] isEqualToString:_user.userId]) {
         cell = [tableView dequeueReusableCellWithIdentifier:kLeftCellIdentifier];
         if (!cell) {
             cell = [[NSBundle mainBundle] loadNibNamed:kLeftMessageCellNib owner:nil options:nil][0];

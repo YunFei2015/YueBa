@@ -7,6 +7,7 @@
 //
 
 #import "QYMapVC.h"
+#import "AppDelegate.h"
 #import "QYMapAddrCell.h"
 #import "QYCurrentAnnotation.h"
 #import "QYCurrentAnnotationView.h"
@@ -57,9 +58,19 @@
     
     self.addrListTableView.delegate = self;
     self.addrListTableView.dataSource = self;
-    //开始定位
+    
+    //拿到当前位置
+    AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
+    CLLocation *location = appDelegate.location;
+    NSLog(@"%f,%f", location.coordinate.latitude, location.coordinate.longitude);
+    _currentLocation = location;
+    
+    //在地图上标注当前位置
+    [self configMapWithLocation:_currentLocation];
+    
+    //代理
     [QYLocationManager sharedInstance].delegate = self;
-    [[QYLocationManager sharedInstance] startToUpdateLocation];
+//    [[QYLocationManager sharedInstance] startToUpdateLocation];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locateAddress:) name:kAddressToLocateNotification object:self.searchController.searchResultsUpdater];
 }
@@ -102,7 +113,7 @@
 
 //取消位置共享
 -(void)cancelSharing{
-    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 //在地图上标注当前位置
@@ -169,18 +180,18 @@
 //}
 
 #pragma mark - QYLocationManager Delegate
--(void)didFinishUpdateLocation:(CLLocation *)location success:(BOOL)success{
-    NSLog(@"%f,%f", location.coordinate.latitude, location.coordinate.longitude);
-    //用户当前位置
-    _currentLocation = location;
-    
-    //在地图上标注当前位置
-    if (success) {
-        [self configMapWithLocation:_currentLocation];
-        [QYLocationManager sharedInstance] ;
-    }
-    
-}
+//-(void)didFinishUpdateLocation:(CLLocation *)location success:(BOOL)success{
+//    NSLog(@"%f,%f", location.coordinate.latitude, location.coordinate.longitude);
+//    //用户当前位置
+//    _currentLocation = location;
+//    
+//    //在地图上标注当前位置
+//    if (success) {
+//        [self configMapWithLocation:_currentLocation];
+//        [QYLocationManager sharedInstance] ;
+//    }
+//    
+//}
 
 -(void)didGetLocation:(CLLocationCoordinate2D)location success:(BOOL)success{
     if (success) {

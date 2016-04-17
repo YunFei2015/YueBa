@@ -18,7 +18,7 @@ typedef enum : NSUInteger {
 
 -(void)ChangeValueType:(ENLIKETYPE)type;
 -(void)FinishendValueType;
--(void)noMoreUser;
+-(void)markUser:(QYUserInfo *)user asLike:(BOOL)isLike;
 
 @end
 

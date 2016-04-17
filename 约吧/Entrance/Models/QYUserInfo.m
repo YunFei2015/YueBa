@@ -7,21 +7,32 @@
 //
 
 #import "QYUserInfo.h"
+#import <AVIMMessage.h>
 
 @implementation QYUserInfo
-//@dynamic userId;
-//@dynamic isMan;
-//@dynamic age;
-//@dynamic iconImage;
-//@dynamic name;
 
 -(instancetype)initWithDictionary:(NSDictionary *)dict{
     self = [super init];
     if (self) {
         _userId = dict[kNetworkKeyUserId];
-        _isMan = NO;
-        _age = 28;
-        _iconImage = [UIImage imageNamed:@"2"];
+        _isMan = dict[@"sex"];
+        _age = [dict[@"age"] integerValue];
+        _iconUrl = dict[@"iconUrl"];
+        _name = dict[@"name"];
+        _matchTime = [NSDate dateWithTimeIntervalSince1970:[dict[@"matchTime"] integerValue]];
+        if (dict[@"lastMessage"] == nil || dict[@"lastMessage"] == [NSNull null]) {
+            _message = nil;
+        }else{
+            _message = dict[@"lastMessage"];
+        }
+
+        
+        if (dict[@"lastMessgeTime"] == nil || dict[@"lastMessgeTime"] == [NSNull null]) {
+            _messageTime = 0;
+        }else{
+            _messageTime = [dict[@"lastMessgeTime"] integerValue];
+        }
+        
     }
     return self;
 }

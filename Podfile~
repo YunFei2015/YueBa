@@ -5,13 +5,15 @@
 
 target '约吧' do
 pod 'AVOSCloud'
-pod 'AVOSCloudIM'
+#pod 'AVOSCloudIM'
 pod 'Masonry'
 pod 'AFNetworking'
 pod 'SDWebImage'
+pod 'FMDB'
 pod 'BaiduMapKit'
 pod 'SWRevealViewController'
 pod 'SVProgressHUD'
+pod 'MJRefresh'
 pod 'Bugtags'
 end
 
