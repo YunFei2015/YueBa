@@ -7,12 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-@class QYChatModel;
 @class QYUserInfo;
+@class AVIMConversation;
 
 @interface QYChatCell : UITableViewCell
-@property (strong, nonatomic) QYChatModel *chat;
 @property (strong, nonatomic) QYUserInfo *user;
-//@property (strong, nonatomic) NSString *message;
+@property (strong, nonatomic) AVIMConversation *conversation;
 
 @end

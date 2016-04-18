@@ -11,6 +11,7 @@
 #import "QYPinAnnotation.h"
 @class AVIMClient;
 @class AVIMConversation;
+@class AVIMKeyedConversation;
 @class AVIMMessage;
 @class AVIMTypedMessage;
 @class AVIMAudioMessage;
@@ -18,6 +19,7 @@
 @class AVIMLocationMessage;
 
 //typedef void(^QYQueryMessagesFromCacheCompletion)(NSArray *);
+typedef void(^QYFindConversationCompletion)(AVIMConversation *conversation);
 
 @protocol QYChatManagerDelegate <NSObject>
 @optional
@@ -51,7 +53,9 @@
  */
 -(void)createConversationWithUser:(NSString *)userId;
 
--(void)findConversationWithUser:(NSString *)userId;
+-(AVIMConversation *)conversationFromKeyedConversation:(AVIMKeyedConversation *)keyedConversation;
+
+-(void)findConversationWithUser:(NSString *)userId withQYFindConversationCompletion:(QYFindConversationCompletion)findConversationCompletion;
 
 -(void)sendMessage:(id)message;
 //-(void)sendVoiceMessage:(NSString *)voicePath voiceDuration:(NSTimeInterval)duration;

@@ -20,17 +20,23 @@
         _iconUrl = dict[@"iconUrl"];
         _name = dict[@"name"];
         _matchTime = [NSDate dateWithTimeIntervalSince1970:[dict[@"matchTime"] integerValue]];
-        if (dict[@"lastMessage"] == nil || dict[@"lastMessage"] == [NSNull null]) {
-            _message = nil;
-        }else{
-            _message = dict[@"lastMessage"];
-        }
-
+//        if (dict[@"lastMessage"] == nil || dict[@"lastMessage"] == [NSNull null]) {
+//            _message = nil;
+//        }else{
+//            _message = dict[@"lastMessage"];
+//        }
+//
+//        
+//        if (dict[@"lastMessgeTime"] == nil || dict[@"lastMessgeTime"] == [NSNull null]) {
+//            _messageTime = 0;
+//        }else{
+//            _messageTime = [dict[@"lastMessgeTime"] integerValue];
+//        }
         
-        if (dict[@"lastMessgeTime"] == nil || dict[@"lastMessgeTime"] == [NSNull null]) {
-            _messageTime = 0;
+        if (dict[@"keyedConversation"] == nil || dict[@"keyedConversation"] == [NSNull null]) {
+            _keyedConversation = nil;
         }else{
-            _messageTime = [dict[@"lastMessgeTime"] integerValue];
+            _keyedConversation = dict[@"keyedConversation"];
         }
         
     }

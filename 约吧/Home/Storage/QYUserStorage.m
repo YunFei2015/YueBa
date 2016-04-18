@@ -9,6 +9,8 @@
 #import "QYUserStorage.h"
 #import "QYUserInfo.h"
 #import <FMDB.h>
+#import <AVIMConversation.h>
+#import <AVIMKeyedConversation.h>
 
 #define kUserDBFileName @"users.db"
 #define kUserTable @"User"
@@ -69,12 +71,27 @@
     NSString *sql = [NSString stringWithFormat:@"update %@ set %@ where userId = %@", kUserTable, set, userId];
     BOOL result = [self.database executeUpdate:sql];
     NSLog(@"%d", result);
+
     
+    //关闭数据库
+    if (![self.database close]) {
+        NSLog(@"User database close failed when update user!");
+    }
+}
+
+-(void)updateUserConversation:(AVIMKeyedConversation *)conversation withUserId:(NSString *)userId{
+    //打开数据库
+    if (![self.database open]) {
+        NSLog(@"User database open failed when update user!");
+        return;
+    }
     
-//    set = [NSString stringWithFormat:@"", time];
-//    sql = [NSString stringWithFormat:@"update %@ set %@ where userId = %@", kUserTable, set, userId];
-//    result = [self.database executeUpdate:sql];
-//    NSLog(@"%d", result);
+    //插入信息
+    NSString *set = [NSString stringWithFormat:@"keyedConversation = %@", conversation];
+    NSString *sql = [NSString stringWithFormat:@"update %@ set %@ where userId = %@", kUserTable, set, userId];
+    BOOL result = [self.database executeUpdate:sql];
+    NSLog(@"%d", result);
+
     
     //关闭数据库
     if (![self.database close]) {
@@ -169,10 +186,14 @@
             [dict removeObjectForKey:obj];
         }else{
             id value = [dict valueForKey:obj];
-            if ([value isKindOfClass:[NSDictionary class]] || [value isKindOfClass:[NSArray class]]) {
+            if ([value isKindOfClass:[NSDictionary class]] || [value isKindOfClass:[NSArray class]] || [value isKindOfClass:[AVIMKeyedConversation class]]) {
                 //将字典或数组转化成NSData
                 NSData *data = [NSKeyedArchiver archivedDataWithRootObject:value];
                 [dict setValue:data forKey:obj];
+            }
+            
+            if (value == nil) {
+                [dict removeObjectForKey:obj];
             }
             [values addObject:[dict valueForKey:obj]];
         }
@@ -207,7 +228,7 @@
         sql = [NSString stringWithFormat:@"insert into %@(%@) values(%@)", kUserTable, columns, values];
     }else{
         //执行更新
-        NSString *set = [NSString stringWithFormat:@"lastMessage=%@, lastMessageTime=%@", dict[@"lastMessage"], dict[@"lastMessageTime"]];
+        NSString *set = [NSString stringWithFormat:@"keyedConversation=%@", dict[@"keyedConversation"]];
         sql = [NSString stringWithFormat:@"update %@ set %@ where userId = %@", kUserTable, set, dict[kUserId]];
     }
     
@@ -271,7 +292,7 @@
     }
     
     //创建表
-    NSString *sql = [NSString stringWithFormat:@"create table if not exists %@(%@ TEXT PRIMARY KEY, %@ TEXT, %@ INTEGER, %@ BOOL, %@ TEXT, %@ INTEGER, %@ TEXT, %@ INTEGER)", kUserTable, kUserId, kUserName, kUserAge, kUserSex, kUserIconUrl, kUserMatchTime, @"lastMessage", @"lastMessageTime"];
+    NSString *sql = [NSString stringWithFormat:@"create table if not exists %@(%@ TEXT PRIMARY KEY, %@ TEXT, %@ INTEGER, %@ BOOL, %@ TEXT, %@ INTEGER, %@ BLOB)", kUserTable, kUserId, kUserName, kUserAge, kUserSex, kUserIconUrl, kUserMatchTime, @"keyedConversation"];
     NSLog(@"create User table sql : %@", sql);
     [self.database executeUpdate:sql];
     

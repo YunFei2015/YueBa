@@ -21,7 +21,9 @@
 //protocols
 #import "QYNetworkManager.h"
 #import "QYUserStorage.h"
+#import "QYChatManager.h"
 
+#import <AVIMConversation.h>
 
 
 @interface QYChatsListVC () <UITableViewDelegate, UITableViewDataSource, QYNetworkDelegate>
@@ -30,8 +32,8 @@
 @property (weak, nonatomic) IBOutlet UISegmentedControl *segmentControl;
 
 @property (strong, nonatomic) NSMutableArray *datas;//需要显示的数据列表
-//@property (strong, nonatomic) NSMutableArray *friends;//好友列表
-//@property (strong, nonatomic) NSMutableArray *chats;//会话列表
+@property (strong, nonatomic) NSMutableArray *friends;//好友列表
+@property (strong, nonatomic) NSMutableArray *chats;//会话列表
 @property (strong, nonatomic) QYChatCell *selectedCell;
 
 @end
@@ -45,7 +47,8 @@
     
 
     _datas = [NSMutableArray array];
-//    _chats = [NSMutableArray array];
+    _friends = [NSMutableArray array];
+    _chats = [NSMutableArray array];
 
     
     [_tableView registerNib:[UINib nibWithNibName:@"QYChatCell" bundle:nil] forCellReuseIdentifier:kFriendCellIdentifier];
@@ -76,10 +79,7 @@
     NSArray *users = [[QYUserStorage sharedInstance] getAllUsersWithSortType:@"lastMessageTime"];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.message != NIL"];
     NSArray *results = [users filteredArrayUsingPredicate:predicate];
-    
-//    //将会话列表按照最后一条消息的时间排序
-//    NSSortDescriptor *descriptor = [NSSortDescriptor sortDescriptorWithKey:@"lastMessageTime" ascending:NO];
-//    [results sortedArrayUsingDescriptors:[NSArray arrayWithObject:descriptor]];
+
     return [NSMutableArray arrayWithArray:results];
 }
 
@@ -115,9 +115,9 @@
     if (success) {
         if (responseObject[kResponseKeySuccess]) {
             NSArray *list = responseObject[kResponseKeyData][@"users"];
-            if (_datas.count == 0) {
-                [[QYUserStorage sharedInstance] addUsers:list];
-            }
+//            if (_datas.count == 0) {
+//                [[QYUserStorage sharedInstance] addUsers:list];
+//            }
         
             NSMutableArray *datasFromNet = [NSMutableArray array];
             [list enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -129,12 +129,11 @@
                 NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.userId MATCHES %@" argumentArray:@[user.userId]];
                 NSArray *results = [_datas filteredArrayUsingPredicate:predicate];
                 if (results.count <= 0) {
-                    [[QYUserStorage sharedInstance] addUser:obj];
                     [_datas insertObject:user atIndex:idx];
+                    [[QYUserStorage sharedInstance] addUser:obj];
                 }
                 
             }];
-            
             
             //本地用户列表和网络获取的用户列表进行对比，多删少补
             [_datas enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -143,19 +142,28 @@
                 NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.userId MATCHES %@" argumentArray:@[user.userId]];
                 NSArray *results = [datasFromNet filteredArrayUsingPredicate:predicate];
                 if (results.count <= 0) {
-                    [[QYUserStorage sharedInstance] deleteUser:obj[@"userId"]];
+                    [[QYUserStorage sharedInstance] deleteUser:user.userId];
                     [_datas removeObject:user];
+                }else{
+                    __block QYUserInfo *blockUser = user;
+                    WEAKSELF
+                    [[QYChatManager sharedManager] findConversationWithUser:user.userId withQYFindConversationCompletion:^(AVIMConversation *conversation) {
+                        if (conversation) {
+                            blockUser.keyedConversation = conversation.keyedConversation;
+                        }
+                        if (idx == weakSelf.datas.count - 1) {
+                            STRONGSELF
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [strongSelf.tableView reloadData];
+                            });
+                           
+                        }
+                    }];
                 }
             }];
             
-            
-//            //获取会话列表
-//            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-//                _chats = [NSMutableArray arrayWithArray:[self getChatsList]];
-//            });
-            
             self.titleLabel.text = [NSString stringWithFormat:@"%ld个配对", _datas.count];
-            [_tableView reloadData];
+            
         }else{
            
         }
@@ -174,6 +182,7 @@
     QYChatCell *cell = [tableView dequeueReusableCellWithIdentifier:kFriendCellIdentifier forIndexPath:indexPath];
     QYUserInfo *user = _datas[indexPath.row];
     cell.user = user;
+    cell.conversation = [[QYChatManager sharedManager] conversationFromKeyedConversation:user.keyedConversation];
     
     return cell;
 }

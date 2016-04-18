@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+@class AVIMKeyedConversation;
 
 @interface QYUserInfo : NSObject
 @property (strong, nonatomic) NSString *userId;
@@ -18,6 +19,7 @@
 @property (strong, nonatomic) NSString *message;
 @property (nonatomic) NSInteger messageTime;
 
+@property (strong, nonatomic) AVIMKeyedConversation *keyedConversation;
 
 
 

@@ -27,6 +27,10 @@
     return sharedManager;
 }
 
+-(AVIMConversation *)conversationFromKeyedConversation:(AVIMKeyedConversation *)keyedConversation{
+    return [self.client conversationWithKeyedConversation:keyedConversation];
+}
+
 
 -(void)sendMessage:(id)message{
     if ([message isKindOfClass:[NSString class]]) {
@@ -177,23 +181,19 @@
     
 }
 
--(void)findConversationWithUser:(NSString *)userId{
-//    [self.client openWithCallback:^(BOOL succeeded, NSError *error) {
-        AVIMConversationQuery *query = [self.client conversationQuery];
-        [query whereKey:@"m" containsAllObjectsInArray:@[self.client.clientId, userId]];
-        [query whereKey:@"m" sizeEqualTo:2];
-        [query findConversationsWithCallback:^(NSArray *objects, NSError *error) {
-            if (error) {
-                if ([self.delegate respondsToSelector:@selector(didFindConversation:succeeded:)]) {
-                    [self.delegate didFindConversation:objects.firstObject succeeded:NO];
-                }
-            }else{
-                if ([self.delegate respondsToSelector:@selector(didFindConversation:succeeded:)]) {
-                    [self.delegate didFindConversation:objects.firstObject succeeded:YES];
-                }
-            }
-        }];
-//    }];
+-(void)findConversationWithUser:(NSString *)userId withQYFindConversationCompletion:(QYFindConversationCompletion)findConversationCompletion{
+    AVIMConversationQuery *query = [self.client conversationQuery];
+    [query whereKey:@"m" containsAllObjectsInArray:@[self.client.clientId, userId]];
+    [query whereKey:@"m" sizeEqualTo:2];
+    [query findConversationsWithCallback:^(NSArray *objects, NSError *error) {
+        if (error) {
+            NSLog(@"%@", error);
+        }
+        AVIMConversation *conversation = (AVIMConversation *)objects.firstObject;
+        if (findConversationCompletion) {
+            findConversationCompletion(conversation);
+        }
+    }];
     
 }
 

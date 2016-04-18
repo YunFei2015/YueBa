@@ -111,7 +111,16 @@
     [QYChatManager sharedManager].delegate = self;
     [QYAudioPlayer sharedInstance].delegate = self;
     [QYImagesPicker sharedInstance].delegate = self;
-    [[QYChatManager sharedManager] createConversationWithUser:_user.userId];
+    
+    if (_user.keyedConversation) {
+        _conversation = [[QYChatManager sharedManager] conversationFromKeyedConversation:_user.keyedConversation];
+        [self queryHistoryMessages];
+    }else{
+        [[QYChatManager sharedManager] createConversationWithUser:_user.userId];
+    }
+    
+    
+    
 }
 
 -(void)dealloc{
@@ -157,6 +166,38 @@
     _messageBar.frame = CGRectMake(0, y, kScreenW, kMessageBarHeight);
 }
 
+-(void)queryHistoryMessages{
+    
+    //开启静音，不再接收此对话的离线推送
+    [_conversation muteWithCallback:^(BOOL succeeded, NSError *error) {
+        if (error) {
+            NSLog(@"%@", error);
+        }
+    }];
+    
+    //查询聊天记录
+    NSArray *messages = [_conversation queryMessagesFromCacheWithLimit:20];
+    if (messages.count == 0) {
+        return;
+    }
+    
+    NSMutableArray *indexPaths = [[NSMutableArray alloc] initWithCapacity:messages.count];
+    NSMutableIndexSet *indexSet = [[NSMutableIndexSet alloc] init];
+    [messages enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:idx inSection:0];
+        [indexPaths addObject:indexPath];
+        [indexSet addIndex:idx];
+    }];
+    NSMutableArray *muMessages = [[NSMutableArray alloc] initWithArray:self.messages];
+    [muMessages insertObjects:messages atIndexes:indexSet];
+    WEAKSELF
+    dispatch_async(dispatch_get_main_queue(), ^{
+        weakSelf.messages = muMessages;
+        [weakSelf.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationBottom];
+        [weakSelf.tableView scrollToRowAtIndexPath:indexPaths.lastObject atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+    });
+}
+
 -(void)insertRowWithMessage:(id)message{
     WEAKSELF
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -190,30 +231,31 @@
 
 -(void)postLastMessageDidChangedNotification{
     if (_lastMessage) {
-        if ([_lastMessage isKindOfClass:[AVIMTypedMessage class]]) {
-            AVIMTypedMessage *typedMessage = (AVIMTypedMessage *)_lastMessage;
-            switch (typedMessage.mediaType) {
-                case kAVIMMessageMediaTypeAudio:
-                    _user.message = @"[语音]";
-                    break;
-                    
-                case kAVIMMessageMediaTypeImage:
-                    _user.message = @"[图片]";
-                    break;
-                    
-                case kAVIMMessageMediaTypeLocation:
-                    _user.message = @"[位置]";
-                    break;
-                    
-                default:
-                    break;
-            }
-        }else{
-            AVIMMessage *commonMessage = (AVIMMessage *)_lastMessage;
-            _user.message = commonMessage.content;
-        }
-        _user.messageTime = _lastMessageTime;
-        [[QYUserStorage sharedInstance] updateUserMessage:_user.message time:_user.messageTime withUserId:_user.userId];
+//        if ([_lastMessage isKindOfClass:[AVIMTypedMessage class]]) {
+//            AVIMTypedMessage *typedMessage = (AVIMTypedMessage *)_lastMessage;
+//            switch (typedMessage.mediaType) {
+//                case kAVIMMessageMediaTypeAudio:
+//                    _user.message = @"[语音]";
+//                    break;
+//                    
+//                case kAVIMMessageMediaTypeImage:
+//                    _user.message = @"[图片]";
+//                    break;
+//                    
+//                case kAVIMMessageMediaTypeLocation:
+//                    _user.message = @"[位置]";
+//                    break;
+//                    
+//                default:
+//                    break;
+//            }
+//        }else{
+//            AVIMMessage *commonMessage = (AVIMMessage *)_lastMessage;
+//            _user.message = commonMessage.content;
+//        }
+//        _user.messageTime = _lastMessageTime;
+//        [[QYUserStorage sharedInstance] updateUserMessage:_user.message time:_user.messageTime withUserId:_user.userId];
+        [[QYUserStorage sharedInstance] updateUserConversation:_conversation.keyedConversation withUserId:_user.userId];
         [[NSNotificationCenter defaultCenter] postNotificationName:kLastMessageDidChangedNotification object:self userInfo:nil];
     }
 }
@@ -454,38 +496,9 @@
 -(void)didCreateConversation:(AVIMConversation *)conversation succeeded:(BOOL)succeeded{
     if (succeeded) {
         _conversation = conversation;
-        //开启静音，不再接收此对话的离线推送
-        [_conversation muteWithCallback:^(BOOL succeeded, NSError *error) {
-            if (error) {
-                NSLog(@"%@", error);
-            }
-        }];
-        
-        //查询聊天记录
-        NSArray *messages = [_conversation queryMessagesFromCacheWithLimit:20];
-        if (messages.count == 0) {
-            return;
-        }
-        
-        NSMutableArray *indexPaths = [[NSMutableArray alloc] initWithCapacity:messages.count];
-        NSMutableIndexSet *indexSet = [[NSMutableIndexSet alloc] init];
-        [messages enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:idx inSection:0];
-            [indexPaths addObject:indexPath];
-            [indexSet addIndex:idx];
-        }];
-        NSMutableArray *muMessages = [[NSMutableArray alloc] initWithArray:self.messages];
-        [muMessages insertObjects:messages atIndexes:indexSet];
-        WEAKSELF
-        dispatch_async(dispatch_get_main_queue(), ^{
-            weakSelf.messages = muMessages;
-            [weakSelf.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationBottom];
-            [weakSelf.tableView scrollToRowAtIndexPath:indexPaths.lastObject atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-        });
+        [self queryHistoryMessages];
     }
 }
-
-
 
 -(void)willSendMessage:(AVIMMessage *)message{
     

@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 @class QYUserInfo;
+@class AVIMKeyedConversation;
 
 @interface QYUserStorage : NSObject
 
@@ -37,6 +38,7 @@
  */
 
 -(void)updateUserMessage:(NSString *)message time:(NSInteger)time withUserId:(NSString *)userId;
+-(void)updateUserConversation:(AVIMKeyedConversation *)conversation withUserId:(NSString *)userId;
 
 ///**
 // *  更新多个用户
