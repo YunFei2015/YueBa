@@ -1,3 +1,4 @@
 .DS_Store
 podfile*
-Pod*
+Pods/
+Podfile.lock

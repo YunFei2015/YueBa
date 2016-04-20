@@ -184,24 +184,10 @@
 //}
 
 #pragma mark - QYLocationManager Delegate
-//-(void)didFinishUpdateLocation:(CLLocation *)location success:(BOOL)success{
-//    NSLog(@"%f,%f", location.coordinate.latitude, location.coordinate.longitude);
-//    //用户当前位置
-//    _currentLocation = location;
-//    
-//    //在地图上标注当前位置
-//    if (success) {
-//        [self configMapWithLocation:_currentLocation];
-//        [QYLocationManager sharedInstance] ;
-//    }
-//    
-//}
-
 -(void)didGetLocation:(CLLocationCoordinate2D)location success:(BOOL)success{
     if (success) {
         [self updatePinAnnotationToLocation:location];
         self.mapView.centerCoordinate = location;
-        
     }else{
         //获取经纬度失败
     }
