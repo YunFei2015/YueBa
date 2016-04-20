@@ -12,14 +12,9 @@
 @class AVIMClient;
 @class AVIMConversation;
 @class AVIMKeyedConversation;
-@class AVIMMessage;
 @class AVIMTypedMessage;
-@class AVIMAudioMessage;
-@class AVIMImageMessage;
-@class AVIMLocationMessage;
 
-//typedef void(^QYQueryMessagesFromCacheCompletion)(NSArray *);
-typedef void(^QYFindConversationCompletion)(AVIMConversation *conversation);
+//typedef void(^QYFindConversationCompletion)(AVIMConversation *conversation);
 
 @protocol QYChatManagerDelegate <NSObject>
 @optional
@@ -29,39 +24,31 @@ typedef void(^QYFindConversationCompletion)(AVIMConversation *conversation);
 -(void)didFindConversation:(AVIMConversation *)conversation succeeded:(BOOL)succeeded;
 
 //发送消息代理
--(void)willSendMessage:(AVIMMessage *)message;
--(void)willSendTypedMessage:(AVIMTypedMessage *)message;
--(void)didSendTypedMessage:(AVIMTypedMessage *)message succeeded:(BOOL)succeeded;
--(void)didSendMessage:(AVIMMessage *)message succeeded:(BOOL)succeeded;
+-(void)willSendMessage:(AVIMTypedMessage *)message;
+-(void)didSendMessage:(AVIMTypedMessage *)message succeeded:(BOOL)succeeded;
 
 //接收消息代理
--(void)didReceiveMessage:(AVIMMessage *)message inConversation:(AVIMConversation *)conversation;
--(void)didReceiveTypedMessage:(AVIMTypedMessage *)message inConversation:(AVIMConversation *)conversation;
+-(void)didReceiveMessage:(AVIMTypedMessage *)message inConversation:(AVIMConversation *)conversation;
 -(void)didReceiveUnread:(NSInteger)unread inConversation:(AVIMConversation *)conversation;
 @end
 
 @interface QYChatManager : NSObject
 @property (strong, nonatomic) AVIMClient *client;
-@property (strong, nonatomic) AVIMConversation *conversation;
 @property (nonatomic) id delegate;
 
 +(instancetype)sharedManager;
 /**
  *  创建会话
  *
- *  @param userId 目标用户ID
+ *  @param userId 好友ID
  */
--(void)createConversationWithUser:(NSString *)userId;
-
+-(void)findConversationWithUser:(NSString *)userId;
+//-(void)findConversationForId:(NSString *)conversationId withCompletion:(QYFindConversationCompletion)findConversationCompletion;
+//-(AVIMConversation *)conversationForId:(NSString *)conversationId;
 -(AVIMConversation *)conversationFromKeyedConversation:(AVIMKeyedConversation *)keyedConversation;
-
--(void)findConversationWithUser:(NSString *)userId withQYFindConversationCompletion:(QYFindConversationCompletion)findConversationCompletion;
-
--(void)sendMessage:(id)message;
-//-(void)sendVoiceMessage:(NSString *)voicePath voiceDuration:(NSTimeInterval)duration;
--(void)sendVoiceMessage;
--(void)sendImageMessageWithData:(NSData *)data;
--(void)sendLocationMessageWithAnnotation:(QYPinAnnotation *)annotation;
-//-(void)queryMessageFromCacheWithConversation:(AVIMConversation *)conversation limit:(NSInteger)limit completion:(QYQueryMessagesFromCacheCompletion)queryMessagesFromCacheCompletion;
+-(void)sendTextMessage:(NSAttributedString *)message withConversation:(AVIMConversation *)conversation;
+-(void)sendVoiceMessageWithConversation:(AVIMConversation *)conversation;
+-(void)sendImageMessageWithData:(NSData *)data withConversation:(AVIMConversation *)conversation;
+-(void)sendLocationMessageWithAnnotation:(QYPinAnnotation *)annotation withConversation:(AVIMConversation *)conversation;
 -(void)queryMessagesFromServerWithConversation:(AVIMConversation *)conversation beforeId:(NSString *)messageId limit:(NSInteger)limit;
 @end

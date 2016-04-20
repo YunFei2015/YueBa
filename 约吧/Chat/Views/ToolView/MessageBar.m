@@ -239,43 +239,16 @@
     _messageTextView.backgroundColor = [UIColor whiteColor];
 }
 
-//-(void)updateKeyboardViewWith:(UIButton *)sender{
-#warning //???: 以下两种方式有何区别？
-//#if 0
-//    if (_messageTextView.inputAccessoryView.frame.size.height != 0) {
-//        _messageTextView.inputAccessoryView = [[UIView alloc] initWithFrame:CGRectZero];
-//        _messageTextView.inputView = nil;
-//    }else{
-//        _messageTextView.inputAccessoryView = self.FunctionView;
-//        _messageTextView.inputView = [[UIView alloc] initWithFrame:CGRectZero];
-//    }
-//#else
-//    if (_messageTextView.inputView) {
-//        _messageTextView.inputView = nil;
-//    }else{
-//        _messageTextView.inputView = self.functionView;
-//    }
-//#endif
-//}
-
 -(void)showSystemStandardView{
-//    _messageTextView.inputAccessoryView = [[UIView alloc] initWithFrame:CGRectZero];
     _messageTextView.inputView = nil;
 }
 
 -(void)showFunctionView{
-//    _messageTextView.inputAccessoryView = self.functionView;
-//    _messageTextView.inputView = [[UIView alloc] initWithFrame:CGRectZero];
-    
     _messageTextView.inputView = self.functionView;
 }
 
 -(void)showFacesView{
-//    _messageTextView.inputAccessoryView = self.facesView;
-//    _messageTextView.inputView = [[UIView alloc] initWithFrame:CGRectZero];
-    
     _messageTextView.inputView = self.facesView;
-    
 }
 
 -(void)switchKeyboardView{
@@ -326,13 +299,27 @@
     _blockSelf.voiceBtn.tag = MessageBarButtonTypeSend;
 }
 
--(void)sendMessage:(id)message{
+-(void)sendMessage:(NSString *)message{
     _messageTextView.text = @"";
+    
+    NSString *regex = @" *";//任意个空格
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regex];
+    if ([predicate evaluateWithObject:message]) {//如果文本是由任意个空格组成的，则不允许发送
+        UIAlertController *controller = [UIAlertController alertControllerWithTitle:nil message:@"不能发送空白消息" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {}];
+        [controller addAction:action];
+        if (self.delegate) {
+            UIViewController *vc = (UIViewController *)self.delegate;
+            [vc presentViewController:controller animated:YES completion:nil];
+            return;
+        }
+        return;
+    }
+    
     _voiceBtn.selected = NO;
     _voiceBtn.tag = MessageBarButtonTypeVoice;
-    if ([message isKindOfClass:[NSString class]]) {
-        [[QYChatManager sharedManager] sendMessage:message];
-        return;
+    if ([self.delegate respondsToSelector:@selector(sendMessage:)]) {
+        [self.delegate sendMessage:message];
     }
 }
 

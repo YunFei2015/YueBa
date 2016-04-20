@@ -11,7 +11,7 @@
 #import "QYMapAddrCell.h"
 #import "QYCurrentAnnotation.h"
 #import "QYCurrentAnnotationView.h"
-#import "QYPinAnnotation.h"
+
 #import "QYPinAnnotationView.h"
 
 #import "QYMapSearchResultVC.h"
@@ -28,6 +28,8 @@
 #define kNearByCapacityPerPage 20
 #define kNearBySearchRadius 500
 
+
+
 @interface QYMapVC () <BMKMapViewDelegate, UITableViewDelegate, UITableViewDataSource, BMKPoiSearchDelegate, QYLocationManagerDelegate>
 @property (strong, nonatomic) BMKPoiSearch *poiSearch;
 @property (strong, nonatomic) BMKMapView *mapView;
@@ -42,6 +44,7 @@
 @property (strong, nonatomic) CLLocation *currentLocation;
 @property (nonatomic) BOOL firstIsPinAddr;
 @property (nonatomic) BOOL isSearchingActivated;
+
 
 
 @end
@@ -157,7 +160,8 @@
     //        CGRect rect = [mapView convertRegion:mapView.region toRectToView:self.view];
     //        UIImage *locationImg = [mapView takeSnapshot:rect];
     [self dismissViewControllerAnimated:YES completion:^{
-        [[QYChatManager sharedManager] sendLocationMessageWithAnnotation:self.pinAnnotation];
+        _sendLocationToShare(self.pinAnnotation);
+//        [[QYChatManager sharedManager] sendLocationMessageWithAnnotation:self.pinAnnotation];
     }];
 }
 

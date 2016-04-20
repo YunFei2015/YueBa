@@ -67,11 +67,7 @@
 }
 
 -(void)imagePickerControllerDidCancel:(UIImagePickerController *)picker{
-    [picker dismissViewControllerAnimated:YES completion:^{
-        if ([self.delegate respondsToSelector:@selector(didCancelSelectImages)]) {
-            [self.delegate didCancelSelectImages];
-        }
-    }];
+    [picker dismissViewControllerAnimated:YES completion:nil];
     
 }
 

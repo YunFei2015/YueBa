@@ -65,36 +65,31 @@
 }
 
 #pragma mark - setters
--(void)setMessage:(AVIMMessage *)message{
+-(void)setMessage:(AVIMTypedMessage *)message{
     if (!message) {
         return;
     }
     [self resumeOriginalLayout];
     _message = message;
-    if ([message isKindOfClass:[AVIMTypedMessage class]]) {
-        NSLog(@"我是富文本");
-        AVIMTypedMessage *typedMessage = (AVIMTypedMessage *)message;
-        switch (typedMessage.mediaType) {
-            case kAVIMMessageMediaTypeAudio:
-                [self configAudioMessage];
-                break;
-                
-            case kAVIMMessageMediaTypeImage:
-                [self configPhotoMessage];
-                break;
-                
-            case kAVIMMessageMediaTypeLocation:
-                [self configLocationMessage];
-                break;
-                
-            default:
-                break;
-        }
-    }else if ([message isKindOfClass:[AVIMMessage class]]){
-        NSLog(@"我是文本");
-        [self configTextMessage];
-    }else{
-        NSLog(@"这不可能");
+    switch (message.mediaType) {
+        case kAVIMMessageMediaTypeText:
+            [self configTextMessage];
+            break;
+            
+        case kAVIMMessageMediaTypeAudio:
+            [self configAudioMessage];
+            break;
+            
+        case kAVIMMessageMediaTypeImage:
+            [self configPhotoMessage];
+            break;
+            
+        case kAVIMMessageMediaTypeLocation:
+            [self configLocationMessage];
+            break;
+            
+        default:
+            break;
     }
 }
 
@@ -115,7 +110,8 @@
 //填充文本内容
 -(void)configTextMessage{
     self.messageType = kMessageTypeText;
-    _messageLab.attributedText = [NSString faceAttributeTextWithMessage:[_message content] withAttributes:@{NSFontAttributeName : [UIFont systemFontOfSize:17]} faceSize:20];
+    AVIMTextMessage *textMessage = (AVIMTextMessage *)_message;
+    _messageLab.attributedText = [NSString faceAttributeTextWithMessage:[textMessage text] withAttributes:@{NSFontAttributeName : [UIFont systemFontOfSize:17]} faceSize:20];
     [self calculateLayoutWith:_messageLab.attributedText];
 }
 
@@ -136,11 +132,11 @@
     _photoViewHeightConstraint.constant = kPhotoHeight;
     
     AVIMImageMessage *photoMessage = (AVIMImageMessage *)_message;
-    NSString *url = [photoMessage.file getThumbnailURLWithScaleToFit:YES width:kPhotoWidth height:kPhotoHeight];
-    [_photoImageView sd_setImageWithURL:[NSURL URLWithString:url]];
-//    [photoMessage.file getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
-//        _photoImageView.image = [UIImage imageWithData:data];
-//    }];
+//    NSString *url = [photoMessage.file getThumbnailURLWithScaleToFit:YES width:kPhotoWidth height:kPhotoHeight];
+//    [_photoImageView sd_setImageWithURL:[NSURL URLWithString:url]];
+    [photoMessage.file getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
+        _photoImageView.image = [UIImage imageWithData:data];
+    }];
 }
 
 //填充位置内容
@@ -152,34 +148,6 @@
     _locationNameLabel.text = locationMessage.text;
 
 }
-
-//-(NSAttributedString *)faceAttributeTextWithMessage:(NSString *)message{
-//    NSString *path = [[NSBundle mainBundle] pathForResource:@"Faces" ofType:@"plist"];
-//    NSArray *faces = [NSDictionary dictionaryWithContentsOfFile:path][kFaceTT];
-//    
-//    NSMutableAttributedString *messageAttriText = [[NSMutableAttributedString alloc] initWithString:message attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:17]}];
-//    [faces enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-//        FaceModel *face = [FaceModel faceModelWithDictionary:obj];
-//        if ([message containsString:face.text]) {
-//            //创建富文本
-//            NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
-//            UIImage *image = [UIImage imageNamed:face.imgName];
-//            attachment.image = image;
-//            attachment.bounds = CGRectMake(0, -8, image.size.width, image.size.height);
-//            NSAttributedString *attributeStr = [NSAttributedString attributedStringWithAttachment:attachment];
-//            
-//            //用富文本替换表情文本
-//            NSRange resultRange;
-//            NSRange searchRange = NSMakeRange(0, messageAttriText.length);
-//            while ((resultRange = [[messageAttriText string] rangeOfString:face.text options:0 range:searchRange]).location != NSNotFound) {
-//                [messageAttriText replaceCharactersInRange:resultRange withAttributedString:attributeStr];
-//                resultRange.length = 1;
-//                searchRange = NSMakeRange(NSMaxRange(resultRange), messageAttriText.length - NSMaxRange(resultRange));
-//            }
-//        }
-//    }];
-//    return messageAttriText;
-//}
 
 -(void)calculateLayoutWith:(NSAttributedString *)text{
     //根据文本内容调整布局
@@ -213,8 +181,8 @@
 #pragma mark - LeftMessageTableViewCell
 @implementation QYLeftMessageCell
 -(void)configAudioMessage{
-    AVIMAudioMessage *audioMessage = (AVIMAudioMessage *)_message;
-    NSString *text = [NSString stringWithFormat:@"          %.0f\''", audioMessage.duration];
+    AVIMAudioMessage *audioMessage = (AVIMAudioMessage *)self.message;
+    NSString *text = [NSString stringWithFormat:@"          %.f\''", audioMessage.duration];
     self.messageLab.attributedText = [[NSAttributedString alloc] initWithString:text attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:15]}];
     self.voiceAnimatingImageView.animationImages = @[
                                                  [UIImage imageNamed:@"ReceiverVoiceNodePlaying000"],
@@ -244,8 +212,8 @@
 #pragma mark - RightMessageTableViewCell
 @implementation QYRightMessageCell
 -(void)configAudioMessage{
-    AVIMAudioMessage *audioMessage = (AVIMAudioMessage *)_message;
-    NSString *text = [NSString stringWithFormat:@"%.0f\''          ", audioMessage.duration];
+    AVIMAudioMessage *audioMessage = (AVIMAudioMessage *)self.message;
+    NSString *text = [NSString stringWithFormat:@"%.f\''          ", audioMessage.duration];
     self.messageLab.attributedText = [[NSAttributedString alloc] initWithString:text attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:15]}];
     self.voiceAnimatingImageView.animationImages = @[
                                                  [UIImage imageNamed:@"SenderVoiceNodePlaying000"],

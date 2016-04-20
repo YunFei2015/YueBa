@@ -31,63 +31,12 @@
     return [self.client conversationWithKeyedConversation:keyedConversation];
 }
 
-
--(void)sendMessage:(id)message{
-    if ([message isKindOfClass:[NSString class]]) {
-        if ([self.delegate respondsToSelector:@selector(willSendMessage:)]) {
-            [self.delegate willSendMessage:message];
-        }
-        [self sendCommonMessage:message];
-        return;
-    }
+-(void)sendTextMessage:(NSString *)message withConversation:(AVIMConversation *)conversation{
+    AVIMTextMessage *textMessage = [AVIMTextMessage messageWithText:message attributes:nil];
+    [self sendTypedMessage:textMessage withConversation:conversation];
 }
 
--(void)sendCommonMessage:(id)message{
-    AVIMMessage *AVIMmessage = [AVIMMessage messageWithContent:message];
-    [_conversation sendMessage:AVIMmessage options:0 callback:^(BOOL succeeded, NSError *error) {
-        if ([self.delegate respondsToSelector:@selector(didSendMessage:succeeded:)]) {
-            [self.delegate didSendMessage:AVIMmessage succeeded:succeeded];
-        }
-        if (error) {
-            NSLog(@"%@", error);
-        }
-    }];
-    
-//    AVIMTextMessage *textMessage = [AVIMTextMessage messageWithText:message attributes:nil];
-//    [_conversation sendMessage:textMessage options:0 callback:^(BOOL succeeded, NSError *error) {
-//        if ([self.delegate respondsToSelector:@selector(didSendMessage:succeeded:)]) {
-//            [self.delegate didSendTypedMessage:textMessage succeeded:YES];
-//        }
-//        if (error) {
-//            [self.delegate didSendTypedMessage:nil succeeded:NO];
-//            NSLog(@"%@", error);
-//        }
-//    }];
-}
-
-//-(void)sendVoiceMessage:(NSString *)voicePath voiceDuration:(NSTimeInterval)duration{
-//    if (![[NSFileManager defaultManager] fileExistsAtPath:voicePath]) {
-//        return;
-//    }
-//    AVFile *file = [AVFile fileWithName:@"temwwwp.caf" contentsAtPath:voicePath];
-//    AVIMAudioMessage *message = [AVIMAudioMessage messageWithText:nil file:file attributes:nil];
-//    [_conversation sendMessage:message callback:^(BOOL succeeded, NSError *error) {
-//        if (succeeded) {
-//            if ([self.delegate respondsToSelector:@selector(didSendTypedMessage:succeeded:)]) {
-//                [self.delegate didSendTypedMessage:message succeeded:YES];
-//                return;
-//            }
-//        }
-//        
-//        if ([self.delegate respondsToSelector:@selector(didSendTypedMessage:succeeded:)]) {
-//            [self.delegate didSendTypedMessage:nil succeeded:NO];
-//            return;
-//        }
-//        
-//    }];
-//}
-
--(void)sendVoiceMessage{
+-(void)sendVoiceMessageWithConversation:(AVIMConversation *)conversation{
     if (![[NSFileManager defaultManager] fileExistsAtPath:kAudioPath]) {
         return;
     }
@@ -96,56 +45,41 @@
     [file saveInBackground];//将文件上传到云端
 #endif
     AVIMAudioMessage *message = [AVIMAudioMessage messageWithText:nil file:file attributes:nil];
-    [self sendTypedMessage:message];
+    [self sendTypedMessage:message withConversation:(AVIMConversation *)conversation];
 }
 
--(void)sendImageMessageWithData:(NSData *)data{
-//    NSString *path = [NSTemporaryDirectory() stringByAppendingPathComponent:@"image"];
-//    NSURL *url = [NSURL fileURLWithPath:path];
-//    [data writeToURL:url atomically:YES];
-//    AVFile *file = [AVFile fileWithURL:path];
+-(void)sendImageMessageWithData:(NSData *)data withConversation:(AVIMConversation *)conversation{
     AVFile *file = [AVFile fileWithData:data];
-    
     AVIMImageMessage *message = [AVIMImageMessage messageWithText:nil file:file attributes:nil];
-    [self sendTypedMessage:message];
+    [self sendTypedMessage:message withConversation:(AVIMConversation *)conversation];
 }
 
--(void)sendLocationMessageWithAnnotation:(QYPinAnnotation *)annotation{
+-(void)sendLocationMessageWithAnnotation:(QYPinAnnotation *)annotation withConversation:(AVIMConversation *)conversation{
     AVIMLocationMessage *message = [AVIMLocationMessage messageWithText:annotation.title latitude:annotation.coordinate.latitude longitude:annotation.coordinate.longitude attributes:nil];
-    [self sendTypedMessage:message];
+    [self sendTypedMessage:message withConversation:(AVIMConversation *)conversation];
 }
 
--(void)sendTypedMessage:(AVIMTypedMessage *)message{
-    if ([self.delegate respondsToSelector:@selector(willSendTypedMessage:)]) {
-        [self.delegate willSendTypedMessage:message];
+-(void)sendTypedMessage:(AVIMTypedMessage *)message withConversation:(AVIMConversation *)conversation{
+    if ([self.delegate respondsToSelector:@selector(willSendMessage:)]) {
+        [self.delegate willSendMessage:message];
     }
     
-    
-    [_conversation sendMessage:message callback:^(BOOL succeeded, NSError *error) {
+    [conversation sendMessage:message callback:^(BOOL succeeded, NSError *error) {
         if (succeeded) {
-            if ([self.delegate respondsToSelector:@selector(didSendTypedMessage:succeeded:)]) {
-                [self.delegate didSendTypedMessage:message succeeded:YES];
-                return;
+            if ([self.delegate respondsToSelector:@selector(didSendMessage:succeeded:)]) {
+                [self.delegate didSendMessage:message succeeded:YES];
+            }
+        }else{
+            NSLog(@"send message failed : %@", error);
+            if ([self.delegate respondsToSelector:@selector(didSendMessage:succeeded:)]) {
+                [self.delegate didSendMessage:nil succeeded:NO];
             }
         }
-        
-        if ([self.delegate respondsToSelector:@selector(didSendTypedMessage:succeeded:)]) {
-            [self.delegate didSendTypedMessage:nil succeeded:NO];
-            return;
-        }
-        
     }];
 }
-//
-//-(void)queryMessageFromCacheWithConversation:(AVIMConversation *)conversation limit:(NSInteger)limit completion:(QYQueryMessagesFromCacheCompletion)queryMessagesFromCacheCompletion{
-//    NSArray *objects = [_conversation queryMessagesFromCacheWithLimit:limit];
-//    if (queryMessagesFromCacheCompletion) {
-//        queryMessagesFromCacheCompletion(objects);
-//    }
-//}
 
 -(void)queryMessagesFromServerWithConversation:(AVIMConversation *)conversation beforeId:(NSString *)messageId limit:(NSInteger)limit{
-    [_conversation queryMessagesBeforeId:messageId timestamp:0 limit:20 callback:^(NSArray *objects, NSError *error) {
+    [conversation queryMessagesBeforeId:messageId timestamp:0 limit:20 callback:^(NSArray *objects, NSError *error) {
         if (!error) {
             if ([self.delegate respondsToSelector:@selector(didQueryMessagesFromServer:succeeded:)]) {
                 [self.delegate didQueryMessagesFromServer:objects succeeded:YES];
@@ -160,67 +94,63 @@
     }];
 }
 
--(void)createConversationWithUser:(NSString *)userId{
+-(void)findConversationWithUser:(NSString *)userId{
     AVIMConversationQuery *query = [self.client conversationQuery];
+    query.cacheMaxAge = CLTimeIntervalMax;
     [query whereKey:@"m" containsAllObjectsInArray:@[self.client.clientId, userId]];
     [query whereKey:@"m" sizeEqualTo:2];
     [query findConversationsWithCallback:^(NSArray *objects, NSError *error) {
+        __block AVIMConversation *result;
         if (objects.count == 0) {
             NSString *conversationName = [NSString stringWithFormat:@"%@ and %@", self.client.clientId, userId];
             [self.client createConversationWithName:conversationName clientIds:@[userId] attributes:nil options:AVIMConversationOptionNone callback:^(AVIMConversation *conversation, NSError *error) {
-                _conversation = conversation;
+                if ([self.delegate respondsToSelector:@selector(didCreateConversation:succeeded:)]) {
+                    [self.delegate didCreateConversation:conversation succeeded:YES];
+                }
             }];
         }else{
-            _conversation = objects.firstObject;
-        }
-        
-        if ([self.delegate respondsToSelector:@selector(didCreateConversation:succeeded:)]) {
-            [self.delegate didCreateConversation:_conversation succeeded:YES];
+            result = objects.firstObject;
+            if ([self.delegate respondsToSelector:@selector(didCreateConversation:succeeded:)]) {
+                [self.delegate didCreateConversation:result succeeded:YES];
+            }
         }
     }];
     
 }
 
--(void)findConversationWithUser:(NSString *)userId withQYFindConversationCompletion:(QYFindConversationCompletion)findConversationCompletion{
-    AVIMConversationQuery *query = [self.client conversationQuery];
-    [query whereKey:@"m" containsAllObjectsInArray:@[self.client.clientId, userId]];
-    [query whereKey:@"m" sizeEqualTo:2];
-    [query findConversationsWithCallback:^(NSArray *objects, NSError *error) {
-        if (error) {
-            NSLog(@"%@", error);
-        }
-        AVIMConversation *conversation = (AVIMConversation *)objects.firstObject;
-        if (findConversationCompletion) {
-            findConversationCompletion(conversation);
-        }
-    }];
-    
-}
+//-(void)findConversationForId:(NSString *)conversationId withCompletion:(QYFindConversationCompletion)findConversationCompletion{
+//    AVIMConversationQuery *query = [self.client conversationQuery];
+//    query.cacheMaxAge = CLTimeIntervalMax;
+//    [query whereKey:@"conversationId" equalTo:conversationId];
+//    [query findConversationsWithCallback:^(NSArray *objects, NSError *error) {
+//        if (error) {
+//            NSLog(@"%@", error);
+//        }
+//        
+//        findConversationCompletion(objects[0]);
+//    }];
+//}
+
+//-(AVIMConversation *)conversationForId:(NSString *)conversationId{
+//    AVIMConversation *conversation = [self.client conversationForId:conversationId];
+//    return conversation;
+//}
 
 -(void)conversation:(AVIMConversation *)conversation didReceiveUnread:(NSInteger)unread{
     //TODO: 未读消息显示/
-}
-
--(void)conversation:(AVIMConversation *)conversation didReceiveCommonMessage:(AVIMMessage *)message{
-    if ([self.delegate respondsToSelector:@selector(didReceiveMessage:inConversation:)]) {
-        [self.delegate didReceiveMessage:message inConversation:conversation];
-    }else{
-        //TODO: 提示有新消息
-    }
+    NSLog(@"未读消息数 : %ld", unread);
+    
 }
 
 -(void)conversation:(AVIMConversation *)conversation didReceiveTypedMessage:(AVIMTypedMessage *)message{
-    if ([self.delegate respondsToSelector:@selector(didReceiveTypedMessage:inConversation:)]) {
-        [self.delegate didReceiveTypedMessage:message inConversation:conversation];
-    }else{
-        //TODO: 提示有新消息
+    if ([self.delegate respondsToSelector:@selector(didReceiveMessage:inConversation:)]) {
+        [self.delegate didReceiveMessage:message inConversation:conversation];
     }
 }
 
 #pragma mark - setters
 -(void)setDelegate:(id)delegate{
     _delegate = delegate;
-//    self.client.delegate = delegate;
 }
 
 -(void)setClient:(AVIMClient *)client{

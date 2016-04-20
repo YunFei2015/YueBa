@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-@class AVIMMessage;
 @class AVIMTypedMessage;
 
 typedef enum {
@@ -18,15 +17,12 @@ typedef enum {
 }kMessageType;
 
 @interface QYMessageCell : UITableViewCell
-{
-    AVIMMessage *_message;
-}
 
 @property (nonatomic) kMessageType messageType;
-@property (strong, nonatomic) AVIMMessage *message;
+@property (strong, nonatomic) AVIMTypedMessage *message;
 @property (weak, nonatomic) IBOutlet UIImageView *voiceAnimatingImageView;
 
--(CGFloat)heightWithMessage:(AVIMMessage *)message;
+//-(CGFloat)heightWithMessage:(AVIMTypedMessage *)message;
 
 //判断手指是否触摸在有效区域
 -(BOOL)isTapedInContent:(UITapGestureRecognizer *)tap;

@@ -7,10 +7,16 @@
 //
 
 #import "QYSettingsTableVC.h"
+#import "QYAccount.h"
+#import "AppDelegate.h"
+#import "QYNetworkManager.h"
 
 @interface QYSettingsTableVC ()
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *leftBarButtonItem;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *rightBarButtonItem;
+@property (weak, nonatomic) IBOutlet UIButton *logoutBtn;
+@property (weak, nonatomic) IBOutlet UISwitch *manSw;
+@property (weak, nonatomic) IBOutlet UISwitch *womanSw;
 
 @end
 
@@ -19,11 +25,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     SWRevealViewController *revealViewController = self.revealViewController;
     [revealViewController panGestureRecognizer];
     [revealViewController tapGestureRecognizer];
@@ -35,9 +36,26 @@
         [self.rightBarButtonItem setTarget: revealViewController];
         [self.rightBarButtonItem setAction: @selector(rightRevealToggle:)];
     }
+    
+    _logoutBtn.layer.cornerRadius = 5;
+    _logoutBtn.layer.borderColor = [UIColor redColor].CGColor;
+    _logoutBtn.layer.borderWidth = .5f;
 }
 
+- (IBAction)logout:(UIButton *)sender {
+    [[QYAccount currentAccount] logout];
+    
+    AppDelegate *app = [UIApplication sharedApplication].delegate;
+    [app setRootViewControllerToEntrance];
+}
 
+- (IBAction)selectSexAction:(UISwitch *)sender {
+    if (sender == _manSw) {
+        [_womanSw setOn:!sender.isOn animated:YES];
+    }else{
+        [_manSw setOn:!sender.isOn animated:YES];
+    }
+}
 
 #pragma mark - Table view data source
 

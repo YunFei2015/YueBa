@@ -26,14 +26,13 @@
 #import <AVIMConversation.h>
 
 
-@interface QYChatsListVC () <UITableViewDelegate, UITableViewDataSource, QYNetworkDelegate>
+@interface QYChatsListVC () <UITableViewDelegate, UITableViewDataSource, QYNetworkDelegate, QYChatManagerDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *segmentControl;
 
 @property (strong, nonatomic) NSMutableArray *datas;//需要显示的数据列表
 @property (strong, nonatomic) NSMutableArray *friends;//好友列表
-@property (strong, nonatomic) NSMutableArray *chats;//会话列表
 @property (strong, nonatomic) QYChatCell *selectedCell;
 
 @end
@@ -43,13 +42,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(lastMessageDidChanged:) name:kLastMessageDidChangedNotification object:nil];
-    
-
     _datas = [NSMutableArray array];
-    _friends = [NSMutableArray array];
-    _chats = [NSMutableArray array];
-
     
     [_tableView registerNib:[UINib nibWithNibName:@"QYChatCell" bundle:nil] forCellReuseIdentifier:kFriendCellIdentifier];
     
@@ -60,10 +53,17 @@
     [self getFriendsListFromNetwork];
 }
 
+-(void)viewWillAppear:(BOOL)animated{
+    [QYChatManager sharedManager].delegate = self;
+    
+    [super viewWillAppear:animated];
+}
+
 #pragma mark - Custom Methods
 //从本地获取用户列表
 -(NSMutableArray *)getFriendsListFromDB{
     NSArray *friends = [[QYUserStorage sharedInstance] getAllUsersWithSortType:@"matchTime"];
+    _friends = [NSMutableArray arrayWithArray:friends];
     return [NSMutableArray arrayWithArray:friends];
 }
 
@@ -75,38 +75,34 @@
 
 //获取会话列表
 -(NSMutableArray *)getChatsList{
-    //过滤出最后一条消息不为空的用户，加入会话列表
-    NSArray *users = [[QYUserStorage sharedInstance] getAllUsersWithSortType:@"lastMessageTime"];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.message != NIL"];
-    NSArray *results = [users filteredArrayUsingPredicate:predicate];
+    NSArray *friends = [[QYUserStorage sharedInstance] getAllUsersWithSortType:@"lastMessageAt"];
+    return [NSMutableArray arrayWithArray:friends];
+}
 
-    return [NSMutableArray arrayWithArray:results];
+-(void)reloadLastMessageInConversation:(AVIMConversation *)conversation withIndexPath:(NSIndexPath *)indexPath{
+    //把最新会话置顶
+    QYUserInfo *user = _datas[indexPath.row];
+    if ([_datas containsObject:user]) {
+        QYChatCell *cell = [_tableView cellForRowAtIndexPath:indexPath];
+        [_datas exchangeObjectAtIndex:0 withObjectAtIndex:indexPath.row];
+        
+        [_tableView moveRowAtIndexPath:indexPath toIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+        cell.conversation = [[QYChatManager sharedManager] conversationFromKeyedConversation:user.keyedConversation];
+    }
+    
 }
 
 #pragma mark - Events
 - (IBAction)segmentControlAction:(UISegmentedControl *)sender {
     if (sender.selectedSegmentIndex == 0) {
         _datas = [self getFriendsListFromDB];
+        self.titleLabel.text = [NSString stringWithFormat:@"%ld个配对", _datas.count];
         [_tableView reloadData];
     }else{
         _datas = [self getChatsList];
+        self.titleLabel.text = [NSString stringWithFormat:@"%ld个聊天", _datas.count];
         [_tableView reloadData];
     }
-}
-
--(void)lastMessageDidChanged:(NSNotification *)notification{
-    NSIndexPath *selectedIndexPath = [_tableView indexPathForCell:_selectedCell];
-    if (_segmentControl.selectedSegmentIndex == 0) {
-        [_tableView reloadRowsAtIndexPaths:@[selectedIndexPath] withRowAnimation:UITableViewRowAnimationNone];
-    }else{
-        if ([_datas containsObject:_selectedCell.user]) {
-            [_datas removeObject:_selectedCell.user];
-        }
-        
-        [_datas insertObject:_selectedCell.user atIndex:0];
-        [_tableView moveRowAtIndexPath:selectedIndexPath toIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-    }
-    
 }
 
 
@@ -115,17 +111,21 @@
     if (success) {
         if (responseObject[kResponseKeySuccess]) {
             NSArray *list = responseObject[kResponseKeyData][@"users"];
-//            if (_datas.count == 0) {
-//                [[QYUserStorage sharedInstance] addUsers:list];
-//            }
+            if (_datas.count == 0) {
+                [[QYUserStorage sharedInstance] addUsers:list];
+                _datas = [NSMutableArray arrayWithArray:[[QYUserStorage sharedInstance] getAllUsersWithSortType:kUserMatchTime]];
+                self.titleLabel.text = [NSString stringWithFormat:@"%ld个配对", _datas.count];
+                return;
+            }
         
             NSMutableArray *datasFromNet = [NSMutableArray array];
+            //对网络数据进行遍历
             [list enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                 //数组转模型
                 QYUserInfo *user = [QYUserInfo userWithDictionary:obj];
                 [datasFromNet addObject:obj];
                 
-                //如果本地没有，网络有，则插入到本地
+                //如果网络有，本地没有，则插入到本地
                 NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.userId MATCHES %@" argumentArray:@[user.userId]];
                 NSArray *results = [_datas filteredArrayUsingPredicate:predicate];
                 if (results.count <= 0) {
@@ -135,7 +135,7 @@
                 
             }];
             
-            //本地用户列表和网络获取的用户列表进行对比，多删少补
+            //对本地用户列表进行遍历
             [_datas enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                 //如果本地有，网络没有，则删除本地
                 QYUserInfo *user = (QYUserInfo *)obj;
@@ -144,25 +144,13 @@
                 if (results.count <= 0) {
                     [[QYUserStorage sharedInstance] deleteUser:user.userId];
                     [_datas removeObject:user];
-                }else{
-                    __block QYUserInfo *blockUser = user;
-                    WEAKSELF
-                    [[QYChatManager sharedManager] findConversationWithUser:user.userId withQYFindConversationCompletion:^(AVIMConversation *conversation) {
-                        if (conversation) {
-                            blockUser.keyedConversation = conversation.keyedConversation;
-                        }
-                        if (idx == weakSelf.datas.count - 1) {
-                            STRONGSELF
-                            dispatch_async(dispatch_get_main_queue(), ^{
-                                [strongSelf.tableView reloadData];
-                            });
-                           
-                        }
-                    }];
                 }
             }];
             
-            self.titleLabel.text = [NSString stringWithFormat:@"%ld个配对", _datas.count];
+            [_segmentControl setSelectedSegmentIndex:1];
+            [self segmentControlAction:_segmentControl];
+
+            
             
         }else{
            
@@ -172,6 +160,29 @@
     }
 }
 
+#pragma mark - QYChatManager Delegate
+-(void)didReceiveMessage:(AVIMTypedMessage *)message inConversation:(AVIMConversation *)conversation{
+    //找出包含在会话成员中的好友
+    NSArray *results = [_friends filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF.userId BETWEEN %@", conversation.members]];
+    QYUserInfo *user = results[0];
+    
+    //如果用户的会话属性为空，则将会话存储到内存和本地
+    if (user.keyedConversation == nil) {
+        user.keyedConversation = conversation.keyedConversation;
+        [[QYUserStorage sharedInstance] updateUserConversation:user.keyedConversation forUserId:user.userId];
+    }
+    
+    //将最近消息时间存储到内存
+    user.lastMessageAt = [NSDate dateWithTimeIntervalSince1970:message.deliveredTimestamp];
+    //将最近消息时间存储到本地
+    [[QYUserStorage sharedInstance] updateUserLastMessageAt:user.lastMessageAt forUserId:user.userId];
+    
+    if (_segmentControl.selectedSegmentIndex == 1) {
+        //找到需要更新UI的用户下标
+        NSInteger index = [_datas indexOfObject:user];
+        [self reloadLastMessageInConversation:conversation withIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+    }
+}
 
 #pragma mark - UITableView Delegate & Datasource
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
@@ -182,7 +193,11 @@
     QYChatCell *cell = [tableView dequeueReusableCellWithIdentifier:kFriendCellIdentifier forIndexPath:indexPath];
     QYUserInfo *user = _datas[indexPath.row];
     cell.user = user;
-    cell.conversation = [[QYChatManager sharedManager] conversationFromKeyedConversation:user.keyedConversation];
+    if (_segmentControl.selectedSegmentIndex == 0) {
+        cell.conversation = nil;
+    }else{
+        cell.conversation = [[QYChatManager sharedManager] conversationFromKeyedConversation:user.keyedConversation];
+    }
     
     return cell;
 }
@@ -191,6 +206,13 @@
     QYChatCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     QYChatVC *chatVC = [[QYChatVC alloc] init];
     chatVC.user = cell.user;
+    //当最后一条消息改变时，调用block块，刷新视图
+    chatVC.lastMessageDidChanged = ^(AVIMConversation *conversation){
+        if (_segmentControl.selectedSegmentIndex == 1) {
+            //找到需要更新UI的用户下标
+            [self reloadLastMessageInConversation:conversation withIndexPath:indexPath];
+        }
+    };
 
     [self.navigationController pushViewController:chatVC animated:YES];
     [self.revealViewController setFrontViewPosition:FrontViewPositionLeftSideMost animated:YES];
@@ -221,12 +243,14 @@
         [self presentViewController:controller animated:YES completion:nil];
     }];
     
+    /*
     UITableViewRowAction *clearAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:@"清空聊天记录" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
         
         QYUserInfo *user = _datas[indexPath.row];
         UIAlertController *controller = [UIAlertController alertControllerWithTitle:@"清空聊天记录" message:[NSString stringWithFormat:@"确定要清空与%@的聊天记录吗？", user.name] preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             //TODO: 清空聊天记录
+            
             
             //数据源删除数据
             
@@ -244,8 +268,9 @@
         [controller addAction:action2];
         [self presentViewController:controller animated:YES completion:nil];
     }];
+     */
     
-    return @[deleteAction, clearAction];
+    return @[deleteAction];
 }
 
 

@@ -26,6 +26,8 @@ typedef enum{
 -(void)didContinueRecording;
 -(void)didCancelRecording;
 -(void)didFinishRecording;
+
+-(void)sendMessage:(id)message;
 @end
 
 @interface MessageBar : UIView 

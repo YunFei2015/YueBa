@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
     </dependencies>
     <scenes>
         <!--Settings TableVC-->
@@ -13,6 +14,37 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <view key="tableFooterView" contentMode="scaleToFill" id="9dS-RR-7U8">
+                            <rect key="frame" x="0.0" y="180" width="414" height="268"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <subviews>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="It6-2n-lCk">
+                                    <rect key="frame" x="103.5" y="224" width="207" height="44"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="44" id="GGz-f5-uYk"/>
+                                    </constraints>
+                                    <state key="normal" title="退出当前账户">
+                                        <color key="titleColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                    </state>
+                                    <state key="highlighted" title="退出当前账户"/>
+                                    <connections>
+                                        <action selector="logout:" destination="GEc-bP-X7c" eventType="touchUpInside" id="bHh-LI-UyO"/>
+                                    </connections>
+                                </button>
+                            </subviews>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstItem="It6-2n-lCk" firstAttribute="top" secondItem="9dS-RR-7U8" secondAttribute="top" id="0zG-RW-iGq"/>
+                                <constraint firstAttribute="bottom" secondItem="It6-2n-lCk" secondAttribute="bottom" id="20i-Zi-6zP"/>
+                                <constraint firstItem="It6-2n-lCk" firstAttribute="centerX" secondItem="9dS-RR-7U8" secondAttribute="centerX" id="leO-J1-7Eh"/>
+                                <constraint firstItem="It6-2n-lCk" firstAttribute="width" secondItem="9dS-RR-7U8" secondAttribute="width" multiplier="1/2" id="y6h-2P-aHT"/>
+                            </constraints>
+                            <variation key="default">
+                                <mask key="constraints">
+                                    <exclude reference="0zG-RW-iGq"/>
+                                </mask>
+                            </variation>
+                        </view>
                         <sections>
                             <tableViewSection headerTitle="向我显示：" id="c4u-N7-LfX">
                                 <cells>
@@ -29,12 +61,15 @@
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7Gu-P7-NJs">
+                                                <switch opaque="NO" tag="1" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7Gu-P7-NJs">
                                                     <rect key="frame" x="335" y="6.5" width="51" height="31"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="49" id="52F-KK-dnN"/>
                                                         <constraint firstAttribute="height" constant="31" id="mdX-kV-qI0"/>
                                                     </constraints>
+                                                    <connections>
+                                                        <action selector="selectSexAction:" destination="GEc-bP-X7c" eventType="valueChanged" id="yII-s7-ZWM"/>
+                                                    </connections>
                                                 </switch>
                                             </subviews>
                                             <constraints>
@@ -67,7 +102,7 @@
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="JJF-lS-8LX">
+                                                <switch opaque="NO" tag="2" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="JJF-lS-8LX">
                                                     <rect key="frame" x="335" y="6" width="51" height="31"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="31" id="LKP-Je-YAt"/>
@@ -81,6 +116,9 @@
                                                             <exclude reference="ssT-Ks-TH8"/>
                                                         </mask>
                                                     </variation>
+                                                    <connections>
+                                                        <action selector="selectSexAction:" destination="GEc-bP-X7c" eventType="valueChanged" id="aJT-v3-UHQ"/>
+                                                    </connections>
                                                 </switch>
                                             </subviews>
                                             <constraints>
@@ -107,7 +145,10 @@
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina55"/>
                     <connections>
                         <outlet property="leftBarButtonItem" destination="MwD-Bz-1ga" id="WzL-gr-Y6p"/>
+                        <outlet property="logoutBtn" destination="It6-2n-lCk" id="WYm-hU-8en"/>
+                        <outlet property="manSw" destination="7Gu-P7-NJs" id="Cha-Vb-yLH"/>
                         <outlet property="rightBarButtonItem" destination="uT0-lx-gG6" id="yM4-HS-LCl"/>
+                        <outlet property="womanSw" destination="JJF-lS-8LX" id="eW3-tx-jZr"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="enJ-cK-IDp" userLabel="First Responder" sceneMemberID="firstResponder"/>

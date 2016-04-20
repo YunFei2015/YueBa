@@ -37,8 +37,9 @@
  *  @param userId  用户ID
  */
 
--(void)updateUserMessage:(NSString *)message time:(NSInteger)time withUserId:(NSString *)userId;
--(void)updateUserConversation:(AVIMKeyedConversation *)conversation withUserId:(NSString *)userId;
+-(void)updateUserMessage:(NSString *)message time:(NSInteger)time forUserId:(NSString *)userId;
+-(void)updateUserConversation:(AVIMKeyedConversation *)conversation forUserId:(NSString *)userId;
+-(void)updateUserLastMessageAt:(NSDate *)time forUserId:(NSString *)userId;
 
 ///**
 // *  更新多个用户

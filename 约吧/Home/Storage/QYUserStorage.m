@@ -59,43 +59,62 @@
 }
 
 //更新一个用户
--(void)updateUserMessage:(NSString *)message time:(NSInteger)time withUserId:(NSString *)userId{
+//-(void)updateUserMessage:(NSString *)message time:(NSInteger)time forUserId:(NSString *)userId{
+//    //打开数据库
+//    if (![self.database open]) {
+//        NSLog(@"User database open failed when update user!");
+//        return;
+//    }
+//    
+//    //插入信息
+//    NSString *set = [NSString stringWithFormat:@"lastMessage = '%@', lastMessageTime = %ld", message, time];
+//    NSString *sql = [NSString stringWithFormat:@"update %@ set %@ where userId = %@", kUserTable, set, userId];
+//    BOOL result = [self.database executeUpdate:sql];
+//    NSLog(@"%d", result);
+//    
+//    
+//    //关闭数据库
+//    if (![self.database close]) {
+//        NSLog(@"User database close failed when update user!");
+//    }
+//}
+
+-(void)updateUserConversation:(AVIMKeyedConversation *)conversation forUserId:(NSString *)userId{
     //打开数据库
     if (![self.database open]) {
-        NSLog(@"User database open failed when update user!");
+        NSLog(@"User database open failed when update user conversation!");
         return;
     }
     
     //插入信息
-    NSString *set = [NSString stringWithFormat:@"lastMessage = '%@', lastMessageTime = %ld", message, time];
-    NSString *sql = [NSString stringWithFormat:@"update %@ set %@ where userId = %@", kUserTable, set, userId];
-    BOOL result = [self.database executeUpdate:sql];
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:conversation];
+    NSLog(@"%d", self.database.open);
+    BOOL result = [self.database executeUpdate:@"update User set keyedConversation = ? where userId = ?", data, userId];
     NSLog(@"%d", result);
-
+    
     
     //关闭数据库
     if (![self.database close]) {
-        NSLog(@"User database close failed when update user!");
+        NSLog(@"User database close failed when update user conversation!");
     }
 }
 
--(void)updateUserConversation:(AVIMKeyedConversation *)conversation withUserId:(NSString *)userId{
+-(void)updateUserLastMessageAt:(NSDate *)time forUserId:(NSString *)userId{
     //打开数据库
     if (![self.database open]) {
-        NSLog(@"User database open failed when update user!");
+        NSLog(@"User database open failed when update user lastMessageAt!");
         return;
     }
     
     //插入信息
-    NSString *set = [NSString stringWithFormat:@"keyedConversation = %@", conversation];
-    NSString *sql = [NSString stringWithFormat:@"update %@ set %@ where userId = %@", kUserTable, set, userId];
-    BOOL result = [self.database executeUpdate:sql];
+    NSLog(@"%d", self.database.open);
+    BOOL result = [self.database executeUpdate:@"update User set lastMessageAt = ? where userId = ?", time, userId];
     NSLog(@"%d", result);
-
+    
     
     //关闭数据库
     if (![self.database close]) {
-        NSLog(@"User database close failed when update user!");
+        NSLog(@"User database close failed when update user lastMessageAt!");
     }
 }
 
@@ -118,7 +137,7 @@
     }
     
     //创建sql语句
-    NSString *sql = [NSString stringWithFormat:@"select * from %@ order by %@ desc", kUserTable, key];
+    NSString *sql = [NSString stringWithFormat:@"select * from %@ where %@ > 0 order by %@ desc", kUserTable, key, key];
     
     //执行sql
     FMResultSet *result = [self.database executeQuery:sql];
@@ -129,14 +148,14 @@
         [dict enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
             if ([obj isKindOfClass:[NSData class]]) {
                 id value = [NSKeyedUnarchiver unarchiveObjectWithData:obj];
-                [muDict setValue:value forKey:obj];
+                [muDict setValue:value forKey:key];
             }
             
             if ([obj isKindOfClass:[NSNull class]]) {
-                [muDict removeObjectForKey:obj];
+                [muDict removeObjectForKey:key];
             }
         }];
-        QYUserInfo *user = [QYUserInfo userWithDictionary:dict];
+        QYUserInfo *user = [QYUserInfo userWithDictionary:muDict];
         [results addObject:user];
     }
     
@@ -159,7 +178,8 @@
     NSString *sql = [NSString stringWithFormat:@"delete from %@ where %@ = %@", kUserTable, kUserId, userId];\
     
     //执行sql
-    [self.database executeUpdate:sql];
+    BOOL result = [self.database executeUpdate:sql];
+    NSLog(@"%d", result);
     
     //关闭数据库
     if (![self.database close]) {
@@ -201,6 +221,7 @@
     
     //创建sql语句、执行
     NSString *sql = [self sqlStringWithKeys:[dict allKeys] dict:dict isNew:isNew];
+    NSLog(@"%d", db.open);
     BOOL result = [db executeUpdate:sql withParameterDictionary:dict];
     NSLog(@"%d", result);
 }
@@ -262,25 +283,25 @@
 
 
 /*
--(QYUserInfo *)getUser:(NSString *)userId{
-    //打开数据库
-    if (![self.database open]) {
-        NSLog(@"User database open failed when get User : %@!", userId);
-        return nil;
-    }
-    
-    //创建sql语句
-    
-    
-    //执行sql
-    
-    //关闭数据库
-    if (![self.database close]) {
-        NSLog(@"User database close failed when get User : %@!", userId);
-    }
-    
-    return nil;
-}
+ -(QYUserInfo *)getUser:(NSString *)userId{
+ //打开数据库
+ if (![self.database open]) {
+ NSLog(@"User database open failed when get User : %@!", userId);
+ return nil;
+ }
+ 
+ //创建sql语句
+ 
+ 
+ //执行sql
+ 
+ //关闭数据库
+ if (![self.database close]) {
+ NSLog(@"User database close failed when get User : %@!", userId);
+ }
+ 
+ return nil;
+ }
  */
 
 //创建User表
@@ -292,7 +313,7 @@
     }
     
     //创建表
-    NSString *sql = [NSString stringWithFormat:@"create table if not exists %@(%@ TEXT PRIMARY KEY, %@ TEXT, %@ INTEGER, %@ BOOL, %@ TEXT, %@ INTEGER, %@ BLOB)", kUserTable, kUserId, kUserName, kUserAge, kUserSex, kUserIconUrl, kUserMatchTime, @"keyedConversation"];
+    NSString *sql = [NSString stringWithFormat:@"create table if not exists %@(%@ TEXT PRIMARY KEY, %@ TEXT, %@ INTEGER, %@ BOOL, %@ TEXT, %@ INTEGER, %@ BLOB, %@ INTEGER)", kUserTable, kUserId, kUserName, kUserAge, kUserSex, kUserIconUrl, kUserMatchTime, @"keyedConversation", @"lastMessageAt"];
     NSLog(@"create User table sql : %@", sql);
     [self.database executeUpdate:sql];
     

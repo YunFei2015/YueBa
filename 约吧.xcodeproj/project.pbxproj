@@ -43,7 +43,6 @@
 		7C506FA11CB74C200037EAED /* SDPhotoBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C506F621CB74C200037EAED /* SDPhotoBrowser.m */; };
 		7C506FA21CB74C200037EAED /* SDWaitingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C506F651CB74C200037EAED /* SDWaitingView.m */; };
 		7C506FC11CB761CB0037EAED /* QYAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C506FC01CB761CB0037EAED /* QYAccount.m */; };
-		7C506FCB1CB788590037EAED /* QYDataStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C506FC41CB788590037EAED /* QYDataStorage.m */; };
 		7C506FCC1CB788590037EAED /* QYImagesPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C506FC61CB788590037EAED /* QYImagesPicker.m */; };
 		7C506FCD1CB788590037EAED /* QYLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C506FC81CB788590037EAED /* QYLocationManager.m */; };
 		7C506FCE1CB788590037EAED /* QYNetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C506FCA1CB788590037EAED /* QYNetworkManager.m */; };
@@ -145,8 +144,6 @@
 		7C506F651CB74C200037EAED /* SDWaitingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDWaitingView.m; sourceTree = "<group>"; };
 		7C506FBF1CB761CB0037EAED /* QYAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYAccount.h; sourceTree = "<group>"; };
 		7C506FC01CB761CB0037EAED /* QYAccount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYAccount.m; sourceTree = "<group>"; };
-		7C506FC31CB788590037EAED /* QYDataStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYDataStorage.h; sourceTree = "<group>"; };
-		7C506FC41CB788590037EAED /* QYDataStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYDataStorage.m; sourceTree = "<group>"; };
 		7C506FC51CB788590037EAED /* QYImagesPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYImagesPicker.h; sourceTree = "<group>"; };
 		7C506FC61CB788590037EAED /* QYImagesPicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYImagesPicker.m; sourceTree = "<group>"; };
 		7C506FC71CB788590037EAED /* QYLocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYLocationManager.h; sourceTree = "<group>"; };
@@ -448,8 +445,6 @@
 		7C506FC21CB788590037EAED /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
-				7C506FC31CB788590037EAED /* QYDataStorage.h */,
-				7C506FC41CB788590037EAED /* QYDataStorage.m */,
 				7C506FC51CB788590037EAED /* QYImagesPicker.h */,
 				7C506FC61CB788590037EAED /* QYImagesPicker.m */,
 				7C506FC71CB788590037EAED /* QYLocationManager.h */,
@@ -786,7 +781,6 @@
 				7C30B19B1C996137001EF237 /* NSString+Extension.m in Sources */,
 				7C7078D31CC3337200CCF7BA /* QYUserStorage.m in Sources */,
 				7C30B14E1C995E2A001EF237 /* main.m in Sources */,
-				7C506FCB1CB788590037EAED /* QYDataStorage.m in Sources */,
 				7C506FA01CB74C200037EAED /* SDBrowserImageView.m in Sources */,
 				7C59D9B91CA3E0D6008EF5E9 /* UIImage+Extension.m in Sources */,
 				7C506FC11CB761CB0037EAED /* QYAccount.m in Sources */,

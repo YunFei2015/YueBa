@@ -16,10 +16,11 @@
 @property (strong, nonatomic) NSString *iconUrl;
 @property (strong, nonatomic) NSString *name;
 @property (strong, nonatomic) NSDate *matchTime;
-@property (strong, nonatomic) NSString *message;
-@property (nonatomic) NSInteger messageTime;
 
 @property (strong, nonatomic) AVIMKeyedConversation *keyedConversation;
+@property (strong, nonatomic) NSDate *lastMessageAt;
+
+
 
 
 

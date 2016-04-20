@@ -13,7 +13,6 @@
 
 @optional
 -(void)didFinishSelectImages:(NSDictionary *)info;
--(void)didCancelSelectImages;
 
 @end
 
