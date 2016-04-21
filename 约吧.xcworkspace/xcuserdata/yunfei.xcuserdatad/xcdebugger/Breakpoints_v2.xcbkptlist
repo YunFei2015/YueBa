@@ -25,45 +25,61 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "&#x7ea6;&#x5427;/Home/Storage/QYUserStorage.m"
-            timestampString = "482727962.550433"
+            filePath = "&#x7ea6;&#x5427;/Chat/Controllers/QYMapVC.m"
+            timestampString = "482894310.758977"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "38"
-            endingLineNumber = "38"
-            landmarkName = "-addUser:"
+            startingLineNumber = "242"
+            endingLineNumber = "242"
+            landmarkName = "-mapView:viewForAnnotation:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "&#x7ea6;&#x5427;/Chat/Protocols/QYChatManager.m"
-            timestampString = "482826488.800362"
+            filePath = "&#x7ea6;&#x5427;/Home/Controllers/QYChatsListVC.m"
+            timestampString = "482932935.646536"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "140"
-            endingLineNumber = "140"
-            landmarkName = "-conversation:didReceiveUnread:"
+            startingLineNumber = "85"
+            endingLineNumber = "85"
+            landmarkName = "-getChatsList"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "&#x7ea6;&#x5427;/Home/Storage/QYUserStorage.m"
-            timestampString = "482816845.156918"
+            filePath = "&#x7ea6;&#x5427;/Home/Controllers/QYChatsListVC.m"
+            timestampString = "482932968.891216"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "226"
-            endingLineNumber = "226"
-            landmarkName = "-updateUser:withDatabase:isNew:"
+            startingLineNumber = "244"
+            endingLineNumber = "244"
+            landmarkName = "-tableView:cellForRowAtIndexPath:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "&#x7ea6;&#x5427;/Home/Controllers/QYChatsListVC.m"
+            timestampString = "482933213.399761"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "52"
+            endingLineNumber = "52"
+            landmarkName = "-viewDidLoad"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

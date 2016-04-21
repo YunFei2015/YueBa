@@ -33,6 +33,22 @@
             _lastMessageAt = dict[@"lastMessageAt"];
         }
         
+        switch ([dict[@"messageStatus"] integerValue]) {
+            case 0:
+                _messageStatus = QYMessageStatusDefault;
+                break;
+
+            case 1:
+                _messageStatus = QYMessageStatusUnread;
+                break;
+                
+            case 2:
+                _messageStatus = QYMessageStatusFailed;
+                break;
+            default:
+                break;
+        }
+        
     }
     return self;
 }

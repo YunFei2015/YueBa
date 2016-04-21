@@ -40,6 +40,7 @@
 -(void)updateUserMessage:(NSString *)message time:(NSInteger)time forUserId:(NSString *)userId;
 -(void)updateUserConversation:(AVIMKeyedConversation *)conversation forUserId:(NSString *)userId;
 -(void)updateUserLastMessageAt:(NSDate *)time forUserId:(NSString *)userId;
+-(void)updateUserMessageStatus:(QYMessageStatus)status forUserId:(NSString *)userId;
 
 ///**
 // *  更新多个用户
@@ -66,4 +67,6 @@
  */
 
 -(NSArray *)getAllUsersWithSortType:(NSString *)key;
+
+-(QYUserInfo *)getUserForId:(NSString *)userId;
 @end

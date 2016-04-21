@@ -50,12 +50,6 @@
         //leanCloud上线
         NSString *userId = [QYAccount currentAccount].userId;
         [QYChatManager sharedManager].client = [[AVIMClient alloc] initWithClientId:userId];
-        [[QYChatManager sharedManager].client openWithCallback:^(BOOL succeeded, NSError *error) {
-            if (error) {
-                NSLog(@"client open failed : %@", error);
-                return;
-            }
-        }];
     }
     
     return YES;

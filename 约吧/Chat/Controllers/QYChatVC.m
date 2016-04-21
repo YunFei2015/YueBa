@@ -37,6 +37,7 @@
 @property (strong, nonatomic) MessageBar *messageBar;
 @property (strong, nonatomic) UITableView *tableView;
 
+@property (strong, nonatomic) NSMutableDictionary *groups;//消息按时间分组
 @property (strong, atomic) NSMutableArray *messages;//消息列表
 
 @property (strong, nonatomic) QYAudioRecorder *voiceRecorder;
@@ -103,6 +104,7 @@
     
     _messages = [NSMutableArray array];
     
+    
     [QYAudioPlayer sharedInstance].delegate = self;
     [QYImagesPicker sharedInstance].delegate = self;
     
@@ -111,7 +113,6 @@
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [self queryMessages];
         });
-        
     }else{
         [[QYChatManager sharedManager] findConversationWithUser:_user.userId];
     }
@@ -158,10 +159,6 @@
     self.navigationItem.leftBarButtonItem = leftItem;
 }
 
--(void)backAction{
-    [self.navigationController popViewControllerAnimated:YES];
-    self.revealViewController.frontViewPosition = FrontViewPositionLeftSide;
-}
 
 - (void)addMessageBar{
     _messageBar = [[NSBundle mainBundle] loadNibNamed:@"MessageBar" owner:nil options:nil][0];
@@ -186,6 +183,9 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             [weakSelf.tableView reloadData];
             [weakSelf.tableView scrollToRowAtIndexPath:indexPaths.lastObject atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+            
+            //将该会话标记为已读
+            [_conversation markAsReadInBackground];
         });
     }
 }
@@ -205,8 +205,13 @@
         [self.messages insertObjects:messages atIndexes:indexSet];
         return indexPaths;
     }
-    
     return nil;
+}
+
+-(void)divideMessagesIntoGroupsByDate{
+    [_messages enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        
+    }];
 }
 
 -(void)insertRowWithMessage:(AVIMTypedMessage *)message{
@@ -233,14 +238,14 @@
     }
 }
 
--(NSString *)getRecorderPath{
-    NSDate *now = [NSDate date];
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.dateFormat = @"yyyy-MM-dd-hh-mm-ss";
-    NSString *documentPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
-    NSString *recorderPath = [documentPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@", [dateFormatter stringFromDate:now]]];
-    return recorderPath;
-}
+//-(NSString *)getRecorderPath{
+//    NSDate *now = [NSDate date];
+//    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+//    dateFormatter.dateFormat = @"yyyy-MM-dd-hh-mm-ss";
+//    NSString *documentPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
+//    NSString *recorderPath = [documentPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@", [dateFormatter stringFromDate:now]]];
+//    return recorderPath;
+//}
 
 
 -(void)getMoreMessages:(NSInteger)count{
@@ -311,6 +316,11 @@
 }
 
 #pragma mark - Events
+-(void)backAction{
+    [self.navigationController popViewControllerAnimated:YES];
+    self.revealViewController.frontViewPosition = FrontViewPositionLeftSide;
+}
+
 //tableView的点击事件
 - (void)tapAction:(UITapGestureRecognizer *)sender {
     //重置第一响应
@@ -413,7 +423,6 @@
 }
 
 -(void)sendMessage:(id)message{
-//    [[QYChatManager sharedManager] sendMessage:message withConversation:_conversation];
     [[QYChatManager sharedManager] sendTextMessage:message withConversation:_conversation];
 }
 
@@ -494,7 +503,7 @@
 }
 
 #pragma mark - Chat Manager Delegate
--(void)didCreateConversation:(AVIMConversation *)conversation succeeded:(BOOL)succeeded{
+-(void)didFindConversation:(AVIMConversation *)conversation succeeded:(BOOL)succeeded{
     if (succeeded) {
         _conversation = conversation;
         _user.keyedConversation = _conversation.keyedConversation;
@@ -517,39 +526,13 @@
     //TODO: 风火轮，正在发送
 }
 
-
-//-(void)didSendMessage:(AVIMMessage *)message succeeded:(BOOL)succeeded{
-//    if (succeeded) { 
-//        NSString *messageText = message.content;
-//        //FIXME: 空格的检测要在在发送成功之前处理
-//        NSString *regex = @" *";//任意个空格
-//        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regex];
-//        if ([predicate evaluateWithObject:messageText]) {//如果文本是由任意个空格组成的，则不允许发送
-//            UIAlertController *controller = [UIAlertController alertControllerWithTitle:nil message:@"不能发送空白消息" preferredStyle:UIAlertControllerStyleAlert];
-//            UIAlertAction *action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {}];
-//            [controller addAction:action];
-//            [self presentViewController:controller animated:YES completion:nil];
-//            return;
-//        }
-//        [self insertRowWithMessage:message];
-//        return;
-//    }
-//    
-//    [self insertRowWithMessage:message];
-//    
-////    UIAlertController *controller = [UIAlertController alertControllerWithTitle:@"发送失败" message:nil preferredStyle:UIAlertControllerStyleAlert];
-////    UIAlertAction *action = [UIAlertAction actionWithTitle:@"确认" style:UIAlertActionStyleDefault handler:nil];
-////    [controller addAction:action];
-////    [self presentViewController:controller animated:YES completion:nil];
-//}
-
 -(void)didSendMessage:(AVIMTypedMessage *)message succeeded:(BOOL)succeeded{
     //TODO: 发送成功，风火轮停止；发送失败，提示发送失败
 
 }
 
 -(void)didReceiveMessage:(AVIMTypedMessage *)message inConversation:(AVIMConversation *)conversation{
-    if ([message.clientId isEqualToString:_user.userId]) {
+    if ([conversation.conversationId isEqualToString:_conversation.conversationId]) {
         //下载富文本附件
         [message.file getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
             if (error) {
@@ -557,6 +540,8 @@
                 return;
             }
         }];
+        _user.messageStatus = QYMessageStatusDefault;
+        [[QYUserStorage sharedInstance] updateUserMessageStatus:_user.messageStatus forUserId:_user.userId];
         [self insertRowWithMessage:message];
     }
 }

@@ -68,7 +68,6 @@
 		7CF813951CB0CF4700CC79E8 /* countries.json in Resources */ = {isa = PBXBuildFile; fileRef = 7CF813931CB0CF4700CC79E8 /* countries.json */; };
 		7CF8139B1CB1435F00CC79E8 /* QYPaopaoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CF8139A1CB1435F00CC79E8 /* QYPaopaoView.m */; };
 		7CF8139F1CB1437900CC79E8 /* QYPaopaoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7CF8139E1CB1437900CC79E8 /* QYPaopaoView.xib */; };
-		7CFB143E1C9987F900DF7A42 /* FriendModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CFB143D1C9987F900DF7A42 /* FriendModel.m */; };
 		7CFCF3E41CA266E500ACBD72 /* QYVoiceRecordingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CFCF3E31CA266E500ACBD72 /* QYVoiceRecordingView.m */; };
 		7CFCF3E61CA266F300ACBD72 /* QYVoiceRecordingView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7CFCF3E51CA266F300ACBD72 /* QYVoiceRecordingView.xib */; };
 		7CFF658F1CAA5EE20068987A /* QYPinAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CFF658E1CAA5EE20068987A /* QYPinAnnotationView.m */; };
@@ -187,8 +186,6 @@
 		7CF813991CB1435F00CC79E8 /* QYPaopaoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYPaopaoView.h; sourceTree = "<group>"; };
 		7CF8139A1CB1435F00CC79E8 /* QYPaopaoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYPaopaoView.m; sourceTree = "<group>"; };
 		7CF8139E1CB1437900CC79E8 /* QYPaopaoView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = QYPaopaoView.xib; sourceTree = "<group>"; };
-		7CFB143C1C9987F900DF7A42 /* FriendModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FriendModel.h; sourceTree = "<group>"; };
-		7CFB143D1C9987F900DF7A42 /* FriendModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FriendModel.m; sourceTree = "<group>"; };
 		7CFCF3E21CA266E500ACBD72 /* QYVoiceRecordingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYVoiceRecordingView.h; sourceTree = "<group>"; };
 		7CFCF3E31CA266E500ACBD72 /* QYVoiceRecordingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYVoiceRecordingView.m; sourceTree = "<group>"; };
 		7CFCF3E51CA266F300ACBD72 /* QYVoiceRecordingView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = QYVoiceRecordingView.xib; sourceTree = "<group>"; };
@@ -293,8 +290,6 @@
 		7C30B1691C996137001EF237 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				7CFB143C1C9987F900DF7A42 /* FriendModel.h */,
-				7CFB143D1C9987F900DF7A42 /* FriendModel.m */,
 				7C30B16A1C996137001EF237 /* FaceModel.h */,
 				7C30B16B1C996137001EF237 /* FaceModel.m */,
 				7CFF65901CAA5F160068987A /* QYCurrentAnnotation.h */,
@@ -796,7 +791,6 @@
 				7C54E7C11CB5F32400A289A5 /* QYVerifyCodeBtn.m in Sources */,
 				7C4BB3B11CA8CD2500136C75 /* QYMapAddrCell.m in Sources */,
 				7C30B18F1C996137001EF237 /* QYChatManager.m in Sources */,
-				7CFB143E1C9987F900DF7A42 /* FriendModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

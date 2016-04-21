@@ -19,7 +19,7 @@
 
 @property (strong, nonatomic) AVIMKeyedConversation *keyedConversation;
 @property (strong, nonatomic) NSDate *lastMessageAt;
-
+@property (nonatomic) QYMessageStatus messageStatus;
 
 
 

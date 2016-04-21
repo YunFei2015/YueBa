@@ -20,7 +20,7 @@
 @interface QYAudioPlayer : NSObject <AVAudioPlayerDelegate>
 @property (strong, nonatomic) AVAudioPlayer *player;
 @property (strong, nonatomic) NSString *playingFileName;
-@property (nonatomic) id<QYAudioPlayerDelegate> delegate;
+@property (nonatomic, weak) id<QYAudioPlayerDelegate> delegate;
 
 +(instancetype)sharedInstance;
 -(BOOL)isPlaying;

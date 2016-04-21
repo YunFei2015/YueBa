@@ -32,7 +32,6 @@
 @property (weak, nonatomic) IBOutlet UISegmentedControl *segmentControl;
 
 @property (strong, nonatomic) NSMutableArray *datas;//需要显示的数据列表
-@property (strong, nonatomic) NSMutableArray *friends;//好友列表
 @property (strong, nonatomic) QYChatCell *selectedCell;
 
 @end
@@ -48,8 +47,16 @@
     
     [QYNetworkManager sharedInstance].delegate = self;
     
-    _datas = [self getFriendsListFromDB];
-    [_tableView reloadData];
+    //先获取会话列表，如果会话列表不为空，则显示会话界面；反之，获取好友列表，并显示好友界面
+    _datas = [self getChatsList];
+    if (_datas.count > 0) {
+        _segmentControl.selectedSegmentIndex = 1;
+        [self displayChatsList];
+    }else{
+        _datas = [self getFriendsListFromDB];
+        [self displayFriendsList];
+    }
+    
     [self getFriendsListFromNetwork];
 }
 
@@ -63,7 +70,6 @@
 //从本地获取用户列表
 -(NSMutableArray *)getFriendsListFromDB{
     NSArray *friends = [[QYUserStorage sharedInstance] getAllUsersWithSortType:@"matchTime"];
-    _friends = [NSMutableArray arrayWithArray:friends];
     return [NSMutableArray arrayWithArray:friends];
 }
 
@@ -79,29 +85,73 @@
     return [NSMutableArray arrayWithArray:friends];
 }
 
--(void)reloadLastMessageInConversation:(AVIMConversation *)conversation withIndexPath:(NSIndexPath *)indexPath{
+
+-(void)displayFriendsList{
+    _datas = [self getFriendsListFromDB];
+    self.titleLabel.text = [NSString stringWithFormat:@"%ld个配对", _datas.count];
+    [_tableView reloadData];
+}
+
+-(void)displayChatsList{
+    _datas = [self getChatsList];
+    self.titleLabel.text = [NSString stringWithFormat:@"%ld个聊天", _datas.count];
+    [_tableView reloadData];
+}
+
+//更新我和好友的最后一条消息
+-(void)reloadLastMessage:(AVIMTypedMessage *)message forUser:(QYUserInfo *)user{
     //把最新会话置顶
-    QYUserInfo *user = _datas[indexPath.row];
-    if ([_datas containsObject:user]) {
-        QYChatCell *cell = [_tableView cellForRowAtIndexPath:indexPath];
+    //从当前列表中查找用户
+    NSArray *results = [_datas filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF.userId MATCHES %@", user.userId]];
+    if (results.count <= 0) {//如果当前列表没有该用户，则从数据库中获取到，并插入到当前列表的顶部
+        [_datas insertObject:user atIndex:0];
+        [_tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationTop];
+    }else{//如果在当前列表查找到该用户，则将该用户移到顶部
+        NSInteger index = [_datas indexOfObject:results.firstObject];
+        [_datas replaceObjectAtIndex:index withObject:user];
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
         [_datas exchangeObjectAtIndex:0 withObjectAtIndex:indexPath.row];
-        
         [_tableView moveRowAtIndexPath:indexPath toIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-        cell.conversation = [[QYChatManager sharedManager] conversationFromKeyedConversation:user.keyedConversation];
     }
     
+    QYChatCell *cell = [_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    cell.message = [self contentOfMessage:message];
+    cell.status = user.messageStatus;
 }
+
+//按照消息类型返回对应内容
+-(NSString *)contentOfMessage:(AVIMTypedMessage *)message{
+    NSString *content = [NSString string];
+    switch (message.mediaType) {
+        case kAVIMMessageMediaTypeText:
+            content = message.text;
+            break;
+            
+        case kAVIMMessageMediaTypeAudio:
+            content = @"[语音]";
+            break;
+            
+        case kAVIMMessageMediaTypeImage:
+            content = @"[图片]";
+            break;
+            
+        case kAVIMMessageMediaTypeLocation:
+            content = @"[位置]";
+            break;
+            
+        default:
+            break;
+    }
+    return content;
+}
+
 
 #pragma mark - Events
 - (IBAction)segmentControlAction:(UISegmentedControl *)sender {
     if (sender.selectedSegmentIndex == 0) {
-        _datas = [self getFriendsListFromDB];
-        self.titleLabel.text = [NSString stringWithFormat:@"%ld个配对", _datas.count];
-        [_tableView reloadData];
+        [self displayFriendsList];
     }else{
-        _datas = [self getChatsList];
-        self.titleLabel.text = [NSString stringWithFormat:@"%ld个聊天", _datas.count];
-        [_tableView reloadData];
+        [self displayChatsList];
     }
 }
 
@@ -111,46 +161,43 @@
     if (success) {
         if (responseObject[kResponseKeySuccess]) {
             NSArray *list = responseObject[kResponseKeyData][@"users"];
-            if (_datas.count == 0) {
+            NSMutableArray *friends = [self getFriendsListFromDB];
+            if (friends.count == 0) {
                 [[QYUserStorage sharedInstance] addUsers:list];
-                _datas = [NSMutableArray arrayWithArray:[[QYUserStorage sharedInstance] getAllUsersWithSortType:kUserMatchTime]];
-                self.titleLabel.text = [NSString stringWithFormat:@"%ld个配对", _datas.count];
-                return;
+            }else{
+                NSMutableArray *datasFromNet = [NSMutableArray array];
+                //对网络数据进行遍历
+                [list enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                    //数组转模型
+                    QYUserInfo *user = [QYUserInfo userWithDictionary:obj];
+                    [datasFromNet addObject:obj];
+                    
+                    //如果网络有，本地没有，则插入到本地
+                    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.userId MATCHES %@" argumentArray:@[user.userId]];
+                    NSArray *results = [_datas filteredArrayUsingPredicate:predicate];
+                    if (results.count <= 0) {
+//                        [_datas insertObject:user atIndex:idx];
+                        [[QYUserStorage sharedInstance] addUser:obj];
+                    }
+                    
+                }];
+                
+                //对本地用户列表进行遍历
+                [_datas enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                    //如果本地有，网络没有，则删除本地
+                    QYUserInfo *user = (QYUserInfo *)obj;
+                    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.userId MATCHES %@" argumentArray:@[user.userId]];
+                    NSArray *results = [datasFromNet filteredArrayUsingPredicate:predicate];
+                    if (results.count <= 0) {
+                        [[QYUserStorage sharedInstance] deleteUser:user.userId];
+//                        [_datas removeObject:user];
+                    }
+                }];
             }
         
-            NSMutableArray *datasFromNet = [NSMutableArray array];
-            //对网络数据进行遍历
-            [list enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                //数组转模型
-                QYUserInfo *user = [QYUserInfo userWithDictionary:obj];
-                [datasFromNet addObject:obj];
-                
-                //如果网络有，本地没有，则插入到本地
-                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.userId MATCHES %@" argumentArray:@[user.userId]];
-                NSArray *results = [_datas filteredArrayUsingPredicate:predicate];
-                if (results.count <= 0) {
-                    [_datas insertObject:user atIndex:idx];
-                    [[QYUserStorage sharedInstance] addUser:obj];
-                }
-                
-            }];
-            
-            //对本地用户列表进行遍历
-            [_datas enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                //如果本地有，网络没有，则删除本地
-                QYUserInfo *user = (QYUserInfo *)obj;
-                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.userId MATCHES %@" argumentArray:@[user.userId]];
-                NSArray *results = [datasFromNet filteredArrayUsingPredicate:predicate];
-                if (results.count <= 0) {
-                    [[QYUserStorage sharedInstance] deleteUser:user.userId];
-                    [_datas removeObject:user];
-                }
-            }];
-            
-            [_segmentControl setSelectedSegmentIndex:1];
-            [self segmentControlAction:_segmentControl];
-
-            
+            if (_segmentControl.selectedSegmentIndex == 0) {
+                [self displayFriendsList];
+            }
             
         }else{
            
@@ -162,26 +209,21 @@
 
 #pragma mark - QYChatManager Delegate
 -(void)didReceiveMessage:(AVIMTypedMessage *)message inConversation:(AVIMConversation *)conversation{
-    //找出包含在会话成员中的好友
-    NSArray *results = [_friends filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF.userId BETWEEN %@", conversation.members]];
-    QYUserInfo *user = results[0];
+    //TODO: 新添加的好友，第一次发消息给我的情况
+    [conversation.members enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (![[QYAccount currentAccount].userId isEqualToString:obj]) {
+            NSString *userId = (NSString *)obj;
+            QYUserInfo *user = [[QYUserStorage sharedInstance] getUserForId:userId];
+            
+            //如果当前在会话界面，则更新UI
+            if (_segmentControl.selectedSegmentIndex == 1) {
+                [self reloadLastMessage:(AVIMTypedMessage *)message forUser:user];
+            }
+            *stop = TRUE;
+        }
+    }];
     
-    //如果用户的会话属性为空，则将会话存储到内存和本地
-    if (user.keyedConversation == nil) {
-        user.keyedConversation = conversation.keyedConversation;
-        [[QYUserStorage sharedInstance] updateUserConversation:user.keyedConversation forUserId:user.userId];
-    }
     
-    //将最近消息时间存储到内存
-    user.lastMessageAt = [NSDate dateWithTimeIntervalSince1970:message.deliveredTimestamp];
-    //将最近消息时间存储到本地
-    [[QYUserStorage sharedInstance] updateUserLastMessageAt:user.lastMessageAt forUserId:user.userId];
-    
-    if (_segmentControl.selectedSegmentIndex == 1) {
-        //找到需要更新UI的用户下标
-        NSInteger index = [_datas indexOfObject:user];
-        [self reloadLastMessageInConversation:conversation withIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
-    }
 }
 
 #pragma mark - UITableView Delegate & Datasource
@@ -194,9 +236,12 @@
     QYUserInfo *user = _datas[indexPath.row];
     cell.user = user;
     if (_segmentControl.selectedSegmentIndex == 0) {
-        cell.conversation = nil;
+//        cell.conversation = nil;
+        cell.message = nil;
     }else{
-        cell.conversation = [[QYChatManager sharedManager] conversationFromKeyedConversation:user.keyedConversation];
+        AVIMConversation *conversation = [[QYChatManager sharedManager] conversationFromKeyedConversation:user.keyedConversation];
+        AVIMTypedMessage *message = [conversation queryMessagesFromCacheWithLimit:1][0];
+        cell.message = [self contentOfMessage:message];
     }
     
     return cell;
@@ -204,13 +249,18 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     QYChatCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    cell.user.messageStatus = QYMessageStatusDefault;
+    cell.status = QYMessageStatusDefault;
+    [[QYUserStorage sharedInstance] updateUserMessageStatus:cell.user.messageStatus forUserId:cell.user.userId];
+    
     QYChatVC *chatVC = [[QYChatVC alloc] init];
     chatVC.user = cell.user;
     //当最后一条消息改变时，调用block块，刷新视图
     chatVC.lastMessageDidChanged = ^(AVIMConversation *conversation){
         if (_segmentControl.selectedSegmentIndex == 1) {
             //找到需要更新UI的用户下标
-            [self reloadLastMessageInConversation:conversation withIndexPath:indexPath];
+            _datas = [self getChatsList];
+            [tableView reloadData];
         }
     };
 

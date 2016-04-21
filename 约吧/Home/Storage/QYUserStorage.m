@@ -118,6 +118,25 @@
     }
 }
 
+-(void)updateUserMessageStatus:(QYMessageStatus)status forUserId:(NSString *)userId{
+    //打开数据库
+    if (![self.database open]) {
+        NSLog(@"User database open failed when update user message status!");
+        return;
+    }
+    
+    //插入信息
+    NSLog(@"%d", self.database.open);
+    BOOL result = [self.database executeUpdate:@"update User set messageStatus = ? where userId = ?", @(status), userId];
+    NSLog(@"%d", result);
+    
+    
+    //关闭数据库
+    if (![self.database close]) {
+        NSLog(@"User database close failed when update user message status!");
+    }
+}
+
 ////更新多个用户
 //-(void)updateUsers:(NSArray *)users{
 //    FMDatabaseQueue *queue = [FMDatabaseQueue databaseQueueWithPath:[kTempDirectory stringByAppendingPathComponent:kUserDBFileName]];
@@ -186,6 +205,44 @@
         NSLog(@"User database close failed when delete user!");
     }
     
+}
+
+-(QYUserInfo *)getUserForId:(NSString *)userId{
+    //打开数据库
+    if (![self.database open]) {
+        NSLog(@"User database open failed when select user!");
+        return nil;
+    }
+    
+    //创建sql语句
+    NSString *sql = [NSString stringWithFormat:@"select * from %@ where %@ = %@", kUserTable, kUserId, userId];
+    FMResultSet *result = [self.database executeQuery:sql];
+    QYUserInfo *user;
+    while ([result next]) {
+        NSDictionary * dict = [result resultDictionary];
+        NSMutableDictionary *muDict = [NSMutableDictionary dictionaryWithDictionary:dict];
+        [dict enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+            if ([obj isKindOfClass:[NSData class]]) {
+                id value = [NSKeyedUnarchiver unarchiveObjectWithData:obj];
+                [muDict setValue:value forKey:key];
+            }
+            
+            if ([obj isKindOfClass:[NSNull class]]) {
+                [muDict removeObjectForKey:key];
+            }
+        }];
+        user = [QYUserInfo userWithDictionary:muDict];
+        return user;
+    }
+
+    
+    //关闭数据库
+    if (![self.database close]) {
+        NSLog(@"User database close failed when select user!");
+        return nil;
+    }
+    
+    return user;
 }
 
 #pragma mark - 内部接口
@@ -313,7 +370,7 @@
     }
     
     //创建表
-    NSString *sql = [NSString stringWithFormat:@"create table if not exists %@(%@ TEXT PRIMARY KEY, %@ TEXT, %@ INTEGER, %@ BOOL, %@ TEXT, %@ INTEGER, %@ BLOB, %@ INTEGER)", kUserTable, kUserId, kUserName, kUserAge, kUserSex, kUserIconUrl, kUserMatchTime, @"keyedConversation", @"lastMessageAt"];
+    NSString *sql = [NSString stringWithFormat:@"create table if not exists %@(%@ TEXT PRIMARY KEY, %@ TEXT, %@ INTEGER, %@ BOOL, %@ TEXT, %@ INTEGER, %@ BLOB, %@ INTEGER, %@ INTEGER)", kUserTable, kUserId, kUserName, kUserAge, kUserSex, kUserIconUrl, kUserMatchTime, @"keyedConversation", @"lastMessageAt", @"messageStatus"];
     NSLog(@"create User table sql : %@", sql);
     [self.database executeUpdate:sql];
     

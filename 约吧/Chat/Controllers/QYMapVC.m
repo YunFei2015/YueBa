@@ -13,11 +13,10 @@
 #import "QYCurrentAnnotationView.h"
 
 #import "QYPinAnnotationView.h"
+#import "QYPaopaoView.h"
 
 #import "QYMapSearchResultVC.h"
 #import "QYLocationManager.h"
-
-#import "QYChatManager.h"
 
 #import <BaiduMapAPI_Map/BMKMapComponent.h>
 #import <BaiduMapAPI_Location/BMKLocationComponent.h>
@@ -73,7 +72,6 @@
     
     //代理
     [QYLocationManager sharedInstance].delegate = self;
-//    [[QYLocationManager sharedInstance] startToUpdateLocation];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locateAddress:) name:kAddressToLocateNotification object:self.searchController.searchResultsUpdater];
 }
@@ -157,11 +155,8 @@
 //点击泡泡
 -(void)shareBtnAction{
     //发送位置消息
-    //        CGRect rect = [mapView convertRegion:mapView.region toRectToView:self.view];
-    //        UIImage *locationImg = [mapView takeSnapshot:rect];
     [self dismissViewControllerAnimated:YES completion:^{
         _sendLocationToShare(self.pinAnnotation);
-//        [[QYChatManager sharedManager] sendLocationMessageWithAnnotation:self.pinAnnotation];
     }];
 }
 
@@ -221,14 +216,13 @@
 #pragma mark - BMKMap View Delegate
 //地图加载完成后，获取当前地址经纬度
 -(void)mapViewDidFinishLoading:(BMKMapView *)mapView{
-//    [mapView selectAnnotation:self.pinAnnotation animated:YES];
+    [mapView selectAnnotation:self.pinAnnotation animated:YES];
     //获取大头针所在位置的地址
     [[QYLocationManager sharedInstance] getAddressWithLocation:mapView.centerCoordinate];
 }
 
 //地图区域改变之后，获取当前地址经纬度
 -(void)mapView:(BMKMapView *)mapView regionDidChangeAnimated:(BOOL)animated{
-    
     //获取大头针所在位置的地址
     [[QYLocationManager sharedInstance] getAddressWithLocation:mapView.centerCoordinate];
 }
@@ -248,6 +242,10 @@
     if ([annotation isKindOfClass:[QYPinAnnotation class]]) {
         QYPinAnnotationView *pinAnnotationView = [[QYPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"annotation"];
         
+//        QYPaopaoView *paopaoView = [[NSBundle mainBundle] loadNibNamed:@"QYPaopaoView" owner:nil options:nil][0];
+//        paopaoView.title = annotation.title;
+//        pinAnnotationView.paopaoView = [[BMKActionPaopaoView alloc] initWithCustomView:paopaoView];
+        
         UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
         btn.frame = CGRectMake(0, 0, 40, 41);
         [btn setTitle:@"分享" forState:UIControlStateNormal];
@@ -265,6 +263,11 @@
     }else
         return nil;
 }
+//
+////点击气泡响应事件
+//-(void)mapView:(BMKMapView *)mapView annotationViewForBubble:(BMKAnnotationView *)view{
+//    
+//}
 
 
 #pragma mark - BMKPoiSearch Delegate

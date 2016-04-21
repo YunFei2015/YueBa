@@ -1,6 +1,20 @@
 {
   "images" : [
     {
+      "resizing" : {
+        "mode" : "9-part",
+        "center" : {
+          "mode" : "tile",
+          "width" : 1,
+          "height" : 1
+        },
+        "cap-insets" : {
+          "bottom" : 8,
+          "top" : 8,
+          "right" : 8,
+          "left" : 8
+        }
+      },
       "idiom" : "universal",
       "filename" : "chat_unread_message_icon@.png",
       "scale" : "1x"

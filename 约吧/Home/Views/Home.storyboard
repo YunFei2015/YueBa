@@ -390,7 +390,7 @@
         <!--Chats ListVC-->
         <scene sceneID="3Fz-We-TEQ">
             <objects>
-                <viewController id="fX4-vu-a3Z" customClass="QYChatsListVC" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="chatsListVC" id="fX4-vu-a3Z" customClass="QYChatsListVC" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="u4W-vH-MLQ"/>
                         <viewControllerLayoutGuide type="bottom" id="lSu-0Y-Sqg"/>

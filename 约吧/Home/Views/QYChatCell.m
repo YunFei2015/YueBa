@@ -21,6 +21,7 @@
 @property (weak, nonatomic) IBOutlet UIImageView *iconImageView;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *latestMessageLabel;
+@property (weak, nonatomic) IBOutlet UIImageView *messageStatusImgView;
 
 @end
 
@@ -34,6 +35,7 @@
     [super setSelected:selected animated:animated];
 
     // Configure the view for the selected state
+
 }
 
 -(void)setUser:(QYUserInfo *)user{
@@ -43,45 +45,39 @@
     [UIView drawRoundCornerOnImageView:_iconImageView];
     
     _nameLabel.text = user.name;
+    self.status = user.messageStatus;
 }
 
--(void)setConversation:(AVIMConversation *)conversation{
-    _conversation = conversation;
-    if (conversation) {
-        NSArray *objects = [conversation queryMessagesFromCacheWithLimit:1];
-        if (objects.count > 0) {//如果会话存在，且有历史消息，则显示历史消息
-            [self configMessageLabelWithMessage:objects[0]];
-        }else{//如果会话存在，但是没有历史消息，则显示配对时间
-            [self configMessageLabelWithNoMessage];
-        }
-    }else{//如果会话不存在，则显示配对时间
-        [self configMessageLabelWithNoMessage];
-    }
-}
-
--(void)configMessageLabelWithMessage:(AVIMTypedMessage *)message{
-    NSString *content = [NSString string];
-    switch (message.mediaType) {
-        case kAVIMMessageMediaTypeText:
-            content = message.text;
+-(void)setStatus:(QYMessageStatus)status{
+    _status = status;
+    
+    switch (status) {
+        case QYMessageStatusDefault:
+            _messageStatusImgView.image = [[UIImage alloc] init];
             break;
             
-        case kAVIMMessageMediaTypeAudio:
-            content = @"[语音]";
+        case QYMessageStatusUnread:
+            _messageStatusImgView.image = [UIImage imageNamed:@"chat_unread_message_icon"];
             break;
             
-        case kAVIMMessageMediaTypeImage:
-            content = @"[图片]";
-            break;
-            
-        case kAVIMMessageMediaTypeLocation:
-            content = @"[位置]";
+        case QYMessageStatusFailed:
+            _messageStatusImgView.image = [UIImage imageNamed:@"chat_error_icon"];
             break;
             
         default:
             break;
     }
-     _latestMessageLabel.attributedText = [NSString faceAttributeTextWithMessage:content withAttributes:@{NSFontAttributeName : [UIFont systemFontOfSize:15], NSForegroundColorAttributeName : [UIColor lightGrayColor]} faceSize:20];
+}
+
+-(void)setMessage:(NSString *)message{
+    if (message) {
+        _latestMessageLabel.attributedText = [NSString faceAttributeTextWithMessage:message withAttributes:@{NSFontAttributeName : [UIFont systemFontOfSize:15], NSForegroundColorAttributeName : [UIColor lightGrayColor]} faceSize:20];
+        
+        
+    }else{
+        _messageStatusImgView.image = [[UIImage alloc] init];
+        [self configMessageLabelWithNoMessage];
+    }
 }
 
 -(void)configMessageLabelWithNoMessage{

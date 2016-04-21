@@ -14,6 +14,12 @@
 #import "QYAccount.h"
 #import "QYNetworkManager.h"
 
+typedef enum{
+    QYMessageStatusDefault=0,
+    QYMessageStatusUnread,
+    QYMessageStatusFailed
+}QYMessageStatus;
+
 #define kRGBColor(r, g, b, a)  [UIColor colorWithRed:r / 255.f green:g/ 255.f blue:b / 255.f alpha:a]
 #define kMsmCodeSeconds 60 //验证码倒计时秒数
 

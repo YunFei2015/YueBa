@@ -21,7 +21,7 @@
 //typedef void(^cancelSelectImagesCompletion)();
 
 @interface QYImagesPicker : NSObject
-@property (nonatomic) id <QYImagesPickerDelegate> delegate;
+@property (nonatomic, weak) id <QYImagesPickerDelegate> delegate;
 
 +(instancetype)sharedInstance;
 //-(void)selectImagesWithInitPickControllerCompletion:(initPickControllerCompletion)initPickControllerCompletion;

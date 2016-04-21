@@ -12,6 +12,6 @@
 
 @interface QYChatCell : UITableViewCell
 @property (strong, nonatomic) QYUserInfo *user;
-@property (strong, nonatomic) AVIMConversation *conversation;
-
+@property (strong, nonatomic) NSString *message;
+@property (nonatomic) QYMessageStatus status;
 @end

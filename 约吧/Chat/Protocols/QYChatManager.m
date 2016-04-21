@@ -9,6 +9,7 @@
 #import "QYChatManager.h"
 #import "QYAccount.h"
 #import "QYUserInfo.h"
+#import "QYUserStorage.h"
 #import <AVOSCloudIM.h>
 #import <AVFile.h>
 
@@ -27,15 +28,42 @@
     return sharedManager;
 }
 
+//会话对象反序列化
 -(AVIMConversation *)conversationFromKeyedConversation:(AVIMKeyedConversation *)keyedConversation{
     return [self.client conversationWithKeyedConversation:keyedConversation];
 }
 
+//查询我和好友userId之间的会话，若不存在则创建
+-(void)findConversationWithUser:(NSString *)userId{
+    AVIMConversationQuery *query = [self.client conversationQuery];
+    query.cacheMaxAge = CLTimeIntervalMax;
+    [query whereKey:@"m" containsAllObjectsInArray:@[self.client.clientId, userId]];
+    [query whereKey:@"m" sizeEqualTo:2];
+    [query findConversationsWithCallback:^(NSArray *objects, NSError *error) {
+        __block AVIMConversation *result;
+        if (objects.count == 0) {
+            NSString *conversationName = [NSString stringWithFormat:@"%@ and %@", self.client.clientId, userId];
+            [self.client createConversationWithName:conversationName clientIds:@[userId] attributes:nil options:AVIMConversationOptionNone callback:^(AVIMConversation *conversation, NSError *error) {
+                if ([self.delegate respondsToSelector:@selector(didFindConversation:succeeded:)]) {
+                    [self.delegate didFindConversation:conversation succeeded:YES];
+                }
+            }];
+        }else{
+            result = objects.firstObject;
+            if ([self.delegate respondsToSelector:@selector(didFindConversation:succeeded:)]) {
+                [self.delegate didFindConversation:result succeeded:YES];
+            }
+        }
+    }];
+}
+
+//发送文本消息
 -(void)sendTextMessage:(NSString *)message withConversation:(AVIMConversation *)conversation{
     AVIMTextMessage *textMessage = [AVIMTextMessage messageWithText:message attributes:nil];
     [self sendTypedMessage:textMessage withConversation:conversation];
 }
 
+//发送语音消息
 -(void)sendVoiceMessageWithConversation:(AVIMConversation *)conversation{
     if (![[NSFileManager defaultManager] fileExistsAtPath:kAudioPath]) {
         return;
@@ -48,17 +76,20 @@
     [self sendTypedMessage:message withConversation:(AVIMConversation *)conversation];
 }
 
+//发送图片消息
 -(void)sendImageMessageWithData:(NSData *)data withConversation:(AVIMConversation *)conversation{
     AVFile *file = [AVFile fileWithData:data];
     AVIMImageMessage *message = [AVIMImageMessage messageWithText:nil file:file attributes:nil];
     [self sendTypedMessage:message withConversation:(AVIMConversation *)conversation];
 }
 
+//发送位置消息
 -(void)sendLocationMessageWithAnnotation:(QYPinAnnotation *)annotation withConversation:(AVIMConversation *)conversation{
     AVIMLocationMessage *message = [AVIMLocationMessage messageWithText:annotation.title latitude:annotation.coordinate.latitude longitude:annotation.coordinate.longitude attributes:nil];
     [self sendTypedMessage:message withConversation:(AVIMConversation *)conversation];
 }
 
+//发送富文本消息
 -(void)sendTypedMessage:(AVIMTypedMessage *)message withConversation:(AVIMConversation *)conversation{
     if ([self.delegate respondsToSelector:@selector(willSendMessage:)]) {
         [self.delegate willSendMessage:message];
@@ -78,6 +109,7 @@
     }];
 }
 
+/*
 -(void)queryMessagesFromServerWithConversation:(AVIMConversation *)conversation beforeId:(NSString *)messageId limit:(NSInteger)limit{
     [conversation queryMessagesBeforeId:messageId timestamp:0 limit:20 callback:^(NSArray *objects, NSError *error) {
         if (!error) {
@@ -93,69 +125,70 @@
         }
     }];
 }
+ */
 
--(void)findConversationWithUser:(NSString *)userId{
-    AVIMConversationQuery *query = [self.client conversationQuery];
-    query.cacheMaxAge = CLTimeIntervalMax;
-    [query whereKey:@"m" containsAllObjectsInArray:@[self.client.clientId, userId]];
-    [query whereKey:@"m" sizeEqualTo:2];
-    [query findConversationsWithCallback:^(NSArray *objects, NSError *error) {
-        __block AVIMConversation *result;
-        if (objects.count == 0) {
-            NSString *conversationName = [NSString stringWithFormat:@"%@ and %@", self.client.clientId, userId];
-            [self.client createConversationWithName:conversationName clientIds:@[userId] attributes:nil options:AVIMConversationOptionNone callback:^(AVIMConversation *conversation, NSError *error) {
-                if ([self.delegate respondsToSelector:@selector(didCreateConversation:succeeded:)]) {
-                    [self.delegate didCreateConversation:conversation succeeded:YES];
-                }
-            }];
-        }else{
-            result = objects.firstObject;
-            if ([self.delegate respondsToSelector:@selector(didCreateConversation:succeeded:)]) {
-                [self.delegate didCreateConversation:result succeeded:YES];
-            }
-        }
-    }];
-    
-}
 
-//-(void)findConversationForId:(NSString *)conversationId withCompletion:(QYFindConversationCompletion)findConversationCompletion{
-//    AVIMConversationQuery *query = [self.client conversationQuery];
-//    query.cacheMaxAge = CLTimeIntervalMax;
-//    [query whereKey:@"conversationId" equalTo:conversationId];
-//    [query findConversationsWithCallback:^(NSArray *objects, NSError *error) {
-//        if (error) {
-//            NSLog(@"%@", error);
-//        }
-//        
-//        findConversationCompletion(objects[0]);
-//    }];
-//}
-
-//-(AVIMConversation *)conversationForId:(NSString *)conversationId{
-//    AVIMConversation *conversation = [self.client conversationForId:conversationId];
-//    return conversation;
-//}
-
+/*
 -(void)conversation:(AVIMConversation *)conversation didReceiveUnread:(NSInteger)unread{
     //TODO: 未读消息显示/
     NSLog(@"未读消息数 : %ld", unread);
-    
+    if (unread > 0) {
+        if ([self.delegate respondsToSelector:@selector(didReceiveUnread:inConversation:)]) {
+            [self.delegate didReceiveUnread:unread inConversation:conversation];
+        }
+    }
 }
+ */
 
+#pragma mark - AVIMClient Delegate
+//接收消息代理
 -(void)conversation:(AVIMConversation *)conversation didReceiveTypedMessage:(AVIMTypedMessage *)message{
+
+    [conversation.members enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (![[QYAccount currentAccount].userId isEqualToString:obj]) {
+            NSString *userId = (NSString *)obj;
+           QYUserInfo *user = [[QYUserStorage sharedInstance] getUserForId:userId];
+            
+            //如果数据库中没有该用户，临时构造一个，等做好了网络接口部分，新添加的好友会立刻存入数据库
+            if (user == nil) {
+                NSDictionary *userDict = @{kUserId : userId,
+                                           kUserName : @"新来的",
+                                           kUserIconUrl : @"2",
+                                           kUserMatchTime : @([[NSDate date] timeIntervalSince1970]),
+                                           kUserAge : @20};
+                [[QYUserStorage sharedInstance] addUser:userDict];
+                user = [QYUserInfo userWithDictionary:userDict];
+            }
+            
+            //如果用户的会话属性为空，则将会话存储到本地
+            if (user.keyedConversation == nil) {
+                [[QYUserStorage sharedInstance] updateUserConversation:conversation.keyedConversation forUserId:user.userId];
+            }
+            
+            //存储最后一条消息时间
+            [[QYUserStorage sharedInstance] updateUserLastMessageAt:[NSDate dateWithTimeIntervalSince1970:message.sendTimestamp] forUserId:user.userId];
+            
+            //存储消息状态
+            [[QYUserStorage sharedInstance] updateUserMessageStatus:QYMessageStatusUnread forUserId:user.userId];
+            *stop = TRUE;
+        }
+    }];
+    
     if ([self.delegate respondsToSelector:@selector(didReceiveMessage:inConversation:)]) {
         [self.delegate didReceiveMessage:message inConversation:conversation];
     }
 }
 
 #pragma mark - setters
--(void)setDelegate:(id)delegate{
-    _delegate = delegate;
-}
-
 -(void)setClient:(AVIMClient *)client{
     _client = client;
     _client.delegate = self;
+    [_client openWithCallback:^(BOOL succeeded, NSError *error) {
+        if (error) {
+            NSLog(@"client open failed : %@", error);
+            return;
+        }
+    }];
 }
 
 

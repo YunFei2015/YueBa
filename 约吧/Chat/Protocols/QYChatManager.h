@@ -20,7 +20,6 @@
 @optional
 -(void)didQueryMessagesFromCache:(NSArray *)messages succeeded:(BOOL)succeeded;
 -(void)didQueryMessagesFromServer:(NSArray *)messages succeeded:(BOOL)succeeded;
--(void)didCreateConversation:(AVIMConversation *)conversation succeeded:(BOOL)succeeded;
 -(void)didFindConversation:(AVIMConversation *)conversation succeeded:(BOOL)succeeded;
 
 //发送消息代理
@@ -34,7 +33,7 @@
 
 @interface QYChatManager : NSObject
 @property (strong, nonatomic) AVIMClient *client;
-@property (nonatomic) id delegate;
+@property (nonatomic, weak) id delegate;
 
 +(instancetype)sharedManager;
 /**
@@ -44,7 +43,6 @@
  */
 -(void)findConversationWithUser:(NSString *)userId;
 //-(void)findConversationForId:(NSString *)conversationId withCompletion:(QYFindConversationCompletion)findConversationCompletion;
-//-(AVIMConversation *)conversationForId:(NSString *)conversationId;
 -(AVIMConversation *)conversationFromKeyedConversation:(AVIMKeyedConversation *)keyedConversation;
 -(void)sendTextMessage:(NSAttributedString *)message withConversation:(AVIMConversation *)conversation;
 -(void)sendVoiceMessageWithConversation:(AVIMConversation *)conversation;
