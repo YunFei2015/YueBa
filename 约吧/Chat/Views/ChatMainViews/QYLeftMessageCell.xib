@@ -12,7 +12,7 @@
             <rect key="frame" x="0.0" y="0.0" width="367" height="171"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" tableViewCell="1g8-TG-CZo" id="6qM-09-sNo">
-                <rect key="frame" x="0.0" y="0.0" width="367" height="170.5"/>
+                <rect key="frame" x="0.0" y="0.0" width="367" height="171"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="小丸子" translatesAutoresizingMaskIntoConstraints="NO" id="Fio-Gc-O7P">
@@ -70,20 +70,20 @@
                             <constraint firstItem="Q2K-Az-Qka" firstAttribute="leading" secondItem="B6u-82-cRF" secondAttribute="leading" constant="20" id="xYd-XD-QRX"/>
                         </constraints>
                     </view>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="message_image_placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="n3G-n6-fXm">
-                        <rect key="frame" x="55" y="70" width="171.5" height="0.0"/>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="message_image_placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="n3G-n6-fXm">
+                        <rect key="frame" x="55" y="70" width="172" height="0.0"/>
                         <constraints>
                             <constraint firstAttribute="height" id="ggF-Jf-S7w"/>
                         </constraints>
                     </imageView>
                     <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pHW-M0-UmN">
-                        <rect key="frame" x="55" y="10" width="275.5" height="100"/>
+                        <rect key="frame" x="55" y="10" width="276" height="100"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LQ3-mY-oCf">
                                 <rect key="frame" x="0.0" y="0.0" width="69" height="100"/>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="位置名称" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="o7o-Ya-Xbg">
-                                <rect key="frame" x="69" y="39.5" width="206.5" height="20.5"/>
+                                <rect key="frame" x="69" y="40" width="207" height="20"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="21" id="mjA-Bq-iVc"/>
                                 </constraints>
@@ -148,7 +148,7 @@
                 <outlet property="voiceAnimatingImageView" destination="Q2K-Az-Qka" id="2GH-vr-OoS"/>
                 <outlet property="voiceAnimatingViewWidthConstraint" destination="ceS-hH-HjD" id="e95-JE-UeP"/>
             </connections>
-            <point key="canvasLocation" x="247.5" y="235.5"/>
+            <point key="canvasLocation" x="198.5" y="287.5"/>
         </tableViewCell>
     </objects>
     <resources>

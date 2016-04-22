@@ -19,6 +19,7 @@
 #import "QYMessageCell.h"
 #import "MessageBar.h"
 #import "QYVoiceRecordingView.h"
+#import "QYPhotoBrowser.h"
 
 //Managers
 #import "QYChatManager.h"
@@ -31,14 +32,17 @@
 #import "UIView+Extension.h"
 #import <AVOSCloudIM.h>
 #import <AVFile.h>
+#import "SDPhotoBrowser.h"
 #import <Masonry.h>
 
-@interface QYChatVC () <UITableViewDelegate, UITableViewDataSource, QYChatManagerDelegate, MessageBarDelegate, QYAudioPlayerDelegate, QYFunctionViewDelegate, QYImagesPickerDelegate>
+@interface QYChatVC () <UITableViewDelegate, UITableViewDataSource, QYChatManagerDelegate, MessageBarDelegate, QYAudioPlayerDelegate, QYFunctionViewDelegate, QYImagesPickerDelegate, SDPhotoBrowserDelegate>
 @property (strong, nonatomic) MessageBar *messageBar;
 @property (strong, nonatomic) UITableView *tableView;
 
 @property (strong, nonatomic) NSMutableDictionary *groups;//消息按时间分组
 @property (strong, atomic) NSMutableArray *messages;//消息列表
+@property (strong, nonatomic) NSMutableArray *images;//图片列表，用于图片轮播
+
 
 @property (strong, nonatomic) QYAudioRecorder *voiceRecorder;
 @property (strong, nonatomic) QYVoiceRecordingView *voiceRecordingView;//录音动画
@@ -103,6 +107,7 @@
     [self.view addSubview:self.tableView];
     
     _messages = [NSMutableArray array];
+    _images = [NSMutableArray array];
     
     
     [QYAudioPlayer sharedInstance].delegate = self;
@@ -261,6 +266,23 @@
     }
 }
 
+#pragma mark - Custom Methods - send messages
+-(void)sendTextMessageWithContent:(NSString *)message{
+    [[QYChatManager sharedManager] sendTextMessage:message withConversation:_conversation];
+}
+
+-(void)sendImageMessageWithData:(NSData *)data{
+    [[QYChatManager sharedManager] sendImageMessageWithData:data withConversation:_conversation];
+}
+
+-(void)sendVoiceMessage{
+    [[QYChatManager sharedManager] sendVoiceMessageWithConversation:_conversation];
+}
+
+-(void)sendLocationMessageWithAnnotation:(QYPinAnnotation *)annotation{
+    [[QYChatManager sharedManager] sendLocationMessageWithAnnotation:annotation withConversation:_conversation];
+}
+
 #pragma mark - Custom Methods - audio recorder
 -(void)prepareRecordWithCompletion:(QYPrepareRecorderCompletion)completion{
     //    [self.voiceRecorder prepareToRecordWithPath:[self getRecorderPath] completion:completion];
@@ -311,9 +333,10 @@
     //发送录音
     [self.voiceRecorder stopRecordingWithStopRecorderCompletion:^{
         [weakSelf.voiceRecordingView removeFromSuperview];
-        [[QYChatManager sharedManager] sendVoiceMessageWithConversation:weakSelf.conversation];
+        [weakSelf sendVoiceMessage];
     }];
 }
+
 
 #pragma mark - Events
 -(void)backAction{
@@ -344,7 +367,7 @@
             break;
             
         case kMessageTypePhoto://放大图片
-            [self tapPhotoCellAction];
+            [self tapPhotoCellActionAtIndex:indexPath.row];
             break;
             
         case kMessageTypeLocation://查看地图
@@ -381,12 +404,80 @@
 #endif
 }
 
--(void)tapPhotoCellAction{
+-(void)tapPhotoCellActionAtIndex:(NSInteger)index{
+    //获取从当前消息开始往前的50条消息
+    NSArray *messages = [_conversation queryMessagesFromCacheWithLimit:_messages.count - index + 50];
     
+    __block AVFile *currentFile;
+//    __block NSInteger currentIndex;
+    //遍历50条消息，将所有image消息过滤出来，并把图片数据流存储到内存中
+    UIView *view = [[UIView alloc] initWithFrame:CGRectZero];
+    [self.view addSubview:view];
+    view.hidden = YES;
+    
+    [_images removeAllObjects];
+    [messages enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        AVIMTypedMessage *message = (AVIMTypedMessage *)obj;
+        if (message.mediaType == kAVIMMessageMediaTypeImage) {
+            AVFile *file = message.file;
+//            UIImage *image = [UIImage imageWithData:[file getData]];
+            [_images addObject:file];
+            UIImageView *imgView = [[UIImageView alloc] initWithImage:[UIImage imageWithData:[file getData]]];
+            [view addSubview:imgView];
+            
+            AVFile *selectedFile = _currentSelectedVoiceCell.message.file;
+            if ([file.objectId isEqualToString:selectedFile.objectId]) {
+                currentFile = file;
+//                currentIndex = [_images indexOfObject:image];
+                
+            }
+        }
+    }];
+    
+//    QYPhotoBrowser *photoBrowser = [[NSBundle mainBundle] loadNibNamed:@"QYPhotoBrowser" owner:nil options:nil][0];
+//    photoBrowser.frame = CGRectMake(0, 0, kScreenW, kScreenH);
+//    photoBrowser.center = _currentSelectedVoiceCell.center;
+//    __weak QYPhotoBrowser *weakPhotoBrowser = photoBrowser;
+//    photoBrowser.exitPhotoBrowser = ^{
+//        [weakPhotoBrowser removeFromSuperview];
+//    };
+//    
+//    photoBrowser.popMenuOnPhotoBrowser = ^(UIImage *image){
+//        
+//    };
+//    photoBrowser.photos = _images;
+//    photoBrowser.currentIndex = currentIndex;
+//    
+//    [UIView animateWithDuration:1 animations:^{
+//        [self.view addSubview:photoBrowser];
+//    }];
+    
+    //图片轮播器显示出来
+    SDPhotoBrowser *photoBrowser = [[SDPhotoBrowser alloc] init];
+    //FIXME: 容器需要改
+    photoBrowser.sourceImagesContainerView = view;
+    photoBrowser.imageCount = _images.count;
+    photoBrowser.currentImageIndex = [_images indexOfObject:currentFile];
+    photoBrowser.delegate = self;
+    
+    [photoBrowser show];
 }
 
 -(void)tapLocationCellAction{
     
+}
+
+#pragma mark - SDPhotoBrowser Delegate
+-(UIImage *)photoBrowser:(SDPhotoBrowser *)browser placeholderImageForIndex:(NSInteger)index{
+    AVFile *file = _images[index];
+    UIImage *image = [UIImage imageWithData:file.getData];
+    return image;
+}
+
+-(NSURL *)photoBrowser:(SDPhotoBrowser *)browser highQualityImageURLForIndex:(NSInteger)index{
+    AVFile *file = _images[index];
+    NSURL *url = [NSURL fileURLWithPath:file.localPath];
+    return url;
 }
 
 #pragma mark - QYAudioPlayer Delegate
@@ -416,15 +507,18 @@
 }
 
 
+
+
 #pragma mark - Message Bar Delegate - voice methods
 -(void)updateTableViewHeight{
     [_tableView updateSizeHeight:_messageBar.frame.origin.y - 64];
     [self updateContentOffsetOfTableView];
 }
 
--(void)sendMessage:(id)message{
-    [[QYChatManager sharedManager] sendTextMessage:message withConversation:_conversation];
+-(void)sendMessage:(NSString *)message{
+    [self sendTextMessageWithContent:message];
 }
+
 
 -(void)prepareToRecordVoiceWithCompletion:(BOOL (^)(void))completion{
     NSLog(@"prepareToRecordVoice");
@@ -474,7 +568,7 @@
         QYMapVC *mapVC = [[QYMapVC alloc] init];
         WEAKSELF
         mapVC.sendLocationToShare = ^(QYPinAnnotation *annotation){
-            [[QYChatManager sharedManager] sendLocationMessageWithAnnotation:annotation withConversation:weakSelf.conversation];
+            [weakSelf sendLocationMessageWithAnnotation:annotation];
         };
         UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:mapVC];
         [self presentViewController:navVC animated:YES completion:nil];
@@ -492,15 +586,17 @@
     
 }
 
+
 #pragma mark - QYImagesPicker Delegate
 -(void)didFinishSelectImages:(NSDictionary *)info{
     [self dismissViewControllerAnimated:YES completion:^{
         
     }];
     UIImage *image = info[UIImagePickerControllerOriginalImage];
-    NSData *data = UIImageJPEGRepresentation(image, 0.6);
-    [[QYChatManager sharedManager] sendImageMessageWithData:data withConversation:_conversation];
+    NSData *data = UIImageJPEGRepresentation(image, 0);
+    [self sendImageMessageWithData:data];
 }
+
 
 #pragma mark - Chat Manager Delegate
 -(void)didFindConversation:(AVIMConversation *)conversation succeeded:(BOOL)succeeded{

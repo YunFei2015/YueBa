@@ -94,10 +94,10 @@
 }
 
 #pragma mark - custom methods
-//计算cell的高度
--(CGFloat)heightWithMessage:(AVIMMessage *)message{
-    return _messageViewHeightConstraint.constant + _photoViewHeightConstraint.constant + _locationViewHeightConstraint.constant + 10 + 10 + 1;
-}
+////计算cell的高度
+//-(CGFloat)heightWithMessage:(AVIMMessage *)message{
+//    return _messageViewHeightConstraint.constant + _photoViewHeightConstraint.constant + _locationViewHeightConstraint.constant + 10 + 10 + 1;
+//}
 
 //当cell被复用时，要把之前的约束恢复初始值
 -(void)resumeOriginalLayout{
@@ -110,8 +110,7 @@
 //填充文本内容
 -(void)configTextMessage{
     self.messageType = kMessageTypeText;
-    AVIMTextMessage *textMessage = (AVIMTextMessage *)_message;
-    _messageLab.attributedText = [NSString faceAttributeTextWithMessage:[textMessage text] withAttributes:@{NSFontAttributeName : [UIFont systemFontOfSize:17]} faceSize:20];
+    _messageLab.attributedText = [NSString faceAttributeTextWithMessage:_message.text withAttributes:@{NSFontAttributeName : [UIFont systemFontOfSize:17]} faceSize:20];
     [self calculateLayoutWith:_messageLab.attributedText];
 }
 
@@ -122,7 +121,7 @@
     
     AVIMAudioMessage *audioMessage = (AVIMAudioMessage *)_message;
     _voiceAnimatingImageView.animationDuration = 1;
-    _voiceAnimatingImageView.animationRepeatCount = audioMessage.duration;
+    _voiceAnimatingImageView.animationRepeatCount = ceilf(audioMessage.duration);
     _voiceAnimatingViewWidthConstraint.constant = _voiceAnimatingImageView.image.size.width;
 }
 
@@ -131,10 +130,10 @@
     self.messageType = kMessageTypePhoto;
     _photoViewHeightConstraint.constant = kPhotoHeight;
     
-    AVIMImageMessage *photoMessage = (AVIMImageMessage *)_message;
-//    NSString *url = [photoMessage.file getThumbnailURLWithScaleToFit:YES width:kPhotoWidth height:kPhotoHeight];
-//    [_photoImageView sd_setImageWithURL:[NSURL URLWithString:url]];
-    [photoMessage.file getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
+//    [_message.file getThumbnail:YES width:kScreenW / 2.f height:kPhotoHeight withBlock:^(UIImage *image, NSError *error) {
+//         _photoImageView.image = image;
+//    }];
+    [_message.file getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
         _photoImageView.image = [UIImage imageWithData:data];
     }];
 }
@@ -144,9 +143,7 @@
     self.messageType = kMessageTypeLocation;
     _locationViewHeightConstraint.constant = kLocationViewHeight;
     
-    AVIMLocationMessage *locationMessage = (AVIMLocationMessage *)_message;
-    _locationNameLabel.text = locationMessage.text;
-
+    _locationNameLabel.text = _message.text;
 }
 
 -(void)calculateLayoutWith:(NSAttributedString *)text{
@@ -161,7 +158,29 @@
 -(BOOL)isTapedInContent:(UITapGestureRecognizer *)tap{
     CGPoint point = [tap locationInView:self.contentView];
     NSLog(@"%f,%f", point.x, point.y);
-    if (CGRectContainsPoint(self.messageView.frame, point)) {
+    
+    UIView *view;
+    switch (_message.mediaType) {
+        case kAVIMMessageMediaTypeText:
+            view = _messageView;
+            break;
+            
+        case kAVIMMessageMediaTypeAudio:
+            view = _messageView;
+            break;
+            
+        case kAVIMMessageMediaTypeImage:
+            view = _photoImageView;
+            break;
+            
+        case kAVIMMessageMediaTypeLocation:
+            view = _locationView;
+            break;
+            
+        default:
+            break;
+    }
+    if (CGRectContainsPoint(view.frame, point)) {
         return YES;
     }
     
@@ -213,7 +232,7 @@
 @implementation QYRightMessageCell
 -(void)configAudioMessage{
     AVIMAudioMessage *audioMessage = (AVIMAudioMessage *)self.message;
-    NSString *text = [NSString stringWithFormat:@"%.f\''          ", audioMessage.duration];
+    NSString *text = [NSString stringWithFormat:@"%.f\''          ", ceilf(audioMessage.duration)];
     self.messageLab.attributedText = [[NSAttributedString alloc] initWithString:text attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:15]}];
     self.voiceAnimatingImageView.animationImages = @[
                                                  [UIImage imageNamed:@"SenderVoiceNodePlaying000"],

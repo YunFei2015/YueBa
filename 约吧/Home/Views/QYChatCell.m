@@ -52,15 +52,15 @@
     _status = status;
     
     switch (status) {
-        case QYMessageStatusDefault:
+        case QYMessageStatusDefault://消息正常(已读或发送成功的消息)
             _messageStatusImgView.image = [[UIImage alloc] init];
             break;
             
-        case QYMessageStatusUnread:
+        case QYMessageStatusUnread://消息未读
             _messageStatusImgView.image = [UIImage imageNamed:@"chat_unread_message_icon"];
             break;
             
-        case QYMessageStatusFailed:
+        case QYMessageStatusFailed://消息发送失败
             _messageStatusImgView.image = [UIImage imageNamed:@"chat_error_icon"];
             break;
             

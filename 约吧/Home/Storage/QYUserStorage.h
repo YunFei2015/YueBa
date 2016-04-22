@@ -37,7 +37,7 @@
  *  @param userId  用户ID
  */
 
--(void)updateUserMessage:(NSString *)message time:(NSInteger)time forUserId:(NSString *)userId;
+//-(void)updateUserMessage:(NSString *)message time:(NSInteger)time forUserId:(NSString *)userId;
 -(void)updateUserConversation:(AVIMKeyedConversation *)conversation forUserId:(NSString *)userId;
 -(void)updateUserLastMessageAt:(NSDate *)time forUserId:(NSString *)userId;
 -(void)updateUserMessageStatus:(QYMessageStatus)status forUserId:(NSString *)userId;
