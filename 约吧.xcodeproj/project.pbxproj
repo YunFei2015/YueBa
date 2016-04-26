@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		581245F51CCF47FF00C064D4 /* QYProfileController.m in Sources */ = {isa = PBXBuildFile; fileRef = 581245F41CCF47FF00C064D4 /* QYProfileController.m */; };
+		581245F71CCF481800C064D4 /* QYProfile.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 581245F61CCF481800C064D4 /* QYProfile.storyboard */; };
+		581245FD1CCF53BD00C064D4 /* QYAccountInfoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 581245FC1CCF53BD00C064D4 /* QYAccountInfoController.m */; };
 		7C08233B1C9AAE4300C23383 /* QYAudioRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C08233A1C9AAE4300C23383 /* QYAudioRecorder.m */; };
 		7C1834071CCE02C000AC2127 /* QYPhotoBrowserTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C1834061CCE02C000AC2127 /* QYPhotoBrowserTransition.m */; };
 		7C30B14E1C995E2A001EF237 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C30B14D1C995E2A001EF237 /* main.m */; };
@@ -84,6 +87,11 @@
 
 /* Begin PBXFileReference section */
 		53F2D9EEBB9BCB33D6F01085 /* Pods-约吧.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-约吧.debug.xcconfig"; path = "Pods/Target Support Files/Pods-约吧/Pods-约吧.debug.xcconfig"; sourceTree = "<group>"; };
+		581245F31CCF47FF00C064D4 /* QYProfileController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYProfileController.h; sourceTree = "<group>"; };
+		581245F41CCF47FF00C064D4 /* QYProfileController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYProfileController.m; sourceTree = "<group>"; };
+		581245F61CCF481800C064D4 /* QYProfile.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = QYProfile.storyboard; sourceTree = "<group>"; };
+		581245FB1CCF53BD00C064D4 /* QYAccountInfoController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYAccountInfoController.h; sourceTree = "<group>"; };
+		581245FC1CCF53BD00C064D4 /* QYAccountInfoController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYAccountInfoController.m; sourceTree = "<group>"; };
 		7C0823391C9AAE4300C23383 /* QYAudioRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYAudioRecorder.h; sourceTree = "<group>"; };
 		7C08233A1C9AAE4300C23383 /* QYAudioRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYAudioRecorder.m; sourceTree = "<group>"; };
 		7C1834051CCE02C000AC2127 /* QYPhotoBrowserTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYPhotoBrowserTransition.h; sourceTree = "<group>"; };
@@ -226,6 +234,42 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		581245EF1CCF477F00C064D4 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				581245F01CCF47B900C064D4 /* Controllers */,
+				581245F11CCF47B900C064D4 /* Models */,
+				581245F21CCF47B900C064D4 /* Views */,
+			);
+			path = Profile;
+			sourceTree = "<group>";
+		};
+		581245F01CCF47B900C064D4 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				581245F31CCF47FF00C064D4 /* QYProfileController.h */,
+				581245F41CCF47FF00C064D4 /* QYProfileController.m */,
+				581245FB1CCF53BD00C064D4 /* QYAccountInfoController.h */,
+				581245FC1CCF53BD00C064D4 /* QYAccountInfoController.m */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		581245F11CCF47B900C064D4 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		581245F21CCF47B900C064D4 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				581245F61CCF481800C064D4 /* QYProfile.storyboard */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		7C30B1401C995E29001EF237 = {
 			isa = PBXGroup;
 			children = (
@@ -247,6 +291,7 @@
 		7C30B14B1C995E2A001EF237 /* 约吧 */ = {
 			isa = PBXGroup;
 			children = (
+				581245EF1CCF477F00C064D4 /* Profile */,
 				7C506FC21CB788590037EAED /* Protocols */,
 				7C8A39F71CB3F6E90008C6E6 /* Entrance */,
 				7C8A39FB1CB3F6E90008C6E6 /* Home */,
@@ -699,6 +744,7 @@
 				7C30B1591C995E2A001EF237 /* Assets.xcassets in Resources */,
 				7C30B1971C996137001EF237 /* FunctionView.xib in Resources */,
 				7CFCF3E61CA266F300ACBD72 /* QYVoiceRecordingView.xib in Resources */,
+				581245F71CCF481800C064D4 /* QYProfile.storyboard in Resources */,
 				7C30B1931C996137001EF237 /* FaceCell.xib in Resources */,
 				7C4CFE6D1CBF2B2100562786 /* users.plist in Resources */,
 				7C4D3B8A1CB3F7760040FF73 /* Entrance.storyboard in Resources */,
@@ -810,6 +856,7 @@
 				7C30B1941C996137001EF237 /* FacesView.m in Sources */,
 				7C4CFE711CBF40AF00562786 /* QYChatCell.m in Sources */,
 				7C30B18C1C996137001EF237 /* QYChatVC.m in Sources */,
+				581245FD1CCF53BD00C064D4 /* QYAccountInfoController.m in Sources */,
 				7CF8139B1CB1435F00CC79E8 /* QYPaopaoView.m in Sources */,
 				7CFF65981CAA60E30068987A /* QYCurrentAnnotationView.m in Sources */,
 				7CFF65921CAA5F160068987A /* QYCurrentAnnotation.m in Sources */,
@@ -817,6 +864,7 @@
 				7C45F90F1CCA02AE00F188E0 /* QYPhotoBrowserCell.m in Sources */,
 				7C4BB3B11CA8CD2500136C75 /* QYMapAddrCell.m in Sources */,
 				7C30B18F1C996137001EF237 /* QYChatManager.m in Sources */,
+				581245F51CCF47FF00C064D4 /* QYProfileController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
