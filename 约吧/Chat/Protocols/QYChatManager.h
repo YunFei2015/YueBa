@@ -18,8 +18,7 @@
 
 @protocol QYChatManagerDelegate <NSObject>
 @optional
--(void)didQueryMessagesFromCache:(NSArray *)messages succeeded:(BOOL)succeeded;
--(void)didQueryMessagesFromServer:(NSArray *)messages succeeded:(BOOL)succeeded;
+//-(void)didQueryMessagesFromServer:(NSArray *)messages succeeded:(BOOL)succeeded;
 -(void)didFindConversation:(AVIMConversation *)conversation succeeded:(BOOL)succeeded;
 
 //发送消息代理
@@ -28,7 +27,7 @@
 
 //接收消息代理
 -(void)didReceiveMessage:(AVIMTypedMessage *)message inConversation:(AVIMConversation *)conversation;
--(void)didReceiveUnread:(NSInteger)unread inConversation:(AVIMConversation *)conversation;
+//-(void)didReceiveUnread:(NSInteger)unread inConversation:(AVIMConversation *)conversation;
 @end
 
 @interface QYChatManager : NSObject
@@ -44,9 +43,9 @@
 -(void)findConversationWithUser:(NSString *)userId;
 //-(void)findConversationForId:(NSString *)conversationId withCompletion:(QYFindConversationCompletion)findConversationCompletion;
 -(AVIMConversation *)conversationFromKeyedConversation:(AVIMKeyedConversation *)keyedConversation;
--(void)sendTextMessage:(NSAttributedString *)message withConversation:(AVIMConversation *)conversation;
+-(void)sendTextMessage:(NSString *)message withConversation:(AVIMConversation *)conversation;
 -(void)sendVoiceMessageWithConversation:(AVIMConversation *)conversation;
 -(void)sendImageMessageWithData:(NSData *)data withConversation:(AVIMConversation *)conversation;
 -(void)sendLocationMessageWithAnnotation:(QYPinAnnotation *)annotation withConversation:(AVIMConversation *)conversation;
--(void)queryMessagesFromServerWithConversation:(AVIMConversation *)conversation beforeId:(NSString *)messageId limit:(NSInteger)limit;
+//-(void)queryMessagesFromServerWithConversation:(AVIMConversation *)conversation beforeId:(NSString *)messageId limit:(NSInteger)limit;
 @end

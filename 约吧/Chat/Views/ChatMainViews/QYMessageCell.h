@@ -22,6 +22,9 @@ typedef enum {
 @property (strong, nonatomic) AVIMTypedMessage *message;
 @property (weak, nonatomic) IBOutlet UIImageView *voiceAnimatingImageView;
 
+@property (weak, nonatomic) IBOutlet UIImageView *photoImageView;
+
+
 //-(CGFloat)heightWithMessage:(AVIMTypedMessage *)message;
 
 //判断手指是否触摸在有效区域

@@ -7,14 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "QYMessageCell.h"
 @class QYUserInfo;
 @class AVIMConversation;
+
 
 typedef void(^QYLastMessageDidChanged)(AVIMConversation *);
 
 @interface QYChatVC : UIViewController
 @property (strong, nonatomic) QYUserInfo *user;
 @property (strong, nonatomic) QYLastMessageDidChanged lastMessageDidChanged;
+@property (strong, nonatomic) QYMessageCell *selectedCell;
 
 
 @end

@@ -6,6 +6,8 @@
 //  Copyright © 2016 云菲. All rights reserved.
 //
 
+//发现问题一定要记得Pull Request
+
 #import "AppDelegate.h"
 #import "QYAccount.h"
 #import "QYLocationManager.h"

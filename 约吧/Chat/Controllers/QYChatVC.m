@@ -11,6 +11,7 @@
 
 //controllers
 #import "QYMapVC.h"
+#import "QYPhotoBrowser.h"
 
 //Models
 #import "QYUserInfo.h"
@@ -19,6 +20,8 @@
 #import "QYMessageCell.h"
 #import "MessageBar.h"
 #import "QYVoiceRecordingView.h"
+#import "QYPhotoBrowserView.h"
+
 
 //Managers
 #import "QYChatManager.h"
@@ -26,19 +29,23 @@
 #import "QYAudioPlayer.h"
 #import "QYUserStorage.h"
 #import "QYImagesPicker.h"
+#import "QYPhotoBrowserTransition.h"
 
 //Others
 #import "UIView+Extension.h"
 #import <AVOSCloudIM.h>
 #import <AVFile.h>
+#import "SDPhotoBrowser.h"
 #import <Masonry.h>
 
-@interface QYChatVC () <UITableViewDelegate, UITableViewDataSource, QYChatManagerDelegate, MessageBarDelegate, QYAudioPlayerDelegate, QYFunctionViewDelegate, QYImagesPickerDelegate>
+@interface QYChatVC () <UITableViewDelegate, UITableViewDataSource, QYChatManagerDelegate, MessageBarDelegate, QYAudioPlayerDelegate, QYFunctionViewDelegate, QYImagesPickerDelegate, UIViewControllerTransitioningDelegate>
 @property (strong, nonatomic) MessageBar *messageBar;
 @property (strong, nonatomic) UITableView *tableView;
 
 @property (strong, nonatomic) NSMutableDictionary *groups;//消息按时间分组
 @property (strong, atomic) NSMutableArray *messages;//消息列表
+@property (strong, nonatomic) NSMutableArray *images;//图片列表，用于图片轮播
+
 
 @property (strong, nonatomic) QYAudioRecorder *voiceRecorder;
 @property (strong, nonatomic) QYVoiceRecordingView *voiceRecordingView;//录音动画
@@ -103,6 +110,7 @@
     [self.view addSubview:self.tableView];
     
     _messages = [NSMutableArray array];
+    _images = [NSMutableArray array];
     
     
     [QYAudioPlayer sharedInstance].delegate = self;
@@ -261,6 +269,23 @@
     }
 }
 
+#pragma mark - Custom Methods - send messages
+-(void)sendTextMessageWithContent:(NSString *)message{
+    [[QYChatManager sharedManager] sendTextMessage:message withConversation:_conversation];
+}
+
+-(void)sendImageMessageWithData:(NSData *)data{
+    [[QYChatManager sharedManager] sendImageMessageWithData:data withConversation:_conversation];
+}
+
+-(void)sendVoiceMessage{
+    [[QYChatManager sharedManager] sendVoiceMessageWithConversation:_conversation];
+}
+
+-(void)sendLocationMessageWithAnnotation:(QYPinAnnotation *)annotation{
+    [[QYChatManager sharedManager] sendLocationMessageWithAnnotation:annotation withConversation:_conversation];
+}
+
 #pragma mark - Custom Methods - audio recorder
 -(void)prepareRecordWithCompletion:(QYPrepareRecorderCompletion)completion{
     //    [self.voiceRecorder prepareToRecordWithPath:[self getRecorderPath] completion:completion];
@@ -311,9 +336,10 @@
     //发送录音
     [self.voiceRecorder stopRecordingWithStopRecorderCompletion:^{
         [weakSelf.voiceRecordingView removeFromSuperview];
-        [[QYChatManager sharedManager] sendVoiceMessageWithConversation:weakSelf.conversation];
+        [weakSelf sendVoiceMessage];
     }];
 }
+
 
 #pragma mark - Events
 -(void)backAction{
@@ -333,18 +359,18 @@
         return;
     }
     
-    _currentSelectedVoiceCell = [self.tableView cellForRowAtIndexPath:indexPath];
-    if (![_currentSelectedVoiceCell isTapedInContent:sender]) {
+    _selectedCell = [self.tableView cellForRowAtIndexPath:indexPath];
+    if (![_selectedCell isTapedInContent:sender]) {
         return;
     }
     
-    switch (_currentSelectedVoiceCell.messageType) {
+    switch (_selectedCell.messageType) {
         case kMessageTypeVoice://播放声音
             [self tapVoiceCellAction];
             break;
             
         case kMessageTypePhoto://放大图片
-            [self tapPhotoCellAction];
+            [self tapPhotoCellActionAtIndex:indexPath.row];
             break;
             
         case kMessageTypeLocation://查看地图
@@ -358,12 +384,14 @@
 
 -(void)tapVoiceCellAction{
 #if 1
+    _currentSelectedVoiceCell = _selectedCell;
     AVIMAudioMessage *message = (AVIMAudioMessage *)_currentSelectedVoiceCell.message;
     [message.file getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
         NSLog(@"音频数据下载或从本地读取成功");
         [[QYAudioPlayer sharedInstance] playAudioWithData:data];
     }];
 #else
+    
     NSString *voicePath = [[QYDataManager sharedInstance] voiceFilePathForMessageID:message.messageId];
     if ([[NSFileManager defaultManager] fileExistsAtPath:voicePath]) {
         //如果本地存在，播放
@@ -381,13 +409,51 @@
 #endif
 }
 
--(void)tapPhotoCellAction{
+-(void)tapPhotoCellActionAtIndex:(NSInteger)index{
+    //获取从当前消息开始往前的50条消息
+    NSArray *messages = [_conversation queryMessagesFromCacheWithLimit:_messages.count - index + 50];
+    AVFile *selectedFile = _selectedCell.message.file;
+    __block NSInteger currentIndex;
+    //遍历50条消息，将所有image消息过滤出来，并把图片数据流存储到内存中
+    [_images removeAllObjects];
+    [messages enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        AVIMTypedMessage *message = (AVIMTypedMessage *)obj;
+        if (message.mediaType == kAVIMMessageMediaTypeImage) {
+            AVFile *file = message.file;
+            UIImage *image = [UIImage imageWithData:[file getData]];
+            [_images addObject:image];
+            
+            if ([file.objectId isEqualToString:selectedFile.objectId]) {
+                currentIndex = [_images indexOfObject:image];
+            }
+        }
+    }];
     
+    QYPhotoBrowser *photoBrowser = [[QYPhotoBrowser alloc] initWithNibName:@"QYPhotoBrowser" bundle:nil];
+    photoBrowser.transitioningDelegate = self;
+    self.transitioningDelegate = self;
+    photoBrowser.photos = _images;
+    [self.revealViewController presentViewController:photoBrowser animated:YES completion:^{
+    }];
+    photoBrowser.currentIndex = currentIndex;
+
 }
 
 -(void)tapLocationCellAction{
     
 }
+
+#pragma mark - UIViewControllerTransitioning Delegate
+-(id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source{
+    QYPhotoBrowserTransition *transition = [[QYPhotoBrowserTransition alloc] init];
+    return transition;
+}
+
+-(id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed{
+    QYPhotoBrowserTransition *transition = [[QYPhotoBrowserTransition alloc] init];
+    return transition;
+}
+
 
 #pragma mark - QYAudioPlayer Delegate
 -(void)didAudioPlayerBeginPlay:(AVAudioPlayer *)player{
@@ -416,15 +482,18 @@
 }
 
 
+
+
 #pragma mark - Message Bar Delegate - voice methods
 -(void)updateTableViewHeight{
     [_tableView updateSizeHeight:_messageBar.frame.origin.y - 64];
     [self updateContentOffsetOfTableView];
 }
 
--(void)sendMessage:(id)message{
-    [[QYChatManager sharedManager] sendTextMessage:message withConversation:_conversation];
+-(void)sendMessage:(NSString *)message{
+    [self sendTextMessageWithContent:message];
 }
+
 
 -(void)prepareToRecordVoiceWithCompletion:(BOOL (^)(void))completion{
     NSLog(@"prepareToRecordVoice");
@@ -474,7 +543,7 @@
         QYMapVC *mapVC = [[QYMapVC alloc] init];
         WEAKSELF
         mapVC.sendLocationToShare = ^(QYPinAnnotation *annotation){
-            [[QYChatManager sharedManager] sendLocationMessageWithAnnotation:annotation withConversation:weakSelf.conversation];
+            [weakSelf sendLocationMessageWithAnnotation:annotation];
         };
         UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:mapVC];
         [self presentViewController:navVC animated:YES completion:nil];
@@ -492,15 +561,17 @@
     
 }
 
+
 #pragma mark - QYImagesPicker Delegate
 -(void)didFinishSelectImages:(NSDictionary *)info{
     [self dismissViewControllerAnimated:YES completion:^{
         
     }];
     UIImage *image = info[UIImagePickerControllerOriginalImage];
-    NSData *data = UIImageJPEGRepresentation(image, 0.6);
-    [[QYChatManager sharedManager] sendImageMessageWithData:data withConversation:_conversation];
+    NSData *data = UIImageJPEGRepresentation(image, 0);
+    [self sendImageMessageWithData:data];
 }
+
 
 #pragma mark - Chat Manager Delegate
 -(void)didFindConversation:(AVIMConversation *)conversation succeeded:(BOOL)succeeded{
