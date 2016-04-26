@@ -20,7 +20,6 @@
 #import "QYMessageCell.h"
 #import "MessageBar.h"
 #import "QYVoiceRecordingView.h"
-#import "QYPhotoBrowserView.h"
 
 
 //Managers
@@ -480,9 +479,6 @@
     player = nil;
     //TODO: 语音文件下载失败，UI提示
 }
-
-
-
 
 #pragma mark - Message Bar Delegate - voice methods
 -(void)updateTableViewHeight{

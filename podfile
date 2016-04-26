@@ -4,16 +4,16 @@
 # use_frameworks!
 
 target '约吧' do
-pod 'AVOSCloud'
-pod 'AVOSCloudIM'
-pod 'Masonry'
-pod 'AFNetworking'
-pod 'SDWebImage'
-pod 'FMDB'
-pod 'BaiduMapKit'
-pod 'SWRevealViewController'
-pod 'SVProgressHUD'
-pod 'MJRefresh'
-pod 'Bugtags'
+pod 'AVOSCloud', '~> 3.2.3'
+pod 'AVOSCloudIM', '~> 3.2.3'
+pod 'Masonry', '~> 1.0.0'
+pod 'AFNetworking', '~> 3.0.4'
+pod 'SDWebImage', '~> 3.7.5'
+pod 'FMDB', '~> 2.6.2'
+pod 'BaiduMapKit', '~> 2.10.0'
+pod 'SWRevealViewController', '~> 2.3.0'
+pod 'SVProgressHUD', '~> 1.1.3'
+pod 'MJRefresh', '~> 3.1.0'
+pod 'Bugtags', '~> 1.1.8'
 end
 

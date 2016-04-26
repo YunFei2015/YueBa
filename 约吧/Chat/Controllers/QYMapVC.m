@@ -80,10 +80,9 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kAddressToLocateNotification object:self.searchController.searchResultsUpdater];
 }
 
-
 -(void)viewWillAppear:(BOOL)animated
 {
-    [_mapView viewWillAppear];
+    [self.mapView viewWillAppear];
     self.mapView.delegate = self; // 此处记得不用的时候需要置nil，否则影响内存的释放
     self.poiSearch.delegate = self;
     
@@ -91,7 +90,7 @@
 
 -(void)viewWillDisappear:(BOOL)animated
 {
-    [_mapView viewWillDisappear];
+    [self.mapView viewWillDisappear];
     self.mapView.delegate = nil; // 不用时，置nil
     self.poiSearch.delegate = nil;
 }
@@ -156,7 +155,11 @@
 -(void)shareBtnAction{
     //发送位置消息
     [self dismissViewControllerAnimated:YES completion:^{
-        _sendLocationToShare(self.pinAnnotation);
+        QYPinAnnotation *annotation = [[QYPinAnnotation alloc] init];
+        BMKPoiInfo *info = _nearbyBuildings.firstObject;
+        annotation.title = info.address;
+        annotation.coordinate = self.pinAnnotation.coordinate;
+        _sendLocationToShare(annotation);
     }];
 }
 
@@ -328,6 +331,7 @@
 -(BMKMapView *)mapView{
     if (_mapView == nil) {
         _mapView = [[BMKMapView alloc] initWithFrame:CGRectMake(0, 0, kScreenW, kMapViewHeight)];
+        _mapView.delegate = self;
     }
     return _mapView;
 }

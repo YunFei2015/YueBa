@@ -34,8 +34,34 @@
 -(void)longPressAction:(UILongPressGestureRecognizer *)sender{
     CGPoint point = [sender locationInView:_collectionView];
     NSIndexPath *indexPath = [_collectionView indexPathForItemAtPoint:point];
-    //TODO: 弹出保存菜单
+    UIImage *image = _photos[indexPath.row];
     
+    UIAlertController *controller = [UIAlertController alertControllerWithTitle:@"" message:@"" preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertAction *action = [UIAlertAction actionWithTitle:@"保存图片" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
+    }];
+    [controller addAction:action];
+    
+    UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+        
+    }];
+    [controller addAction:action1];
+    [self presentViewController:controller animated:YES completion:nil];
+    
+}
+
+- (void)image:(UIImage *)image didFinishSavingWithError: (NSError *) error contextInfo: (void *) contextInfo{
+    if (error == nil) {
+        UIAlertController *controller = [UIAlertController alertControllerWithTitle:@"提示" message:@"图片已存入手机相册" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *action = [UIAlertAction actionWithTitle:@"完成" style:UIAlertActionStyleDefault handler:nil];
+        [controller addAction:action];
+        [self presentViewController:controller animated:YES completion:nil];
+    }else{
+        UIAlertController *controller = [UIAlertController alertControllerWithTitle:@"提示" message:@"保存失败" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:nil];
+        [controller addAction:action];
+        [self presentViewController:controller animated:YES completion:nil];
+    }
 }
 
 #pragma mark - Setters
