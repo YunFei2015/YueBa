@@ -17,9 +17,9 @@
                     <color key="backgroundColor" red="0.89906686400000002" green="0.83818072349999995" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                     <inset key="contentEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="20"/>
-                    <inset key="titleEdgeInsets" minX="0.0" minY="60" maxX="35" maxY="0.0"/>
+                    <inset key="titleEdgeInsets" minX="-25" minY="60" maxX="35" maxY="0.0"/>
                     <inset key="imageEdgeInsets" minX="30" minY="0.0" maxX="0.0" maxY="0.0"/>
-                    <state key="normal" title="图片" image="Crying">
+                    <state key="normal" title="图片" image="sharemore_pic">
                         <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
@@ -31,9 +31,9 @@
                     <color key="backgroundColor" red="0.89906686400000002" green="0.83818072349999995" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     <fontDescription key="fontDescription" name=".PingFangSC-Regular" family=".PingFang SC" pointSize="15"/>
                     <inset key="contentEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="20"/>
-                    <inset key="titleEdgeInsets" minX="0.0" minY="60" maxX="35" maxY="0.0"/>
+                    <inset key="titleEdgeInsets" minX="-25" minY="60" maxX="35" maxY="0.0"/>
                     <inset key="imageEdgeInsets" minX="30" minY="0.0" maxX="0.0" maxY="0.0"/>
-                    <state key="normal" title="拍照" image="Smile">
+                    <state key="normal" title="拍照" image="sharemore_video">
                         <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
@@ -66,9 +66,9 @@
                     <color key="backgroundColor" red="0.89906686400000002" green="0.83818072349999995" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                     <inset key="contentEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="20"/>
-                    <inset key="titleEdgeInsets" minX="0.0" minY="60" maxX="35" maxY="0.0"/>
+                    <inset key="titleEdgeInsets" minX="-25" minY="60" maxX="35" maxY="0.0"/>
                     <inset key="imageEdgeInsets" minX="30" minY="0.0" maxX="0.0" maxY="0.0"/>
-                    <state key="normal" title="位置" image="Angry">
+                    <state key="normal" title="位置" image="sharemore_location">
                         <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
@@ -115,8 +115,8 @@
         </view>
     </objects>
     <resources>
-        <image name="Angry" width="36" height="36"/>
-        <image name="Crying" width="36" height="36"/>
-        <image name="Smile" width="36" height="36"/>
+        <image name="sharemore_location" width="59" height="59"/>
+        <image name="sharemore_pic" width="59" height="59"/>
+        <image name="sharemore_video" width="59" height="59"/>
     </resources>
 </document>

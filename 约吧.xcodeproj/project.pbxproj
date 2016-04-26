@@ -31,8 +31,8 @@
 		7C3B9AE21CB7B71400C6C30E /* QYUserInfoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C3B9AE11CB7B71400C6C30E /* QYUserInfoView.m */; };
 		7C45F90F1CCA02AE00F188E0 /* QYPhotoBrowserCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C45F90D1CCA02AE00F188E0 /* QYPhotoBrowserCell.m */; };
 		7C45F9101CCA02AE00F188E0 /* QYPhotoBrowserCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7C45F90E1CCA02AE00F188E0 /* QYPhotoBrowserCell.xib */; };
-		7C4BB3A91CA8C28400136C75 /* QYMapVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C4BB3A81CA8C28400136C75 /* QYMapVC.m */; };
-		7C4BB3AC1CA8C94F00136C75 /* QYMapSearchResultVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C4BB3AB1CA8C94F00136C75 /* QYMapSearchResultVC.m */; };
+		7C4BB3A91CA8C28400136C75 /* QYLocationShareVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C4BB3A81CA8C28400136C75 /* QYLocationShareVC.m */; };
+		7C4BB3AC1CA8C94F00136C75 /* QYLocationSearchResultVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C4BB3AB1CA8C94F00136C75 /* QYLocationSearchResultVC.m */; };
 		7C4BB3B11CA8CD2500136C75 /* QYMapAddrCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C4BB3AF1CA8CD2500136C75 /* QYMapAddrCell.m */; };
 		7C4BB3B21CA8CD2500136C75 /* QYMapAddrCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7C4BB3B01CA8CD2500136C75 /* QYMapAddrCell.xib */; };
 		7C4CFE6D1CBF2B2100562786 /* users.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7C4CFE6C1CBF2B2100562786 /* users.plist */; };
@@ -66,6 +66,7 @@
 		7C6671E61CB4F99500E7C20A /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7C6671E51CB4F99500E7C20A /* Settings.storyboard */; };
 		7C6671E91CB4FDB500E7C20A /* QYSettingsTableVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C6671E81CB4FDB500E7C20A /* QYSettingsTableVC.m */; };
 		7C67059F1C9F97AB001EDCCE /* QYAudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C67059E1C9F97AB001EDCCE /* QYAudioPlayer.m */; };
+		7C6A6E5F1CCF41FB00AC95E3 /* QYLocationMapVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C6A6E5E1CCF41FB00AC95E3 /* QYLocationMapVC.m */; };
 		7C7078D31CC3337200CCF7BA /* QYUserStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C7078D11CC3337200CCF7BA /* QYUserStorage.m */; };
 		7C719A051CBB3B5300BE5039 /* QYHomeSearchView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C719A041CBB3B5300BE5039 /* QYHomeSearchView.m */; };
 		7C719A0A1CBB3C3F00BE5039 /* QYUserInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C719A091CBB3C3F00BE5039 /* QYUserInfo.m */; };
@@ -126,10 +127,10 @@
 		7C45F90C1CCA02AE00F188E0 /* QYPhotoBrowserCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYPhotoBrowserCell.h; sourceTree = "<group>"; };
 		7C45F90D1CCA02AE00F188E0 /* QYPhotoBrowserCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYPhotoBrowserCell.m; sourceTree = "<group>"; };
 		7C45F90E1CCA02AE00F188E0 /* QYPhotoBrowserCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = QYPhotoBrowserCell.xib; sourceTree = "<group>"; };
-		7C4BB3A71CA8C28400136C75 /* QYMapVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYMapVC.h; sourceTree = "<group>"; };
-		7C4BB3A81CA8C28400136C75 /* QYMapVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYMapVC.m; sourceTree = "<group>"; };
-		7C4BB3AA1CA8C94F00136C75 /* QYMapSearchResultVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYMapSearchResultVC.h; sourceTree = "<group>"; };
-		7C4BB3AB1CA8C94F00136C75 /* QYMapSearchResultVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYMapSearchResultVC.m; sourceTree = "<group>"; };
+		7C4BB3A71CA8C28400136C75 /* QYLocationShareVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYLocationShareVC.h; sourceTree = "<group>"; };
+		7C4BB3A81CA8C28400136C75 /* QYLocationShareVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYLocationShareVC.m; sourceTree = "<group>"; };
+		7C4BB3AA1CA8C94F00136C75 /* QYLocationSearchResultVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYLocationSearchResultVC.h; sourceTree = "<group>"; };
+		7C4BB3AB1CA8C94F00136C75 /* QYLocationSearchResultVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYLocationSearchResultVC.m; sourceTree = "<group>"; };
 		7C4BB3AE1CA8CD2500136C75 /* QYMapAddrCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYMapAddrCell.h; sourceTree = "<group>"; };
 		7C4BB3AF1CA8CD2500136C75 /* QYMapAddrCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYMapAddrCell.m; sourceTree = "<group>"; };
 		7C4BB3B01CA8CD2500136C75 /* QYMapAddrCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = QYMapAddrCell.xib; sourceTree = "<group>"; };
@@ -146,7 +147,7 @@
 		7C4D3B921CB3F8CC0040FF73 /* QYEditBaseInfoVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYEditBaseInfoVC.m; sourceTree = "<group>"; };
 		7C4E8C051CCB5BB10055E780 /* QYPhotoBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYPhotoBrowser.h; sourceTree = "<group>"; };
 		7C4E8C061CCB5BB10055E780 /* QYPhotoBrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYPhotoBrowser.m; sourceTree = "<group>"; };
-		7C4E8C071CCB5BB10055E780 /* QYPhotoBrowser.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = QYPhotoBrowser.xib; sourceTree = "<group>"; };
+		7C4E8C071CCB5BB10055E780 /* QYPhotoBrowser.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = QYPhotoBrowser.xib; path = ../../Controllers/QYPhotoBrowser.xib; sourceTree = "<group>"; };
 		7C506F5F1CB74C200037EAED /* SDBrowserImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDBrowserImageView.h; sourceTree = "<group>"; };
 		7C506F601CB74C200037EAED /* SDBrowserImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDBrowserImageView.m; sourceTree = "<group>"; };
 		7C506F611CB74C200037EAED /* SDPhotoBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDPhotoBrowser.h; sourceTree = "<group>"; };
@@ -187,6 +188,8 @@
 		7C6671E81CB4FDB500E7C20A /* QYSettingsTableVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYSettingsTableVC.m; sourceTree = "<group>"; };
 		7C67059D1C9F97AB001EDCCE /* QYAudioPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYAudioPlayer.h; sourceTree = "<group>"; };
 		7C67059E1C9F97AB001EDCCE /* QYAudioPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYAudioPlayer.m; sourceTree = "<group>"; };
+		7C6A6E5D1CCF41FB00AC95E3 /* QYLocationMapVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYLocationMapVC.h; sourceTree = "<group>"; };
+		7C6A6E5E1CCF41FB00AC95E3 /* QYLocationMapVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYLocationMapVC.m; sourceTree = "<group>"; };
 		7C7078D01CC3337200CCF7BA /* QYUserStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYUserStorage.h; sourceTree = "<group>"; };
 		7C7078D11CC3337200CCF7BA /* QYUserStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYUserStorage.m; sourceTree = "<group>"; };
 		7C719A031CBB3B5300BE5039 /* QYHomeSearchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYHomeSearchView.h; sourceTree = "<group>"; };
@@ -292,13 +295,14 @@
 			children = (
 				7C30B1651C996137001EF237 /* QYChatVC.h */,
 				7C30B1661C996137001EF237 /* QYChatVC.m */,
-				7C4BB3A71CA8C28400136C75 /* QYMapVC.h */,
-				7C4BB3A81CA8C28400136C75 /* QYMapVC.m */,
-				7C4BB3AA1CA8C94F00136C75 /* QYMapSearchResultVC.h */,
-				7C4BB3AB1CA8C94F00136C75 /* QYMapSearchResultVC.m */,
+				7C4BB3A71CA8C28400136C75 /* QYLocationShareVC.h */,
+				7C4BB3A81CA8C28400136C75 /* QYLocationShareVC.m */,
+				7C4BB3AA1CA8C94F00136C75 /* QYLocationSearchResultVC.h */,
+				7C4BB3AB1CA8C94F00136C75 /* QYLocationSearchResultVC.m */,
+				7C6A6E5D1CCF41FB00AC95E3 /* QYLocationMapVC.h */,
+				7C6A6E5E1CCF41FB00AC95E3 /* QYLocationMapVC.m */,
 				7C4E8C051CCB5BB10055E780 /* QYPhotoBrowser.h */,
 				7C4E8C061CCB5BB10055E780 /* QYPhotoBrowser.m */,
-				7C4E8C071CCB5BB10055E780 /* QYPhotoBrowser.xib */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -352,6 +356,7 @@
 				7CFCF3E21CA266E500ACBD72 /* QYVoiceRecordingView.h */,
 				7CFCF3E31CA266E500ACBD72 /* QYVoiceRecordingView.m */,
 				7CFCF3E51CA266F300ACBD72 /* QYVoiceRecordingView.xib */,
+				7C4E8C071CCB5BB10055E780 /* QYPhotoBrowser.xib */,
 				7C45F90C1CCA02AE00F188E0 /* QYPhotoBrowserCell.h */,
 				7C45F90D1CCA02AE00F188E0 /* QYPhotoBrowserCell.m */,
 				7C45F90E1CCA02AE00F188E0 /* QYPhotoBrowserCell.xib */,
@@ -775,8 +780,9 @@
 				7C4D3B931CB3F8CC0040FF73 /* QYEditBaseInfoVC.m in Sources */,
 				7C30B1511C995E2A001EF237 /* AppDelegate.mm in Sources */,
 				7C719A051CBB3B5300BE5039 /* QYHomeSearchView.m in Sources */,
-				7C4BB3AC1CA8C94F00136C75 /* QYMapSearchResultVC.m in Sources */,
+				7C4BB3AC1CA8C94F00136C75 /* QYLocationSearchResultVC.m in Sources */,
 				7C30B19C1C996137001EF237 /* UIView+Extension.m in Sources */,
+				7C6A6E5F1CCF41FB00AC95E3 /* QYLocationMapVC.m in Sources */,
 				7C30B1901C996137001EF237 /* QYMessageCell.m in Sources */,
 				7C719A0A1CBB3C3F00BE5039 /* QYUserInfo.m in Sources */,
 				7CFF65951CAA5FC60068987A /* QYPinAnnotation.m in Sources */,
@@ -787,7 +793,7 @@
 				7C67059F1C9F97AB001EDCCE /* QYAudioPlayer.m in Sources */,
 				7C506FCC1CB788590037EAED /* QYImagesPicker.m in Sources */,
 				7C30B1961C996137001EF237 /* FunctionView.m in Sources */,
-				7C4BB3A91CA8C28400136C75 /* QYMapVC.m in Sources */,
+				7C4BB3A91CA8C28400136C75 /* QYLocationShareVC.m in Sources */,
 				7C30B1921C996137001EF237 /* FaceCell.m in Sources */,
 				7C506FCD1CB788590037EAED /* QYLocationManager.m in Sources */,
 				7C4D3B901CB3F87D0040FF73 /* QYRegisterVC.m in Sources */,

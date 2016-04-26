@@ -9,6 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "QYPinAnnotation.h"
 typedef void(^QYSendLocationToShare)(QYPinAnnotation *);
-@interface QYMapVC : UIViewController
+@interface QYLocationShareVC : UIViewController
 @property (strong, nonatomic) QYSendLocationToShare sendLocationToShare;
 @end

@@ -6,7 +6,7 @@
 //  Copyright © 2016 云菲. All rights reserved.
 //
 
-#import "QYMapVC.h"
+#import "QYLocationShareVC.h"
 #import "AppDelegate.h"
 #import "QYMapAddrCell.h"
 #import "QYCurrentAnnotation.h"
@@ -15,7 +15,7 @@
 #import "QYPinAnnotationView.h"
 #import "QYPaopaoView.h"
 
-#import "QYMapSearchResultVC.h"
+#import "QYLocationSearchResultVC.h"
 #import "QYLocationManager.h"
 
 #import <BaiduMapAPI_Map/BMKMapComponent.h>
@@ -29,7 +29,7 @@
 
 
 
-@interface QYMapVC () <BMKMapViewDelegate, UITableViewDelegate, UITableViewDataSource, BMKPoiSearchDelegate, QYLocationManagerDelegate>
+@interface QYLocationShareVC () <BMKMapViewDelegate, UITableViewDelegate, UITableViewDataSource, BMKPoiSearchDelegate, QYLocationManagerDelegate>
 @property (strong, nonatomic) BMKPoiSearch *poiSearch;
 @property (strong, nonatomic) BMKMapView *mapView;
 @property (strong, nonatomic) QYPinAnnotation *pinAnnotation;
@@ -48,7 +48,7 @@
 
 @end
 
-@implementation QYMapVC
+@implementation QYLocationShareVC
 #pragma mark - Life Cycles
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -361,7 +361,7 @@
 
 -(UISearchController *)searchController{
     if (_searchController == nil) {
-        QYMapSearchResultVC *resultVC = [[QYMapSearchResultVC alloc] init];
+        QYLocationSearchResultVC *resultVC = [[QYLocationSearchResultVC alloc] init];
         _searchController = [[UISearchController alloc] initWithSearchResultsController:resultVC];
         _searchController.searchResultsUpdater = resultVC;
         _searchController.hidesNavigationBarDuringPresentation = NO;

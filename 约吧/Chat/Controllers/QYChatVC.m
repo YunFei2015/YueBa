@@ -10,7 +10,8 @@
 #import "AppDelegate.h"
 
 //controllers
-#import "QYMapVC.h"
+#import "QYLocationShareVC.h"
+#import "QYLocationMapVC.h"
 #import "QYPhotoBrowser.h"
 
 //Models
@@ -369,7 +370,7 @@
             break;
             
         case kMessageTypePhoto://放大图片
-            [self tapPhotoCellActionAtIndex:indexPath.row];
+            [self tapPhotoCellAction];
             break;
             
         case kMessageTypeLocation://查看地图
@@ -408,7 +409,10 @@
 #endif
 }
 
--(void)tapPhotoCellActionAtIndex:(NSInteger)index{
+-(void)tapPhotoCellAction{
+    NSIndexPath *indexPath = [_tableView indexPathForCell:_selectedCell];
+    NSInteger index = indexPath.row;
+    
     //获取从当前消息开始往前的50条消息
     NSArray *messages = [_conversation queryMessagesFromCacheWithLimit:_messages.count - index + 50];
     AVFile *selectedFile = _selectedCell.message.file;
@@ -438,7 +442,10 @@
 }
 
 -(void)tapLocationCellAction{
-    
+    AVIMLocationMessage *message = (AVIMLocationMessage *)_selectedCell.message;
+    QYLocationMapVC *mapVC = [[QYLocationMapVC alloc] initWithLocation:[[CLLocation alloc] initWithLatitude:message.latitude longitude:message.longitude] title:message.text];
+    UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:mapVC];
+    [self presentViewController:navVC animated:YES completion:nil];
 }
 
 #pragma mark - UIViewControllerTransitioning Delegate
@@ -535,7 +542,7 @@
     //共享位置
     AppDelegate *app = [UIApplication sharedApplication].delegate;
     if (app.location) {
-        QYMapVC *mapVC = [[QYMapVC alloc] init];
+        QYLocationShareVC *mapVC = [[QYLocationShareVC alloc] init];
         WEAKSELF
         mapVC.sendLocationToShare = ^(QYPinAnnotation *annotation){
             [weakSelf sendLocationMessageWithAnnotation:annotation];

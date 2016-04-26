@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 @class CLLocation;
 
-@interface QYMapSearchResultVC : UIViewController <UISearchResultsUpdating>
+@interface QYLocationSearchResultVC : UIViewController <UISearchResultsUpdating>
 @property (strong, nonatomic) CLLocation *location;
 
 @end

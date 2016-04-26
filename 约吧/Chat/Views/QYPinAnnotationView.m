@@ -18,10 +18,6 @@
         self.canShowCallout = YES;
         self.image = [UIImage imageNamed:@"located_pin"];
         
-//        QYPaopaoView *paopaoView = [[NSBundle mainBundle] loadNibNamed:@"QYPaopaoView" owner:nil options:nil][0];
-//        paopaoView.title = annotation.title;
-//        self.paopaoView = [[BMKActionPaopaoView alloc] initWithCustomView:paopaoView];
-        
     }
     return self;
 }

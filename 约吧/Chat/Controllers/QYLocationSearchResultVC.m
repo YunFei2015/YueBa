@@ -6,16 +6,16 @@
 //  Copyright © 2016 云菲. All rights reserved.
 //
 
-#import "QYMapSearchResultVC.h"
+#import "QYLocationSearchResultVC.h"
 #import <BaiduMapAPI_Search/BMKSearchComponent.h>
 
-@interface QYMapSearchResultVC ()  <UITableViewDelegate, UITableViewDataSource, BMKPoiSearchDelegate>
+@interface QYLocationSearchResultVC ()  <UITableViewDelegate, UITableViewDataSource, BMKPoiSearchDelegate>
 @property (strong, nonatomic) UITableView *tableView;
 @property (strong, nonatomic) NSMutableArray *results;
 @property (strong, nonatomic) BMKPoiSearch *poiSearch;
 @end
 
-@implementation QYMapSearchResultVC
+@implementation QYLocationSearchResultVC
 
 - (void)viewDidLoad {
     [self.view addSubview:self.tableView];
