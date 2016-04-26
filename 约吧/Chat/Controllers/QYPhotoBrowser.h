@@ -2,18 +2,20 @@
 //  QYPhotoBrowser.h
 //  约吧
 //
-//  Created by 云菲 on 4/22/16.
+//  Created by 云菲 on 4/23/16.
 //  Copyright © 2016 云菲. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
-typedef void(^QYPhotoBrowserExit)(void);
+#import "QYPhotoBrowserCell.h"
+
 typedef void(^QYPhotoBrowserPopMenu)(UIImage *image);
 
-@interface QYPhotoBrowser : UIView
+@interface QYPhotoBrowser : UIViewController
 @property (strong, nonatomic) NSArray *photos;
 @property (nonatomic) NSInteger currentIndex;
 
-@property (strong, nonatomic) QYPhotoBrowserExit exitPhotoBrowser;
-@property (strong, nonatomic) QYPhotoBrowserPopMenu popMenuOnPhotoBrowser;
+@property (nonatomic) CGRect finalFrame;
+@property (strong, nonatomic) QYPhotoBrowserCell *selectedCell;
+
 @end

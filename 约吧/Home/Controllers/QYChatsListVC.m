@@ -293,12 +293,12 @@
         [self presentViewController:controller animated:YES completion:nil];
     }];
     
-    /*
+    
     UITableViewRowAction *clearAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:@"清空聊天记录" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
         
         QYUserInfo *user = _datas[indexPath.row];
         UIAlertController *controller = [UIAlertController alertControllerWithTitle:@"清空聊天记录" message:[NSString stringWithFormat:@"确定要清空与%@的聊天记录吗？", user.name] preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"还没实现" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             //TODO: 清空聊天记录
             
             
@@ -318,9 +318,9 @@
         [controller addAction:action2];
         [self presentViewController:controller animated:YES completion:nil];
     }];
-     */
+     
     
-    return @[deleteAction];
+    return @[deleteAction, clearAction];
 }
 
 

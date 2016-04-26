@@ -11,6 +11,7 @@
 
 //controllers
 #import "QYMapVC.h"
+#import "QYPhotoBrowser.h"
 
 //Models
 #import "QYUserInfo.h"
@@ -19,7 +20,8 @@
 #import "QYMessageCell.h"
 #import "MessageBar.h"
 #import "QYVoiceRecordingView.h"
-#import "QYPhotoBrowser.h"
+#import "QYPhotoBrowserView.h"
+
 
 //Managers
 #import "QYChatManager.h"
@@ -27,6 +29,7 @@
 #import "QYAudioPlayer.h"
 #import "QYUserStorage.h"
 #import "QYImagesPicker.h"
+#import "QYPhotoBrowserTransition.h"
 
 //Others
 #import "UIView+Extension.h"
@@ -35,7 +38,7 @@
 #import "SDPhotoBrowser.h"
 #import <Masonry.h>
 
-@interface QYChatVC () <UITableViewDelegate, UITableViewDataSource, QYChatManagerDelegate, MessageBarDelegate, QYAudioPlayerDelegate, QYFunctionViewDelegate, QYImagesPickerDelegate, SDPhotoBrowserDelegate>
+@interface QYChatVC () <UITableViewDelegate, UITableViewDataSource, QYChatManagerDelegate, MessageBarDelegate, QYAudioPlayerDelegate, QYFunctionViewDelegate, QYImagesPickerDelegate, UIViewControllerTransitioningDelegate>
 @property (strong, nonatomic) MessageBar *messageBar;
 @property (strong, nonatomic) UITableView *tableView;
 
@@ -356,12 +359,12 @@
         return;
     }
     
-    _currentSelectedVoiceCell = [self.tableView cellForRowAtIndexPath:indexPath];
-    if (![_currentSelectedVoiceCell isTapedInContent:sender]) {
+    _selectedCell = [self.tableView cellForRowAtIndexPath:indexPath];
+    if (![_selectedCell isTapedInContent:sender]) {
         return;
     }
     
-    switch (_currentSelectedVoiceCell.messageType) {
+    switch (_selectedCell.messageType) {
         case kMessageTypeVoice://播放声音
             [self tapVoiceCellAction];
             break;
@@ -381,12 +384,14 @@
 
 -(void)tapVoiceCellAction{
 #if 1
+    _currentSelectedVoiceCell = _selectedCell;
     AVIMAudioMessage *message = (AVIMAudioMessage *)_currentSelectedVoiceCell.message;
     [message.file getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
         NSLog(@"音频数据下载或从本地读取成功");
         [[QYAudioPlayer sharedInstance] playAudioWithData:data];
     }];
 #else
+    
     NSString *voicePath = [[QYDataManager sharedInstance] voiceFilePathForMessageID:message.messageId];
     if ([[NSFileManager defaultManager] fileExistsAtPath:voicePath]) {
         //如果本地存在，播放
@@ -407,78 +412,48 @@
 -(void)tapPhotoCellActionAtIndex:(NSInteger)index{
     //获取从当前消息开始往前的50条消息
     NSArray *messages = [_conversation queryMessagesFromCacheWithLimit:_messages.count - index + 50];
-    
-    __block AVFile *currentFile;
-//    __block NSInteger currentIndex;
+    AVFile *selectedFile = _selectedCell.message.file;
+    __block NSInteger currentIndex;
     //遍历50条消息，将所有image消息过滤出来，并把图片数据流存储到内存中
-    UIView *view = [[UIView alloc] initWithFrame:CGRectZero];
-    [self.view addSubview:view];
-    view.hidden = YES;
-    
     [_images removeAllObjects];
     [messages enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         AVIMTypedMessage *message = (AVIMTypedMessage *)obj;
         if (message.mediaType == kAVIMMessageMediaTypeImage) {
             AVFile *file = message.file;
-//            UIImage *image = [UIImage imageWithData:[file getData]];
-            [_images addObject:file];
-            UIImageView *imgView = [[UIImageView alloc] initWithImage:[UIImage imageWithData:[file getData]]];
-            [view addSubview:imgView];
+            UIImage *image = [UIImage imageWithData:[file getData]];
+            [_images addObject:image];
             
-            AVFile *selectedFile = _currentSelectedVoiceCell.message.file;
             if ([file.objectId isEqualToString:selectedFile.objectId]) {
-                currentFile = file;
-//                currentIndex = [_images indexOfObject:image];
-                
+                currentIndex = [_images indexOfObject:image];
             }
         }
     }];
     
-//    QYPhotoBrowser *photoBrowser = [[NSBundle mainBundle] loadNibNamed:@"QYPhotoBrowser" owner:nil options:nil][0];
-//    photoBrowser.frame = CGRectMake(0, 0, kScreenW, kScreenH);
-//    photoBrowser.center = _currentSelectedVoiceCell.center;
-//    __weak QYPhotoBrowser *weakPhotoBrowser = photoBrowser;
-//    photoBrowser.exitPhotoBrowser = ^{
-//        [weakPhotoBrowser removeFromSuperview];
-//    };
-//    
-//    photoBrowser.popMenuOnPhotoBrowser = ^(UIImage *image){
-//        
-//    };
-//    photoBrowser.photos = _images;
-//    photoBrowser.currentIndex = currentIndex;
-//    
-//    [UIView animateWithDuration:1 animations:^{
-//        [self.view addSubview:photoBrowser];
-//    }];
-    
-    //图片轮播器显示出来
-    SDPhotoBrowser *photoBrowser = [[SDPhotoBrowser alloc] init];
-    //FIXME: 容器需要改
-    photoBrowser.sourceImagesContainerView = view;
-    photoBrowser.imageCount = _images.count;
-    photoBrowser.currentImageIndex = [_images indexOfObject:currentFile];
-    photoBrowser.delegate = self;
-    
-    [photoBrowser show];
+    QYPhotoBrowser *photoBrowser = [[QYPhotoBrowser alloc] initWithNibName:@"QYPhotoBrowser" bundle:nil];
+    photoBrowser.transitioningDelegate = self;
+    self.transitioningDelegate = self;
+    photoBrowser.photos = _images;
+    [self.revealViewController presentViewController:photoBrowser animated:YES completion:^{
+    }];
+    photoBrowser.currentIndex = currentIndex;
+
 }
 
 -(void)tapLocationCellAction{
     
 }
 
-#pragma mark - SDPhotoBrowser Delegate
--(UIImage *)photoBrowser:(SDPhotoBrowser *)browser placeholderImageForIndex:(NSInteger)index{
-    AVFile *file = _images[index];
-    UIImage *image = [UIImage imageWithData:file.getData];
-    return image;
+#pragma mark - UIViewControllerTransitioning Delegate
+-(id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source{
+    QYPhotoBrowserTransition *transition = [[QYPhotoBrowserTransition alloc] init];
+    return transition;
 }
 
--(NSURL *)photoBrowser:(SDPhotoBrowser *)browser highQualityImageURLForIndex:(NSInteger)index{
-    AVFile *file = _images[index];
-    NSURL *url = [NSURL fileURLWithPath:file.localPath];
-    return url;
+-(id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed{
+    QYPhotoBrowserTransition *transition = [[QYPhotoBrowserTransition alloc] init];
+    return transition;
 }
+
 
 #pragma mark - QYAudioPlayer Delegate
 -(void)didAudioPlayerBeginPlay:(AVAudioPlayer *)player{

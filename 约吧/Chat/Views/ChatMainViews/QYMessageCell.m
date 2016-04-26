@@ -44,7 +44,6 @@
 /**
  *  图片消息控件
  */
-@property (weak, nonatomic) IBOutlet UIImageView *photoImageView;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *photoViewHeightConstraint;
 
 /**

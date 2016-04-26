@@ -9,7 +9,6 @@
 #import "QYPhotoBrowserCell.h"
 
 @interface QYPhotoBrowserCell ()
-@property (weak, nonatomic) IBOutlet UIImageView *photoView;
 
 @end
 

@@ -2,7 +2,7 @@
 //  QYPhotoBrowser.m
 //  约吧
 //
-//  Created by 云菲 on 4/22/16.
+//  Created by 云菲 on 4/23/16.
 //  Copyright © 2016 云菲. All rights reserved.
 //
 
@@ -16,7 +16,11 @@
 @end
 
 @implementation QYPhotoBrowser
--(void)awakeFromNib{
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view from its nib.
+    
     [_collectionView registerNib:[UINib nibWithNibName:@"QYPhotoBrowserCell" bundle:nil] forCellWithReuseIdentifier:@"photoBrowserCell"];
     
     _flowLayout.itemSize = CGSizeMake(kScreenW, kScreenH);
@@ -25,13 +29,13 @@
     [_collectionView addGestureRecognizer:longPress];
 }
 
+
 #pragma mark - Custom Methods
 -(void)longPressAction:(UILongPressGestureRecognizer *)sender{
     CGPoint point = [sender locationInView:_collectionView];
     NSIndexPath *indexPath = [_collectionView indexPathForItemAtPoint:point];
-    if (_popMenuOnPhotoBrowser) {
-        _popMenuOnPhotoBrowser(_photos[indexPath.row]);
-    }
+    //TODO: 弹出保存菜单
+    
 }
 
 #pragma mark - Setters
@@ -60,10 +64,15 @@
 }
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-    if (_exitPhotoBrowser) {
-        _exitPhotoBrowser();
-    }
+    _selectedCell = (QYPhotoBrowserCell *)[collectionView cellForItemAtIndexPath:indexPath];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
 
 
 @end
