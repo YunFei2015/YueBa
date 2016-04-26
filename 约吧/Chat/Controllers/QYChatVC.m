@@ -435,7 +435,6 @@
     [self.revealViewController presentViewController:photoBrowser animated:YES completion:^{
     }];
     photoBrowser.currentIndex = currentIndex;
-
 }
 
 -(void)tapLocationCellAction{
