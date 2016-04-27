@@ -10,6 +10,7 @@
 		581245F51CCF47FF00C064D4 /* QYProfileController.m in Sources */ = {isa = PBXBuildFile; fileRef = 581245F41CCF47FF00C064D4 /* QYProfileController.m */; };
 		581245F71CCF481800C064D4 /* QYProfile.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 581245F61CCF481800C064D4 /* QYProfile.storyboard */; };
 		581245FD1CCF53BD00C064D4 /* QYAccountInfoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 581245FC1CCF53BD00C064D4 /* QYAccountInfoController.m */; };
+		581246001CD09FB200C064D4 /* QYUpdatePhoneController.m in Sources */ = {isa = PBXBuildFile; fileRef = 581245FF1CD09FB200C064D4 /* QYUpdatePhoneController.m */; };
 		7C08233B1C9AAE4300C23383 /* QYAudioRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C08233A1C9AAE4300C23383 /* QYAudioRecorder.m */; };
 		7C1834071CCE02C000AC2127 /* QYPhotoBrowserTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C1834061CCE02C000AC2127 /* QYPhotoBrowserTransition.m */; };
 		7C30B14E1C995E2A001EF237 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C30B14D1C995E2A001EF237 /* main.m */; };
@@ -92,6 +93,8 @@
 		581245F61CCF481800C064D4 /* QYProfile.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = QYProfile.storyboard; sourceTree = "<group>"; };
 		581245FB1CCF53BD00C064D4 /* QYAccountInfoController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYAccountInfoController.h; sourceTree = "<group>"; };
 		581245FC1CCF53BD00C064D4 /* QYAccountInfoController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYAccountInfoController.m; sourceTree = "<group>"; };
+		581245FE1CD09FB200C064D4 /* QYUpdatePhoneController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYUpdatePhoneController.h; sourceTree = "<group>"; };
+		581245FF1CD09FB200C064D4 /* QYUpdatePhoneController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYUpdatePhoneController.m; sourceTree = "<group>"; };
 		7C0823391C9AAE4300C23383 /* QYAudioRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYAudioRecorder.h; sourceTree = "<group>"; };
 		7C08233A1C9AAE4300C23383 /* QYAudioRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYAudioRecorder.m; sourceTree = "<group>"; };
 		7C1834051CCE02C000AC2127 /* QYPhotoBrowserTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYPhotoBrowserTransition.h; sourceTree = "<group>"; };
@@ -251,6 +254,8 @@
 				581245F41CCF47FF00C064D4 /* QYProfileController.m */,
 				581245FB1CCF53BD00C064D4 /* QYAccountInfoController.h */,
 				581245FC1CCF53BD00C064D4 /* QYAccountInfoController.m */,
+				581245FE1CD09FB200C064D4 /* QYUpdatePhoneController.h */,
+				581245FF1CD09FB200C064D4 /* QYUpdatePhoneController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -827,6 +832,7 @@
 				7C719A0A1CBB3C3F00BE5039 /* QYUserInfo.m in Sources */,
 				7CFF65951CAA5FC60068987A /* QYPinAnnotation.m in Sources */,
 				7C54E7C41CB67A9900A289A5 /* NSDate+Extension.m in Sources */,
+				581246001CD09FB200C064D4 /* QYUpdatePhoneController.m in Sources */,
 				7C30B1981C996137001EF237 /* MessageBar.m in Sources */,
 				7C08233B1C9AAE4300C23383 /* QYAudioRecorder.m in Sources */,
 				7C30B18E1C996137001EF237 /* FaceModel.m in Sources */,

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="aat-eM-4fW">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="d3R-wx-OPH">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
@@ -465,7 +465,7 @@
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gjC-ZZ-qHf">
-                                    <rect key="frame" x="0.0" y="65" width="320" height="35"/>
+                                    <rect key="frame" x="30" y="65" width="260" height="35"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="35" id="8og-p2-Okm"/>
                                     </constraints>
@@ -476,15 +476,15 @@
                             </subviews>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <constraints>
-                                <constraint firstItem="gjC-ZZ-qHf" firstAttribute="leading" secondItem="QsG-Pb-MOJ" secondAttribute="leading" id="DyL-C2-ccx"/>
-                                <constraint firstAttribute="trailing" secondItem="gjC-ZZ-qHf" secondAttribute="trailing" id="N1V-Lp-jje"/>
+                                <constraint firstItem="gjC-ZZ-qHf" firstAttribute="leading" secondItem="QsG-Pb-MOJ" secondAttribute="leading" constant="30" id="DyL-C2-ccx"/>
+                                <constraint firstAttribute="trailing" secondItem="gjC-ZZ-qHf" secondAttribute="trailing" constant="30" id="N1V-Lp-jje"/>
                                 <constraint firstAttribute="bottom" secondItem="gjC-ZZ-qHf" secondAttribute="bottom" id="Nxy-W6-aHr"/>
                             </constraints>
                         </view>
                         <sections>
                             <tableViewSection headerTitle="我是:" id="TTf-XE-hcc">
                                 <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="EFH-iO-47x">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="EFH-iO-47x">
                                         <rect key="frame" x="0.0" y="113.5" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="EFH-iO-47x" id="tTb-5l-pfX">
@@ -497,7 +497,7 @@
                                                         <segment title="男"/>
                                                         <segment title="女"/>
                                                     </segments>
-                                                    <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <color key="tintColor" red="0.92156862745098034" green="0.50196078431372548" blue="0.4392156862745098" alpha="1" colorSpace="calibratedRGB"/>
                                                 </segmentedControl>
                                             </subviews>
                                             <constraints>
@@ -511,7 +511,7 @@
                             </tableViewSection>
                             <tableViewSection headerTitle="详细信息:" footerTitle="请提供准确信息,这样坍塌才能为你找到心动的ta哦!" id="q4y-dm-TTf">
                                 <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="nnf-NZ-sCA">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="nnf-NZ-sCA">
                                         <rect key="frame" x="0.0" y="207.5" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="nnf-NZ-sCA" id="XML-pu-35O">
@@ -524,7 +524,7 @@
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="ay9-Dj-Baj">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="ay9-Dj-Baj">
                                                     <rect key="frame" x="66" y="0.0" width="238" height="43.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
@@ -540,7 +540,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="dC3-ZI-bv0">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="dC3-ZI-bv0">
                                         <rect key="frame" x="0.0" y="251.5" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="dC3-ZI-bv0" id="5Ig-oV-yys">
@@ -553,7 +553,7 @@
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="7Mr-MY-C3O">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="7Mr-MY-C3O">
                                                     <rect key="frame" x="96" y="0.0" width="208" height="43.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
@@ -629,6 +629,9 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="账户信息" id="ZD3-X2-N5X"/>
+                    <connections>
+                        <outlet property="_btnDeleteAccount" destination="gjC-ZZ-qHf" id="6wx-Uc-W67"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="P9i-v5-xFv" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -686,12 +689,12 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mns-Pw-f8j" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2093" y="230"/>
+            <point key="canvasLocation" x="2082" y="230"/>
         </scene>
         <!--修改电话号码-->
         <scene sceneID="NXK-hZ-xl4">
             <objects>
-                <viewController id="5Ec-YN-aqw" sceneMemberID="viewController">
+                <viewController id="5Ec-YN-aqw" customClass="QYUpdatePhoneController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="eAD-7i-cgi"/>
                         <viewControllerLayoutGuide type="bottom" id="NRA-H4-5TX"/>
@@ -731,6 +734,9 @@
                                         <rect key="frame" x="88" y="0.0" width="224" height="44"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
+                                        <connections>
+                                            <outlet property="delegate" destination="5Ec-YN-aqw" id="HeL-Wg-l0V"/>
+                                        </connections>
                                     </textField>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lPT-Lq-Tfe" userLabel="ViewLineHori1">
                                         <rect key="frame" x="10" y="44" width="310" height="0.5"/>
@@ -781,7 +787,7 @@
                                     <constraint firstItem="Pfs-k9-9Ja" firstAttribute="leading" secondItem="s2F-DT-24Z" secondAttribute="trailing" id="tN6-hW-xsd"/>
                                 </constraints>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tNl-O5-azc">
+                            <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tNl-O5-azc">
                                 <rect key="frame" x="112" y="203" width="95" height="30"/>
                                 <color key="backgroundColor" red="0.0" green="0.8463900862068966" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
@@ -812,8 +818,16 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="修改电话号码" id="zl7-Me-1Gf">
-                        <barButtonItem key="rightBarButtonItem" title="保存" id="dzT-DF-5h2"/>
+                        <barButtonItem key="rightBarButtonItem" title="保存" id="dzT-DF-5h2">
+                            <connections>
+                                <action selector="save:" destination="5Ec-YN-aqw" id="DOL-c8-Yvp"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <outlet property="_btnGetCode" destination="tNl-O5-azc" id="S55-sE-j7S"/>
+                        <outlet property="_txfPhone" destination="eee-0J-u7U" id="Aq8-06-knq"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XER-E1-juT" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -822,6 +836,7 @@
         <!--Navigation Controller-->
         <scene sceneID="GTM-cX-JZh">
             <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="kB1-aG-OHY" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="aat-eM-4fW" sceneMemberID="viewController">
                     <toolbarItems/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
@@ -834,9 +849,8 @@
                         <segue destination="d3R-wx-OPH" kind="relationship" relationship="rootViewController" id="sZI-c4-d5x"/>
                     </connections>
                 </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="kB1-aG-OHY" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="567" y="636"/>
+            <point key="canvasLocation" x="492" y="636"/>
         </scene>
     </scenes>
 </document>
