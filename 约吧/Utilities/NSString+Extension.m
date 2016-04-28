@@ -30,8 +30,12 @@
 }
 
 +(NSString *)pathInDocumentWithFileName:(NSString *)fileName{
-    NSString *documentPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject;
-    NSString *filePath = [documentPath stringByAppendingPathComponent:fileName];
+    NSString *filePath = [kDocumentDirectory stringByAppendingPathComponent:fileName];
+    return filePath;
+}
+
++(NSString *)pathInLibraryWithFileName:(NSString *)fileName{
+    NSString *filePath = [kLibraryDirectory stringByAppendingPathComponent:fileName];
     return filePath;
 }
 
@@ -43,7 +47,6 @@
     [faces enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         FaceModel *face = [FaceModel faceModelWithDictionary:obj];
         if ([message containsString:face.text]) {
-            UIFont *font = attributes[NSFontAttributeName];
             //创建富文本
             NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
             UIImage *image = [UIImage imageNamed:face.imgName];

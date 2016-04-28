@@ -30,6 +30,9 @@ typedef enum {
 //判断手指是否触摸在有效区域
 -(BOOL)isTapedInContent:(UITapGestureRecognizer *)tap;
 
+//判断手指是否触摸在用户头像上
+-(BOOL)isTapedInIcon:(UITapGestureRecognizer *)tap;
+
 /**
  *  语音播放和停止
  */

@@ -36,6 +36,7 @@
 //查询我和好友userId之间的会话，若不存在则创建
 -(void)findConversationWithUser:(NSString *)userId{
     AVIMConversationQuery *query = [self.client conversationQuery];
+    query.cachePolicy = kAVIMCachePolicyCacheElseNetwork;
     query.cacheMaxAge = CLTimeIntervalMax;
     [query whereKey:@"m" containsAllObjectsInArray:@[self.client.clientId, userId]];
     [query whereKey:@"m" sizeEqualTo:2];
@@ -53,6 +54,22 @@
             if ([self.delegate respondsToSelector:@selector(didFindConversation:succeeded:)]) {
                 [self.delegate didFindConversation:result succeeded:YES];
             }
+        }
+    }];
+}
+
+-(void)findConversationsOnCacheWithCompletion:(QYFindConversationsCompletion)findConversationsCompletion{
+    AVIMConversationQuery *query = [self.client conversationQuery];
+    query.cachePolicy = kAVIMCachePolicyCacheOnly;
+    query.cacheMaxAge = CLTimeIntervalMax;
+    query.limit = NSUIntegerMax;
+    [query findConversationsWithCallback:^(NSArray *objects, NSError *error) {
+        NSLog(@"%ld", objects.count);
+        if (error) {
+            NSLog(@"%@",error);
+        }
+        if (findConversationsCompletion) {
+            findConversationsCompletion(objects);
         }
     }];
 }

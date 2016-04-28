@@ -31,6 +31,15 @@
 +(NSString *)pathInDocumentWithFileName:(NSString *)fileName;
 
 /**
+ *  获取指定文件名在Library目录下的完整路径
+ *
+ *  @param fileName 文件名
+ *
+ *  @return 文件路径
+ */
++(NSString *)pathInLibraryWithFileName:(NSString *)fileName;
+
+/**
  *  获取表情
  *
  *  @param message 表情字符串

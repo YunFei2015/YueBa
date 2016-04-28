@@ -57,10 +57,19 @@
 @end
 
 @implementation QYMessageCell
-@synthesize message = _message;
 - (void)awakeFromNib {
     // Initialization code
     _messageLab.preferredMaxLayoutWidth = kMessageMaxWidth;
+}
+
+//当cell即将被复用时，要把之前的约束恢复初始值
+-(void)prepareForReuse{
+    _voiceAnimatingViewWidthConstraint.constant = 0;
+    _messageViewHeightConstraint.constant = 0;
+    _photoViewHeightConstraint.constant = 0;
+    _locationViewHeightConstraint.constant = 0;
+    
+    [super prepareForReuse];
 }
 
 #pragma mark - setters
@@ -68,7 +77,6 @@
     if (!message) {
         return;
     }
-    [self resumeOriginalLayout];
     _message = message;
     switch (message.mediaType) {
         case kAVIMMessageMediaTypeText:
@@ -98,13 +106,6 @@
 //    return _messageViewHeightConstraint.constant + _photoViewHeightConstraint.constant + _locationViewHeightConstraint.constant + 10 + 10 + 1;
 //}
 
-//当cell被复用时，要把之前的约束恢复初始值
--(void)resumeOriginalLayout{
-    _voiceAnimatingViewWidthConstraint.constant = 0;
-    _messageViewHeightConstraint.constant = 0;
-    _photoViewHeightConstraint.constant = 0;
-    _locationViewHeightConstraint.constant = 0;
-}
 
 //填充文本内容
 -(void)configTextMessage{
@@ -180,6 +181,15 @@
             break;
     }
     if (CGRectContainsPoint(view.frame, point)) {
+        return YES;
+    }
+    
+    return NO;
+}
+
+-(BOOL)isTapedInIcon:(UITapGestureRecognizer *)tap{
+    CGPoint point = [tap locationInView:self.contentView];
+    if (CGRectContainsPoint(_iconImgView.frame, point)) {
         return YES;
     }
     

@@ -9,6 +9,7 @@
 #import "QYLoginVC.h"
 #import "AppDelegate.h"
 #import "QYAccount.h"
+#import "QYUserInfo.h"
 
 #import "QYChatManager.h"
 
@@ -48,6 +49,15 @@
     if (success) {
         //TODO: 保存登录信息
         [[QYAccount currentAccount] saveAccount:responseObject];
+        
+        //获取用户的筛选条件
+        QYUserInfo *myInfo = [QYAccount currentAccount].myInfo;
+        [[NSUserDefaults standardUserDefaults] setBool:!myInfo.isMan forKey:kFilterKeySex];
+        [[NSUserDefaults standardUserDefaults] setInteger:5 forKey:kFilterKeyDistance];
+        [[NSUserDefaults standardUserDefaults] setInteger:16 forKey:kFilterKeyMinAge];
+        [[NSUserDefaults standardUserDefaults] setInteger:55 forKey:kFilterKeyMinAge];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
         //leanCloud上线
         NSString *userId = [QYAccount currentAccount].userId;
         [QYChatManager sharedManager].client = [[AVIMClient alloc] initWithClientId:userId];

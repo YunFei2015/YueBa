@@ -35,7 +35,6 @@
 #import "UIView+Extension.h"
 #import <AVOSCloudIM.h>
 #import <AVFile.h>
-#import "SDPhotoBrowser.h"
 #import <Masonry.h>
 
 @interface QYChatVC () <UITableViewDelegate, UITableViewDataSource, QYChatManagerDelegate, MessageBarDelegate, QYAudioPlayerDelegate, QYFunctionViewDelegate, QYImagesPickerDelegate, UIViewControllerTransitioningDelegate>
@@ -163,8 +162,40 @@
 
 #pragma mark - Custom Methods
 -(void)configNavigationBar{
-    UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:self action:@selector(backAction)];
+    self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
+    self.navigationController.navigationBar.tintColor = [UIColor redColor];
+    
+    UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"messages_back"] style:UIBarButtonItemStylePlain target:self action:@selector(backAction)];
     self.navigationItem.leftBarButtonItem = leftItem;
+    
+    UIView *titleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 44)];
+    
+    CGFloat iconW = 40;
+    CGFloat iconH = 40;
+    CGFloat iconX = 0;
+    CGFloat iconY = (44 - iconH) / 2.f;
+    UIImageView *iconView = [[UIImageView alloc] initWithFrame:CGRectMake(iconX, iconY, iconW, iconH)];
+    iconView.image = [UIImage imageNamed:_user.iconUrl];
+    [UIView drawRoundCornerOnImageView:iconView];
+    [titleView addSubview:iconView];
+    
+    CGFloat nameW = 40;
+    CGFloat nameH = 20;
+    CGFloat nameX = iconX + iconW + 5;
+    CGFloat nameY = (44 - nameH) / 2.f;
+    UILabel *name = [[UILabel alloc] initWithFrame:CGRectMake(nameX, nameY, nameW, nameH)];
+    name.textColor = [UIColor redColor];
+    name.text = _user.name;
+    [titleView addSubview:name];
+    
+    self.navigationItem.titleView = titleView;
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(getUserDetailInfo)];
+    [titleView addGestureRecognizer:tap];
+}
+
+//TODO: 查看用户详细信息
+-(void)getUserDetailInfo{
+    NSLog(@"正在查看用户详细信息");
 }
 
 
@@ -360,25 +391,29 @@
     }
     
     _selectedCell = [self.tableView cellForRowAtIndexPath:indexPath];
-    if (![_selectedCell isTapedInContent:sender]) {
+    if ([_selectedCell isTapedInContent:sender]) {
+        switch (_selectedCell.messageType) {
+            case kMessageTypeVoice://播放声音
+                [self tapVoiceCellAction];
+                break;
+                
+            case kMessageTypePhoto://放大图片
+                [self tapPhotoCellAction];
+                break;
+                
+            case kMessageTypeLocation://查看地图
+                [self tapLocationCellAction];
+                break;
+                
+            default:
+                break;
+        }
         return;
     }
     
-    switch (_selectedCell.messageType) {
-        case kMessageTypeVoice://播放声音
-            [self tapVoiceCellAction];
-            break;
-            
-        case kMessageTypePhoto://放大图片
-            [self tapPhotoCellAction];
-            break;
-            
-        case kMessageTypeLocation://查看地图
-            [self tapLocationCellAction];
-            break;
-            
-        default:
-            break;
+    if ([_selectedCell isTapedInIcon:sender]) {
+        [self getUserDetailInfo];
+        return;
     }
 }
 

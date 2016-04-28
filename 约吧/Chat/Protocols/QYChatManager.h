@@ -14,7 +14,7 @@
 @class AVIMKeyedConversation;
 @class AVIMTypedMessage;
 
-//typedef void(^QYFindConversationCompletion)(AVIMConversation *conversation);
+typedef void(^QYFindConversationsCompletion)(NSArray *conversations);
 
 @protocol QYChatManagerDelegate <NSObject>
 @optional
@@ -41,6 +41,7 @@
  *  @param userId 好友ID
  */
 -(void)findConversationWithUser:(NSString *)userId;
+-(void)findConversationsOnCacheWithCompletion:(QYFindConversationsCompletion)findConversationsCompletion;
 //-(void)findConversationForId:(NSString *)conversationId withCompletion:(QYFindConversationCompletion)findConversationCompletion;
 -(AVIMConversation *)conversationFromKeyedConversation:(AVIMKeyedConversation *)keyedConversation;
 -(void)sendTextMessage:(NSString *)message withConversation:(AVIMConversation *)conversation;

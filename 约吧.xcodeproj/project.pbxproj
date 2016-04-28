@@ -44,14 +44,12 @@
 		7C4D3B931CB3F8CC0040FF73 /* QYEditBaseInfoVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C4D3B921CB3F8CC0040FF73 /* QYEditBaseInfoVC.m */; };
 		7C4E8C081CCB5BB10055E780 /* QYPhotoBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C4E8C061CCB5BB10055E780 /* QYPhotoBrowser.m */; };
 		7C4E8C091CCB5BB10055E780 /* QYPhotoBrowser.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7C4E8C071CCB5BB10055E780 /* QYPhotoBrowser.xib */; };
-		7C506FA01CB74C200037EAED /* SDBrowserImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C506F601CB74C200037EAED /* SDBrowserImageView.m */; };
-		7C506FA11CB74C200037EAED /* SDPhotoBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C506F621CB74C200037EAED /* SDPhotoBrowser.m */; };
-		7C506FA21CB74C200037EAED /* SDWaitingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C506F651CB74C200037EAED /* SDWaitingView.m */; };
 		7C506FC11CB761CB0037EAED /* QYAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C506FC01CB761CB0037EAED /* QYAccount.m */; };
 		7C506FCC1CB788590037EAED /* QYImagesPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C506FC61CB788590037EAED /* QYImagesPicker.m */; };
 		7C506FCD1CB788590037EAED /* QYLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C506FC81CB788590037EAED /* QYLocationManager.m */; };
 		7C506FCE1CB788590037EAED /* QYNetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C506FCA1CB788590037EAED /* QYNetworkManager.m */; };
 		7C506FD51CB7B3EA0037EAED /* QYUserInfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7C506FD41CB7B3EA0037EAED /* QYUserInfoView.xib */; };
+		7C5306971CD1EACE006C3BE2 /* QYCacheClearCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C5306961CD1EACE006C3BE2 /* QYCacheClearCell.m */; };
 		7C54E7C11CB5F32400A289A5 /* QYVerifyCodeBtn.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C54E7C01CB5F32400A289A5 /* QYVerifyCodeBtn.m */; };
 		7C54E7C41CB67A9900A289A5 /* NSDate+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C54E7C31CB67A9900A289A5 /* NSDate+Extension.m */; };
 		7C567E231C9BDCE700934F5D /* QYLeftMessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7C567E221C9BDCE700934F5D /* QYLeftMessageCell.xib */; };
@@ -74,6 +72,17 @@
 		7CF813951CB0CF4700CC79E8 /* countries.json in Resources */ = {isa = PBXBuildFile; fileRef = 7CF813931CB0CF4700CC79E8 /* countries.json */; };
 		7CF8139B1CB1435F00CC79E8 /* QYPaopaoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CF8139A1CB1435F00CC79E8 /* QYPaopaoView.m */; };
 		7CF8139F1CB1437900CC79E8 /* QYPaopaoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7CF8139E1CB1437900CC79E8 /* QYPaopaoView.xib */; };
+		7CF902CD1CD0B77F00B64CE9 /* rangeSliderThumb.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CF902BF1CD0B77F00B64CE9 /* rangeSliderThumb.png */; };
+		7CF902CE1CD0B77F00B64CE9 /* rangeSliderThumb@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CF902C01CD0B77F00B64CE9 /* rangeSliderThumb@2x.png */; };
+		7CF902CF1CD0B77F00B64CE9 /* rangeSliderThumb@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CF902C11CD0B77F00B64CE9 /* rangeSliderThumb@3x.png */; };
+		7CF902D01CD0B77F00B64CE9 /* rangeSliderTrack.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CF902C21CD0B77F00B64CE9 /* rangeSliderTrack.png */; };
+		7CF902D11CD0B77F00B64CE9 /* rangeSliderTrack@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CF902C31CD0B77F00B64CE9 /* rangeSliderTrack@2x.png */; };
+		7CF902D21CD0B77F00B64CE9 /* rangeSliderTrack@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CF902C41CD0B77F00B64CE9 /* rangeSliderTrack@3x.png */; };
+		7CF902D31CD0B77F00B64CE9 /* rangeSliderTrackRange.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CF902C51CD0B77F00B64CE9 /* rangeSliderTrackRange.png */; };
+		7CF902D41CD0B77F00B64CE9 /* rangeSliderTrackRange@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CF902C61CD0B77F00B64CE9 /* rangeSliderTrackRange@2x.png */; };
+		7CF902D51CD0B77F00B64CE9 /* rangeSliderTrackRange@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CF902C71CD0B77F00B64CE9 /* rangeSliderTrackRange@3x.png */; };
+		7CF902D61CD0B77F00B64CE9 /* MARKRangeSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CF902CA1CD0B77F00B64CE9 /* MARKRangeSlider.m */; };
+		7CF902D91CD0BDC700B64CE9 /* QYAgeRangeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CF902D81CD0BDC700B64CE9 /* QYAgeRangeCell.m */; };
 		7CFCF3E41CA266E500ACBD72 /* QYVoiceRecordingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CFCF3E31CA266E500ACBD72 /* QYVoiceRecordingView.m */; };
 		7CFCF3E61CA266F300ACBD72 /* QYVoiceRecordingView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7CFCF3E51CA266F300ACBD72 /* QYVoiceRecordingView.xib */; };
 		7CFF658F1CAA5EE20068987A /* QYPinAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CFF658E1CAA5EE20068987A /* QYPinAnnotationView.m */; };
@@ -148,13 +157,6 @@
 		7C4E8C051CCB5BB10055E780 /* QYPhotoBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYPhotoBrowser.h; sourceTree = "<group>"; };
 		7C4E8C061CCB5BB10055E780 /* QYPhotoBrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYPhotoBrowser.m; sourceTree = "<group>"; };
 		7C4E8C071CCB5BB10055E780 /* QYPhotoBrowser.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = QYPhotoBrowser.xib; path = ../../Controllers/QYPhotoBrowser.xib; sourceTree = "<group>"; };
-		7C506F5F1CB74C200037EAED /* SDBrowserImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDBrowserImageView.h; sourceTree = "<group>"; };
-		7C506F601CB74C200037EAED /* SDBrowserImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDBrowserImageView.m; sourceTree = "<group>"; };
-		7C506F611CB74C200037EAED /* SDPhotoBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDPhotoBrowser.h; sourceTree = "<group>"; };
-		7C506F621CB74C200037EAED /* SDPhotoBrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDPhotoBrowser.m; sourceTree = "<group>"; };
-		7C506F631CB74C200037EAED /* SDPhotoBrowserConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDPhotoBrowserConfig.h; sourceTree = "<group>"; };
-		7C506F641CB74C200037EAED /* SDWaitingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDWaitingView.h; sourceTree = "<group>"; };
-		7C506F651CB74C200037EAED /* SDWaitingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDWaitingView.m; sourceTree = "<group>"; };
 		7C506FBF1CB761CB0037EAED /* QYAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYAccount.h; sourceTree = "<group>"; };
 		7C506FC01CB761CB0037EAED /* QYAccount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYAccount.m; sourceTree = "<group>"; };
 		7C506FC51CB788590037EAED /* QYImagesPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYImagesPicker.h; sourceTree = "<group>"; };
@@ -164,6 +166,8 @@
 		7C506FC91CB788590037EAED /* QYNetworkManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYNetworkManager.h; sourceTree = "<group>"; };
 		7C506FCA1CB788590037EAED /* QYNetworkManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYNetworkManager.m; sourceTree = "<group>"; };
 		7C506FD41CB7B3EA0037EAED /* QYUserInfoView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = QYUserInfoView.xib; sourceTree = "<group>"; };
+		7C5306951CD1EACE006C3BE2 /* QYCacheClearCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYCacheClearCell.h; sourceTree = "<group>"; };
+		7C5306961CD1EACE006C3BE2 /* QYCacheClearCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYCacheClearCell.m; sourceTree = "<group>"; };
 		7C54E7BF1CB5F32400A289A5 /* QYVerifyCodeBtn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYVerifyCodeBtn.h; sourceTree = "<group>"; };
 		7C54E7C01CB5F32400A289A5 /* QYVerifyCodeBtn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYVerifyCodeBtn.m; sourceTree = "<group>"; };
 		7C54E7C21CB67A9900A289A5 /* NSDate+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Extension.h"; sourceTree = "<group>"; };
@@ -202,6 +206,19 @@
 		7CF813991CB1435F00CC79E8 /* QYPaopaoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYPaopaoView.h; sourceTree = "<group>"; };
 		7CF8139A1CB1435F00CC79E8 /* QYPaopaoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYPaopaoView.m; sourceTree = "<group>"; };
 		7CF8139E1CB1437900CC79E8 /* QYPaopaoView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = QYPaopaoView.xib; sourceTree = "<group>"; };
+		7CF902BF1CD0B77F00B64CE9 /* rangeSliderThumb.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rangeSliderThumb.png; sourceTree = "<group>"; };
+		7CF902C01CD0B77F00B64CE9 /* rangeSliderThumb@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rangeSliderThumb@2x.png"; sourceTree = "<group>"; };
+		7CF902C11CD0B77F00B64CE9 /* rangeSliderThumb@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rangeSliderThumb@3x.png"; sourceTree = "<group>"; };
+		7CF902C21CD0B77F00B64CE9 /* rangeSliderTrack.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rangeSliderTrack.png; sourceTree = "<group>"; };
+		7CF902C31CD0B77F00B64CE9 /* rangeSliderTrack@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rangeSliderTrack@2x.png"; sourceTree = "<group>"; };
+		7CF902C41CD0B77F00B64CE9 /* rangeSliderTrack@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rangeSliderTrack@3x.png"; sourceTree = "<group>"; };
+		7CF902C51CD0B77F00B64CE9 /* rangeSliderTrackRange.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rangeSliderTrackRange.png; sourceTree = "<group>"; };
+		7CF902C61CD0B77F00B64CE9 /* rangeSliderTrackRange@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rangeSliderTrackRange@2x.png"; sourceTree = "<group>"; };
+		7CF902C71CD0B77F00B64CE9 /* rangeSliderTrackRange@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rangeSliderTrackRange@3x.png"; sourceTree = "<group>"; };
+		7CF902C91CD0B77F00B64CE9 /* MARKRangeSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MARKRangeSlider.h; sourceTree = "<group>"; };
+		7CF902CA1CD0B77F00B64CE9 /* MARKRangeSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MARKRangeSlider.m; sourceTree = "<group>"; };
+		7CF902D71CD0BDC700B64CE9 /* QYAgeRangeCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYAgeRangeCell.h; sourceTree = "<group>"; };
+		7CF902D81CD0BDC700B64CE9 /* QYAgeRangeCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYAgeRangeCell.m; sourceTree = "<group>"; };
 		7CFCF3E21CA266E500ACBD72 /* QYVoiceRecordingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYVoiceRecordingView.h; sourceTree = "<group>"; };
 		7CFCF3E31CA266E500ACBD72 /* QYVoiceRecordingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYVoiceRecordingView.m; sourceTree = "<group>"; };
 		7CFCF3E51CA266F300ACBD72 /* QYVoiceRecordingView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = QYVoiceRecordingView.xib; sourceTree = "<group>"; };
@@ -426,7 +443,7 @@
 		7C30B18B1C996137001EF237 /* Vendors */ = {
 			isa = PBXGroup;
 			children = (
-				7C506F5E1CB74C200037EAED /* SDPhotoBrowser */,
+				7CF902BB1CD0B77F00B64CE9 /* MARKRangeSlider-1.0.1 */,
 			);
 			path = Vendors;
 			sourceTree = "<group>";
@@ -446,21 +463,6 @@
 				7CF8139E1CB1437900CC79E8 /* QYPaopaoView.xib */,
 			);
 			name = MapViews;
-			sourceTree = "<group>";
-		};
-		7C506F5E1CB74C200037EAED /* SDPhotoBrowser */ = {
-			isa = PBXGroup;
-			children = (
-				7C506F5F1CB74C200037EAED /* SDBrowserImageView.h */,
-				7C506F601CB74C200037EAED /* SDBrowserImageView.m */,
-				7C506F611CB74C200037EAED /* SDPhotoBrowser.h */,
-				7C506F621CB74C200037EAED /* SDPhotoBrowser.m */,
-				7C506F631CB74C200037EAED /* SDPhotoBrowserConfig.h */,
-				7C506F641CB74C200037EAED /* SDWaitingView.h */,
-				7C506F651CB74C200037EAED /* SDWaitingView.m */,
-			);
-			name = SDPhotoBrowser;
-			path = "SDPhotoBrowser-master/SDPhotoBrowser/SDPhotoBrowser";
 			sourceTree = "<group>";
 		};
 		7C506FC21CB788590037EAED /* Protocols */ = {
@@ -610,8 +612,46 @@
 			isa = PBXGroup;
 			children = (
 				7C6671E51CB4F99500E7C20A /* Settings.storyboard */,
+				7CF902D71CD0BDC700B64CE9 /* QYAgeRangeCell.h */,
+				7CF902D81CD0BDC700B64CE9 /* QYAgeRangeCell.m */,
+				7C5306951CD1EACE006C3BE2 /* QYCacheClearCell.h */,
+				7C5306961CD1EACE006C3BE2 /* QYCacheClearCell.m */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		7CF902BB1CD0B77F00B64CE9 /* MARKRangeSlider-1.0.1 */ = {
+			isa = PBXGroup;
+			children = (
+				7CF902BE1CD0B77F00B64CE9 /* Resources */,
+				7CF902C81CD0B77F00B64CE9 /* Source */,
+			);
+			path = "MARKRangeSlider-1.0.1";
+			sourceTree = "<group>";
+		};
+		7CF902BE1CD0B77F00B64CE9 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				7CF902BF1CD0B77F00B64CE9 /* rangeSliderThumb.png */,
+				7CF902C01CD0B77F00B64CE9 /* rangeSliderThumb@2x.png */,
+				7CF902C11CD0B77F00B64CE9 /* rangeSliderThumb@3x.png */,
+				7CF902C21CD0B77F00B64CE9 /* rangeSliderTrack.png */,
+				7CF902C31CD0B77F00B64CE9 /* rangeSliderTrack@2x.png */,
+				7CF902C41CD0B77F00B64CE9 /* rangeSliderTrack@3x.png */,
+				7CF902C51CD0B77F00B64CE9 /* rangeSliderTrackRange.png */,
+				7CF902C61CD0B77F00B64CE9 /* rangeSliderTrackRange@2x.png */,
+				7CF902C71CD0B77F00B64CE9 /* rangeSliderTrackRange@3x.png */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		7CF902C81CD0B77F00B64CE9 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				7CF902C91CD0B77F00B64CE9 /* MARKRangeSlider.h */,
+				7CF902CA1CD0B77F00B64CE9 /* MARKRangeSlider.m */,
+			);
+			path = Source;
 			sourceTree = "<group>";
 		};
 		88918AC8105DF815D0DAE53A /* Frameworks */ = {
@@ -692,13 +732,17 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7CF902D11CD0B77F00B64CE9 /* rangeSliderTrack@2x.png in Resources */,
 				7C30B15C1C995E2A001EF237 /* LaunchScreen.storyboard in Resources */,
 				7C4BB3B21CA8CD2500136C75 /* QYMapAddrCell.xib in Resources */,
 				7C4CFE721CBF40AF00562786 /* QYChatCell.xib in Resources */,
 				7C4E8C091CCB5BB10055E780 /* QYPhotoBrowser.xib in Resources */,
 				7C30B1991C996137001EF237 /* MessageBar.xib in Resources */,
+				7CF902D31CD0B77F00B64CE9 /* rangeSliderTrackRange.png in Resources */,
 				7C567E251C9BDCF400934F5D /* QYRightMessageCell.xib in Resources */,
+				7CF902CF1CD0B77F00B64CE9 /* rangeSliderThumb@3x.png in Resources */,
 				7C5FBA961CB4AB8700714310 /* Home.storyboard in Resources */,
+				7CF902D41CD0B77F00B64CE9 /* rangeSliderTrackRange@2x.png in Resources */,
 				7CF813941CB0CF4700CC79E8 /* CategorySuggestions.json in Resources */,
 				7CF8139F1CB1437900CC79E8 /* QYPaopaoView.xib in Resources */,
 				7C30B1591C995E2A001EF237 /* Assets.xcassets in Resources */,
@@ -707,13 +751,18 @@
 				7C30B1931C996137001EF237 /* FaceCell.xib in Resources */,
 				7C4CFE6D1CBF2B2100562786 /* users.plist in Resources */,
 				7C4D3B8A1CB3F7760040FF73 /* Entrance.storyboard in Resources */,
+				7CF902D51CD0B77F00B64CE9 /* rangeSliderTrackRange@3x.png in Resources */,
 				7C30B19A1C996137001EF237 /* Faces.plist in Resources */,
 				7C506FD51CB7B3EA0037EAED /* QYUserInfoView.xib in Resources */,
+				7CF902CE1CD0B77F00B64CE9 /* rangeSliderThumb@2x.png in Resources */,
+				7CF902D21CD0B77F00B64CE9 /* rangeSliderTrack@3x.png in Resources */,
 				7C45F9101CCA02AE00F188E0 /* QYPhotoBrowserCell.xib in Resources */,
 				7C567E231C9BDCE700934F5D /* QYLeftMessageCell.xib in Resources */,
 				7C6671E61CB4F99500E7C20A /* Settings.storyboard in Resources */,
+				7CF902D01CD0B77F00B64CE9 /* rangeSliderTrack.png in Resources */,
 				7CF813951CB0CF4700CC79E8 /* countries.json in Resources */,
 				7C30B1951C996137001EF237 /* FacesView.xib in Resources */,
+				7CF902CD1CD0B77F00B64CE9 /* rangeSliderThumb.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -795,30 +844,30 @@
 				7C30B1961C996137001EF237 /* FunctionView.m in Sources */,
 				7C4BB3A91CA8C28400136C75 /* QYLocationShareVC.m in Sources */,
 				7C30B1921C996137001EF237 /* FaceCell.m in Sources */,
+				7CF902D61CD0B77F00B64CE9 /* MARKRangeSlider.m in Sources */,
 				7C506FCD1CB788590037EAED /* QYLocationManager.m in Sources */,
 				7C4D3B901CB3F87D0040FF73 /* QYRegisterVC.m in Sources */,
 				7C3B9AE21CB7B71400C6C30E /* QYUserInfoView.m in Sources */,
 				7CFF658F1CAA5EE20068987A /* QYPinAnnotationView.m in Sources */,
-				7C506FA21CB74C200037EAED /* SDWaitingView.m in Sources */,
 				7C6671E11CB4E78300E7C20A /* QYMenuVC.m in Sources */,
+				7CF902D91CD0BDC700B64CE9 /* QYAgeRangeCell.m in Sources */,
 				7C6671E91CB4FDB500E7C20A /* QYSettingsTableVC.m in Sources */,
 				7C30B19B1C996137001EF237 /* NSString+Extension.m in Sources */,
 				7C1834071CCE02C000AC2127 /* QYPhotoBrowserTransition.m in Sources */,
 				7C7078D31CC3337200CCF7BA /* QYUserStorage.m in Sources */,
 				7C30B14E1C995E2A001EF237 /* main.m in Sources */,
 				7C4E8C081CCB5BB10055E780 /* QYPhotoBrowser.m in Sources */,
-				7C506FA01CB74C200037EAED /* SDBrowserImageView.m in Sources */,
 				7C59D9B91CA3E0D6008EF5E9 /* UIImage+Extension.m in Sources */,
 				7C506FC11CB761CB0037EAED /* QYAccount.m in Sources */,
 				7C6671E41CB4E79500E7C20A /* QYChatsListVC.m in Sources */,
 				7CFCF3E41CA266E500ACBD72 /* QYVoiceRecordingView.m in Sources */,
-				7C506FA11CB74C200037EAED /* SDPhotoBrowser.m in Sources */,
 				7C30B1941C996137001EF237 /* FacesView.m in Sources */,
 				7C4CFE711CBF40AF00562786 /* QYChatCell.m in Sources */,
 				7C30B18C1C996137001EF237 /* QYChatVC.m in Sources */,
 				7CF8139B1CB1435F00CC79E8 /* QYPaopaoView.m in Sources */,
 				7CFF65981CAA60E30068987A /* QYCurrentAnnotationView.m in Sources */,
 				7CFF65921CAA5F160068987A /* QYCurrentAnnotation.m in Sources */,
+				7C5306971CD1EACE006C3BE2 /* QYCacheClearCell.m in Sources */,
 				7C54E7C11CB5F32400A289A5 /* QYVerifyCodeBtn.m in Sources */,
 				7C45F90F1CCA02AE00F188E0 /* QYPhotoBrowserCell.m in Sources */,
 				7C4BB3B11CA8CD2500136C75 /* QYMapAddrCell.m in Sources */,
