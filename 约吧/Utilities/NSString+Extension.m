@@ -64,4 +64,26 @@
     return messageAttriText;
 }
 
++ (instancetype)getValidStringWithObject:(id)obj {
+    /**
+     *  nil->(null)
+     *  NSNull-><null>
+     */
+    if ([obj isKindOfClass:[NSString class]]) {
+        NSString *strValue = obj;
+        if (strValue && ![strValue isEqualToString:@"<null>"]
+            && ![strValue isEqualToString:@"(null)"]
+            && ![strValue isEqualToString:@""]
+            && ![strValue isEqualToString:@"null"]) {
+            return strValue;
+        } else {
+            return @"";
+        }
+    } else if ([obj isKindOfClass:[NSNumber class]]) {
+        return [NSString stringWithFormat:@"%@", obj];
+    } else {
+        return @"";
+    }
+}
+
 @end

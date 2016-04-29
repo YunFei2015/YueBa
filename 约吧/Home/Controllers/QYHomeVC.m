@@ -211,4 +211,10 @@
 }
 
 
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    UIStoryboard *sbProfile = [UIStoryboard storyboardWithName:@"QYProfile" bundle:nil];
+    UIViewController *vcInitial = [sbProfile instantiateInitialViewController];
+    [self.navigationController pushViewController:vcInitial animated:YES];
+}
+
 @end

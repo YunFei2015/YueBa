@@ -38,4 +38,13 @@
  *  @return 表情文本
  */
 +(NSAttributedString *)faceAttributeTextWithMessage:(NSString *)message withAttributes:(NSDictionary *)attributes faceSize:(CGFloat)faceSize;
+
+/**
+ *  从给定的对象中获取有效字符串
+ *
+ *  @param obj 源数据
+ *
+ *  @return 返回获取到的字符串对象
+ */
++ (instancetype)getValidStringWithObject:(id)obj;
 @end
