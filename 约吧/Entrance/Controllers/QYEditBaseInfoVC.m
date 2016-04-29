@@ -70,7 +70,6 @@
          //若成功，跳转到主页
         [self presentToHomeViewController];
     }
-
 }
 
 -(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
