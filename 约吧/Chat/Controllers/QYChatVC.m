@@ -35,6 +35,7 @@
 #import "UIView+Extension.h"
 #import <AVOSCloudIM.h>
 #import <AVFile.h>
+#import <AVPush.h>
 #import <Masonry.h>
 
 @interface QYChatVC () <UITableViewDelegate, UITableViewDataSource, QYChatManagerDelegate, MessageBarDelegate, QYAudioPlayerDelegate, QYFunctionViewDelegate, QYImagesPickerDelegate, UIViewControllerTransitioningDelegate>
@@ -301,20 +302,34 @@
 }
 
 #pragma mark - Custom Methods - send messages
+-(void)pushMessage:(NSString *)title{
+    NSDictionary *data = @{
+        @"alert":             title, //显示内容
+        @"badge":             @"Increment", //应用图标显示未读消息个数是递增当前值
+        @"sound":             @"sms-received1.caf", //提示音
+        @"content-available": @"1"
+    };
+    [AVPush sendPushDataToChannelInBackground:_user.userId withData:data];
+}
+
 -(void)sendTextMessageWithContent:(NSString *)message{
     [[QYChatManager sharedManager] sendTextMessage:message withConversation:_conversation];
+    [self pushMessage:[NSString stringWithFormat:@"%@:%@", _user.name, message]];
 }
 
 -(void)sendImageMessageWithData:(NSData *)data{
     [[QYChatManager sharedManager] sendImageMessageWithData:data withConversation:_conversation];
+    [self pushMessage:[NSString stringWithFormat:@"%@发来一张图片", _user.name]];
 }
 
 -(void)sendVoiceMessage{
     [[QYChatManager sharedManager] sendVoiceMessageWithConversation:_conversation];
+    [self pushMessage:[NSString stringWithFormat:@"%@发来一段语音", _user.name]];
 }
 
 -(void)sendLocationMessageWithAnnotation:(QYPinAnnotation *)annotation{
     [[QYChatManager sharedManager] sendLocationMessageWithAnnotation:annotation withConversation:_conversation];
+    [self pushMessage:[NSString stringWithFormat:@"%@发来位置信息", _user.name]];
 }
 
 #pragma mark - Custom Methods - audio recorder

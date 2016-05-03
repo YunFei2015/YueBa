@@ -23,6 +23,7 @@
 @property (weak, nonatomic) IBOutlet UISwitch *manSw;
 @property (weak, nonatomic) IBOutlet UISwitch *womanSw;
 @property (weak, nonatomic) IBOutlet UISlider *distanceSlider;
+@property (weak, nonatomic) IBOutlet UISwitch *vibrateSw;
 
 @property (strong, nonatomic) UILabel *distanceRangeLabel;
 @property (strong, nonatomic) UILabel *minAgeLabel;
@@ -57,6 +58,7 @@
     [_manSw setOn:[[NSUserDefaults standardUserDefaults] boolForKey:kFilterKeySex]];
     [_womanSw setOn:!_manSw.on];
     _distanceSlider.value = [[NSUserDefaults standardUserDefaults] floatForKey:kFilterKeyDistance];
+    [_vibrateSw setOn:[[NSUserDefaults standardUserDefaults] boolForKey:@"vibrate"]];
 }
 
 -(void)dealloc{
@@ -89,6 +91,11 @@
     [[NSUserDefaults standardUserDefaults] setInteger:sender.value forKey:kFilterKeyDistance];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
+
+- (IBAction)vibrateAction:(UISwitch *)sender {
+    [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"vibrate"];
+}
+
 
 #pragma mark - Custom Methods
 

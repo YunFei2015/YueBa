@@ -69,6 +69,8 @@
 		7C74ABE91CD30BD2003B0A44 /* UIImage+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C74ABE41CD30BD2003B0A44 /* UIImage+Extension.m */; };
 		7C74ABEA1CD30BD2003B0A44 /* UIView+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C74ABE61CD30BD2003B0A44 /* UIView+Extension.m */; };
 		7C74ABEE1CD30DF3003B0A44 /* QYPhotoBrowserTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C74ABED1CD30DF3003B0A44 /* QYPhotoBrowserTransition.m */; };
+		7C74AC3A1CD8419F003B0A44 /* NewFriend.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7C74AC391CD8419E003B0A44 /* NewFriend.storyboard */; };
+		7C74AC3D1CD84627003B0A44 /* QYNewFriendVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C74AC3C1CD84627003B0A44 /* QYNewFriendVC.m */; };
 		7CF813941CB0CF4700CC79E8 /* CategorySuggestions.json in Resources */ = {isa = PBXBuildFile; fileRef = 7CF813921CB0CF4700CC79E8 /* CategorySuggestions.json */; };
 		7CF813951CB0CF4700CC79E8 /* countries.json in Resources */ = {isa = PBXBuildFile; fileRef = 7CF813931CB0CF4700CC79E8 /* countries.json */; };
 		7CF8139B1CB1435F00CC79E8 /* QYPaopaoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CF8139A1CB1435F00CC79E8 /* QYPaopaoView.m */; };
@@ -204,6 +206,9 @@
 		7C74ABE61CD30BD2003B0A44 /* UIView+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Extension.m"; sourceTree = "<group>"; };
 		7C74ABEC1CD30DF3003B0A44 /* QYPhotoBrowserTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYPhotoBrowserTransition.h; sourceTree = "<group>"; };
 		7C74ABED1CD30DF3003B0A44 /* QYPhotoBrowserTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYPhotoBrowserTransition.m; sourceTree = "<group>"; };
+		7C74AC391CD8419E003B0A44 /* NewFriend.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = NewFriend.storyboard; sourceTree = "<group>"; };
+		7C74AC3B1CD84627003B0A44 /* QYNewFriendVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYNewFriendVC.h; sourceTree = "<group>"; };
+		7C74AC3C1CD84627003B0A44 /* QYNewFriendVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYNewFriendVC.m; sourceTree = "<group>"; };
 		7CF813921CB0CF4700CC79E8 /* CategorySuggestions.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = CategorySuggestions.json; sourceTree = "<group>"; };
 		7CF813931CB0CF4700CC79E8 /* countries.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = countries.json; sourceTree = "<group>"; };
 		7CF813991CB1435F00CC79E8 /* QYPaopaoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYPaopaoView.h; sourceTree = "<group>"; };
@@ -274,6 +279,7 @@
 				7C8A39FB1CB3F6E90008C6E6 /* Home */,
 				7C8A39FF1CB3F6E90008C6E6 /* Settings */,
 				7C30B1631C996137001EF237 /* Chat */,
+				7C74AC351CD8414D003B0A44 /* NewFriend */,
 				7C30B1841C996137001EF237 /* Sources */,
 				7C30B1861C996137001EF237 /* Utilities */,
 				7C30B18B1C996137001EF237 /* Vendors */,
@@ -499,6 +505,40 @@
 				7C74ABED1CD30DF3003B0A44 /* QYPhotoBrowserTransition.m */,
 			);
 			path = Transitions;
+			sourceTree = "<group>";
+		};
+		7C74AC351CD8414D003B0A44 /* NewFriend */ = {
+			isa = PBXGroup;
+			children = (
+				7C74AC361CD8414D003B0A44 /* Controllers */,
+				7C74AC371CD8414D003B0A44 /* Models */,
+				7C74AC381CD8414D003B0A44 /* Views */,
+			);
+			path = NewFriend;
+			sourceTree = "<group>";
+		};
+		7C74AC361CD8414D003B0A44 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				7C74AC3B1CD84627003B0A44 /* QYNewFriendVC.h */,
+				7C74AC3C1CD84627003B0A44 /* QYNewFriendVC.m */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		7C74AC371CD8414D003B0A44 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		7C74AC381CD8414D003B0A44 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				7C74AC391CD8419E003B0A44 /* NewFriend.storyboard */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		7C8A39F71CB3F6E90008C6E6 /* Entrance */ = {
@@ -770,6 +810,7 @@
 				7CF902CE1CD0B77F00B64CE9 /* rangeSliderThumb@2x.png in Resources */,
 				7CF902D21CD0B77F00B64CE9 /* rangeSliderTrack@3x.png in Resources */,
 				7C45F9101CCA02AE00F188E0 /* QYPhotoBrowserCell.xib in Resources */,
+				7C74AC3A1CD8419F003B0A44 /* NewFriend.storyboard in Resources */,
 				7C567E231C9BDCE700934F5D /* QYLeftMessageCell.xib in Resources */,
 				7C6671E61CB4F99500E7C20A /* Settings.storyboard in Resources */,
 				7CF902D01CD0B77F00B64CE9 /* rangeSliderTrack.png in Resources */,
@@ -861,6 +902,7 @@
 				7CFF658F1CAA5EE20068987A /* QYPinAnnotationView.m in Sources */,
 				7C6671E11CB4E78300E7C20A /* QYMenuVC.m in Sources */,
 				7CF902D91CD0BDC700B64CE9 /* QYAgeRangeCell.m in Sources */,
+				7C74AC3D1CD84627003B0A44 /* QYNewFriendVC.m in Sources */,
 				7C6671E91CB4FDB500E7C20A /* QYSettingsTableVC.m in Sources */,
 				7C74ABB71CD30A11003B0A44 /* QYAudioRecorder.m in Sources */,
 				7C30B14E1C995E2A001EF237 /* main.m in Sources */,

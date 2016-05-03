@@ -235,6 +235,9 @@
                                             <subviews>
                                                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZGv-3V-6rb">
                                                     <rect key="frame" x="345" y="6.5" width="51" height="31"/>
+                                                    <connections>
+                                                        <action selector="vibrateAction:" destination="GEc-bP-X7c" eventType="valueChanged" id="GrY-bS-q5o"/>
+                                                    </connections>
                                                 </switch>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="振动" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RbA-P9-Yg9">
                                                     <rect key="frame" x="20" y="0.0" width="42" height="43.5"/>
@@ -324,6 +327,7 @@
                         <outlet property="logoutBtn" destination="It6-2n-lCk" id="WYm-hU-8en"/>
                         <outlet property="manSw" destination="7Gu-P7-NJs" id="Cha-Vb-yLH"/>
                         <outlet property="rightBarButtonItem" destination="uT0-lx-gG6" id="yM4-HS-LCl"/>
+                        <outlet property="vibrateSw" destination="ZGv-3V-6rb" id="J9B-ms-kVD"/>
                         <outlet property="womanSw" destination="JJF-lS-8LX" id="eW3-tx-jZr"/>
                     </connections>
                 </tableViewController>

@@ -35,6 +35,10 @@
     //AVOSCloud
     [AVOSCloud setApplicationId:@"aMH46TYlke0QkgVqjDCFOWfW-gzGzoHsz"
                       clientKey:@"wAHzxY32rrdxx0JVB1VM2BWo"];
+    if (![UIApplication sharedApplication].isRegisteredForRemoteNotifications) {
+        [AVOSCloudIM registerForRemoteNotification];
+    }
+    
     
     //百度地图
     _mapManager = [[BMKMapManager alloc]init];
@@ -89,6 +93,34 @@
     
 }
 
+#pragma mark - 推送相关
+-(void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken{
+    AVInstallation *installation = [AVInstallation currentInstallation];
+    [installation setDeviceTokenFromData:deviceToken];
+    [installation setChannels:@[[QYAccount currentAccount].userId]];
+    [installation saveInBackground];
+}
+
+-(void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error{
+    NSLog(@"%@", error);
+}
+
+-(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(nonnull void (^)(UIBackgroundFetchResult))completionHandler{
+    NSLog(@"%@", userInfo);
+}
+
+-(void)clearBadge:(UIApplication *)application{
+    NSInteger badge = application.applicationIconBadgeNumber;
+    if (badge != 0) {
+        AVInstallation *installation = [AVInstallation currentInstallation];
+        [installation setBadge:0];
+        [installation saveEventually];
+        application.applicationIconBadgeNumber = 0;
+    }
+    
+    [application cancelAllLocalNotifications];
+}
+
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
@@ -105,6 +137,7 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    [self clearBadge:application];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {

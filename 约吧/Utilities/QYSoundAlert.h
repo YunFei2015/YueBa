@@ -10,4 +10,10 @@
 
 @interface QYSoundAlert : NSObject
 
++(instancetype)sharedInstance;
+
+-(void)play;
+-(void)pushNotificationPlay;
+
+
 @end

@@ -10,8 +10,11 @@
 #import "QYAccount.h"
 #import "QYUserInfo.h"
 #import "QYUserStorage.h"
+#import "QYSoundAlert.h"
+#import "QYChatsListVC.h"
 #import <AVOSCloudIM.h>
 #import <AVFile.h>
+#import <AVPush.h>
 
 @interface QYChatManager () <AVIMClientDelegate>
 
@@ -193,6 +196,13 @@
     
     if ([self.delegate respondsToSelector:@selector(didReceiveMessage:inConversation:)]) {
         [self.delegate didReceiveMessage:message inConversation:conversation];
+        
+        //如果当前不在聊天界面，则提示音；反之，没有提示音
+        if ([self.delegate isKindOfClass:[QYChatsListVC class]]){
+            [[QYSoundAlert sharedInstance] play];
+        }
+    }else{//提示音
+        [[QYSoundAlert sharedInstance] play];
     }
 }
 
