@@ -49,18 +49,22 @@
         
         /** 添加标签 */
         // 添加标签的容器的最大宽度(也就是_viewTags的最大宽度)
-        CGFloat actualWidth = [UIScreen mainScreen].bounds.size.width - (15 + 22 + 8 + 25);
+        CGFloat actualMaxWidth = [UIScreen mainScreen].bounds.size.width - (15 + 22 + 8 + 25);
         
         NSArray *arrTags = _autoHeightModel.arrTags;
         NSUInteger count = arrTags.count;
         
+        if (count > 0) {
+            [_lblTitle  removeFromSuperview];
+        }
+        
         // 当前行目前的最大宽度
-        __block CGFloat rowMaxWidth = 0;
+        __block CGFloat rowCurrentMaxWidth = 0;
         
         // 上一个操作的 Label
-        __block UILabel *lblLast = nil;
+        __block UILabel *lblTagLast = nil;
         
-        // 上一行第一个 UILabel
+        // 当前情况下最后一行第一个 UILabel
         __block UILabel *lblPreviousLine = nil;
         
         for (NSUInteger index = 0; index < count; index ++) {
@@ -75,28 +79,32 @@
             
             NSString *strText = arrTags[index];
             lblTag.text = strText;
-            CGFloat width = [strText sizeWithAttributes:@{NSFontAttributeName: font}].width;
+            
+            CGFloat textWidth = [strText sizeWithAttributes:@{NSFontAttributeName: font}].width;
+            CGFloat lblActualWidth = textWidth + 8;
             
             [lblTag mas_makeConstraints:^(MASConstraintMaker *make) {
-                make.width.equalTo(@(width + 8));
-                rowMaxWidth += (width + 2 * kTagSpace);
-                make.height.equalTo(@(25));
+                make.width.equalTo(@(lblActualWidth));
+                make.height.equalTo(@(20));
                 
-                if (lblLast == nil) { // 第一个 UILabel
-                    make.left.top.equalTo(_viewTags).offset(kTagSpace);
+                if (lblTagLast == nil) { // 第一个 UILabel
+                    make.left.top.equalTo(_viewTags);
                     lblPreviousLine = lblTag;
+                    rowCurrentMaxWidth = (lblActualWidth + kTagSpace);
                 } else {
-                    if (rowMaxWidth + width > actualWidth) { // 当前行放不下 ==> 换行
+                    if (rowCurrentMaxWidth + lblActualWidth > actualMaxWidth) { // 当前行放不下 ==> 换行
                         make.left.equalTo(lblPreviousLine);
                         make.top.equalTo(lblPreviousLine.mas_bottom).offset(kTagSpace);
                         lblPreviousLine = lblTag;
+                        rowCurrentMaxWidth = (lblActualWidth + kTagSpace);
                     } else { // 当前行可以放下, 继续向后面堆叠
-                        make.left.equalTo(lblLast.mas_right).offset(kTagSpace);
-                        make.top.equalTo(lblLast);
+                        make.left.equalTo(lblTagLast.mas_right).offset(kTagSpace);
+                        make.top.equalTo(lblTagLast);
+                        rowCurrentMaxWidth += (lblActualWidth + kTagSpace);
                     }
                 }
                 
-                lblLast = lblTag;
+                lblTagLast = lblTag;
                 if (index == count - 1) {
                     make.bottom.equalTo(_viewTags);
                 }

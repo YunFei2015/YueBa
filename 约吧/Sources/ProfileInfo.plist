@@ -81,7 +81,18 @@
 					<key>title</key>
 					<string>我的个性标签</string>
 					<key>tags</key>
-					<array/>
+					<array>
+						<string>千里走单骑</string>
+						<string>战地之王</string>
+						<string>单机 CS</string>
+						<string>单车魔法</string>
+						<string>爬山</string>
+						<string>LOL</string>
+						<string>听歌</string>
+						<string>传奇2</string>
+						<string>地下城</string>
+						<string>默默</string>
+					</array>
 					<key>type</key>
 					<string>autoHeight</string>
 				</dict>
@@ -100,7 +111,19 @@
 					<key>title</key>
 					<string>我喜欢的运动</string>
 					<key>tags</key>
-					<array/>
+					<array>
+						<string>AG</string>
+						<string>AG</string>
+						<string>AG</string>
+						<string>AG</string>
+						<string>AG</string>
+						<string>AG</string>
+						<string>AG</string>
+						<string>AG</string>
+						<string>AG</string>
+						<string>AG</string>
+						<string>AG</string>
+					</array>
 					<key>type</key>
 					<string>autoHeight</string>
 				</dict>
