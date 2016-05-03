@@ -13,7 +13,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="0Cq-UR-EYq">
-                    <rect key="frame" x="0.0" y="140" width="414" height="20"/>
+                    <rect key="frame" x="0.0" y="180" width="414" height="20"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="20" id="H9N-2H-rcl"/>
@@ -22,10 +22,9 @@
                     <color key="currentPageIndicatorTintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                 </pageControl>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FCe-yF-VjA">
-                    <rect key="frame" x="0.0" y="160" width="414" height="40"/>
+                    <rect key="frame" x="0.0" y="200" width="414" height="0.0"/>
                     <subviews>
                         <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="haQ-cp-Oov">
-                            <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
                             <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
                             <state key="normal" image="Smile"/>
                             <connections>
@@ -33,7 +32,7 @@
                             </connections>
                         </button>
                         <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="phc-Zm-igB">
-                            <rect key="frame" x="41" y="0.0" width="40" height="40"/>
+                            <rect key="frame" x="1" y="0.0" width="0.0" height="0.0"/>
                             <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
                             <state key="normal" image="Crying"/>
                             <connections>
@@ -41,7 +40,7 @@
                             </connections>
                         </button>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wZ3-h8-3ya">
-                            <rect key="frame" x="40" y="0.0" width="1" height="40"/>
+                            <rect key="frame" x="0.0" y="0.0" width="1" height="0.0"/>
                             <color key="backgroundColor" red="0.8157798597" green="0.83779500269999996" blue="0.86588541669999997" alpha="1" colorSpace="calibratedRGB"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="1" id="e3S-hH-QeU"/>
@@ -61,7 +60,7 @@
                         <constraint firstItem="haQ-cp-Oov" firstAttribute="leading" secondItem="FCe-yF-VjA" secondAttribute="leading" id="8rs-In-AFA"/>
                         <constraint firstItem="dQP-Lg-WUh" firstAttribute="leading" secondItem="phc-Zm-igB" secondAttribute="trailing" id="LqT-ZJ-Y5o"/>
                         <constraint firstAttribute="bottom" secondItem="haQ-cp-Oov" secondAttribute="bottom" id="Q2N-c1-A2s"/>
-                        <constraint firstAttribute="height" constant="40" id="UPm-Qu-G6q"/>
+                        <constraint firstAttribute="height" id="UPm-Qu-G6q"/>
                         <constraint firstItem="wZ3-h8-3ya" firstAttribute="bottom" secondItem="haQ-cp-Oov" secondAttribute="bottom" id="UWb-nU-710"/>
                         <constraint firstItem="phc-Zm-igB" firstAttribute="width" secondItem="haQ-cp-Oov" secondAttribute="width" id="eGY-Yb-q95"/>
                         <constraint firstItem="phc-Zm-igB" firstAttribute="leading" secondItem="wZ3-h8-3ya" secondAttribute="trailing" id="fqs-BC-G8N"/>
@@ -83,7 +82,7 @@
                     </variation>
                 </view>
                 <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" alwaysBounceHorizontal="YES" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="fuX-uY-tmK">
-                    <rect key="frame" x="0.0" y="0.0" width="414" height="140"/>
+                    <rect key="frame" x="0.0" y="0.0" width="414" height="180"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="qjQ-Nj-M3B">
                         <size key="itemSize" width="50" height="50"/>

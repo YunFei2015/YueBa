@@ -10,7 +10,8 @@
 #import "AppDelegate.h"
 
 //controllers
-#import "QYMapVC.h"
+#import "QYLocationShareVC.h"
+#import "QYLocationMapVC.h"
 #import "QYPhotoBrowser.h"
 
 //Models
@@ -34,7 +35,7 @@
 #import "UIView+Extension.h"
 #import <AVOSCloudIM.h>
 #import <AVFile.h>
-#import "SDPhotoBrowser.h"
+#import <AVPush.h>
 #import <Masonry.h>
 
 @interface QYChatVC () <UITableViewDelegate, UITableViewDataSource, QYChatManagerDelegate, MessageBarDelegate, QYAudioPlayerDelegate, QYFunctionViewDelegate, QYImagesPickerDelegate, UIViewControllerTransitioningDelegate>
@@ -162,8 +163,40 @@
 
 #pragma mark - Custom Methods
 -(void)configNavigationBar{
-    UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:self action:@selector(backAction)];
+    self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
+    self.navigationController.navigationBar.tintColor = [UIColor redColor];
+    
+    UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"messages_back"] style:UIBarButtonItemStylePlain target:self action:@selector(backAction)];
     self.navigationItem.leftBarButtonItem = leftItem;
+    
+    UIView *titleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 44)];
+    
+    CGFloat iconW = 40;
+    CGFloat iconH = 40;
+    CGFloat iconX = 0;
+    CGFloat iconY = (44 - iconH) / 2.f;
+    UIImageView *iconView = [[UIImageView alloc] initWithFrame:CGRectMake(iconX, iconY, iconW, iconH)];
+    iconView.image = [UIImage imageNamed:_user.iconUrl];
+    [UIView drawRoundCornerOnImageView:iconView];
+    [titleView addSubview:iconView];
+    
+    CGFloat nameW = 40;
+    CGFloat nameH = 20;
+    CGFloat nameX = iconX + iconW + 5;
+    CGFloat nameY = (44 - nameH) / 2.f;
+    UILabel *name = [[UILabel alloc] initWithFrame:CGRectMake(nameX, nameY, nameW, nameH)];
+    name.textColor = [UIColor redColor];
+    name.text = _user.name;
+    [titleView addSubview:name];
+    
+    self.navigationItem.titleView = titleView;
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(getUserDetailInfo)];
+    [titleView addGestureRecognizer:tap];
+}
+
+//TODO: 查看用户详细信息
+-(void)getUserDetailInfo{
+    NSLog(@"正在查看用户详细信息");
 }
 
 
@@ -269,20 +302,34 @@
 }
 
 #pragma mark - Custom Methods - send messages
+-(void)pushMessage:(NSString *)title{
+    NSDictionary *data = @{
+        @"alert":             title, //显示内容
+        @"badge":             @"Increment", //应用图标显示未读消息个数是递增当前值
+        @"sound":             @"sms-received1.caf", //提示音
+        @"content-available": @"1"
+    };
+    [AVPush sendPushDataToChannelInBackground:_user.userId withData:data];
+}
+
 -(void)sendTextMessageWithContent:(NSString *)message{
     [[QYChatManager sharedManager] sendTextMessage:message withConversation:_conversation];
+    [self pushMessage:[NSString stringWithFormat:@"%@:%@", _user.name, message]];
 }
 
 -(void)sendImageMessageWithData:(NSData *)data{
     [[QYChatManager sharedManager] sendImageMessageWithData:data withConversation:_conversation];
+    [self pushMessage:[NSString stringWithFormat:@"%@发来一张图片", _user.name]];
 }
 
 -(void)sendVoiceMessage{
     [[QYChatManager sharedManager] sendVoiceMessageWithConversation:_conversation];
+    [self pushMessage:[NSString stringWithFormat:@"%@发来一段语音", _user.name]];
 }
 
 -(void)sendLocationMessageWithAnnotation:(QYPinAnnotation *)annotation{
     [[QYChatManager sharedManager] sendLocationMessageWithAnnotation:annotation withConversation:_conversation];
+    [self pushMessage:[NSString stringWithFormat:@"%@发来位置信息", _user.name]];
 }
 
 #pragma mark - Custom Methods - audio recorder
@@ -359,25 +406,29 @@
     }
     
     _selectedCell = [self.tableView cellForRowAtIndexPath:indexPath];
-    if (![_selectedCell isTapedInContent:sender]) {
+    if ([_selectedCell isTapedInContent:sender]) {
+        switch (_selectedCell.messageType) {
+            case kMessageTypeVoice://播放声音
+                [self tapVoiceCellAction];
+                break;
+                
+            case kMessageTypePhoto://放大图片
+                [self tapPhotoCellAction];
+                break;
+                
+            case kMessageTypeLocation://查看地图
+                [self tapLocationCellAction];
+                break;
+                
+            default:
+                break;
+        }
         return;
     }
     
-    switch (_selectedCell.messageType) {
-        case kMessageTypeVoice://播放声音
-            [self tapVoiceCellAction];
-            break;
-            
-        case kMessageTypePhoto://放大图片
-            [self tapPhotoCellActionAtIndex:indexPath.row];
-            break;
-            
-        case kMessageTypeLocation://查看地图
-            [self tapLocationCellAction];
-            break;
-            
-        default:
-            break;
+    if ([_selectedCell isTapedInIcon:sender]) {
+        [self getUserDetailInfo];
+        return;
     }
 }
 
@@ -408,7 +459,10 @@
 #endif
 }
 
--(void)tapPhotoCellActionAtIndex:(NSInteger)index{
+-(void)tapPhotoCellAction{
+    NSIndexPath *indexPath = [_tableView indexPathForCell:_selectedCell];
+    NSInteger index = indexPath.row;
+    
     //获取从当前消息开始往前的50条消息
     NSArray *messages = [_conversation queryMessagesFromCacheWithLimit:_messages.count - index + 50];
     AVFile *selectedFile = _selectedCell.message.file;
@@ -438,7 +492,10 @@
 }
 
 -(void)tapLocationCellAction{
-    
+    AVIMLocationMessage *message = (AVIMLocationMessage *)_selectedCell.message;
+    QYLocationMapVC *mapVC = [[QYLocationMapVC alloc] initWithLocation:[[CLLocation alloc] initWithLatitude:message.latitude longitude:message.longitude] title:message.text];
+    UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:mapVC];
+    [self presentViewController:navVC animated:YES completion:nil];
 }
 
 #pragma mark - UIViewControllerTransitioning Delegate
@@ -535,7 +592,7 @@
     //共享位置
     AppDelegate *app = [UIApplication sharedApplication].delegate;
     if (app.location) {
-        QYMapVC *mapVC = [[QYMapVC alloc] init];
+        QYLocationShareVC *mapVC = [[QYLocationShareVC alloc] init];
         WEAKSELF
         mapVC.sendLocationToShare = ^(QYPinAnnotation *annotation){
             [weakSelf sendLocationMessageWithAnnotation:annotation];

@@ -135,5 +135,10 @@ typedef enum{
 #define kTempDirectory NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)[0]
 #define kLibraryDirectory NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES)[0]
 
+//Filter Keys
+#define kFilterKeySex @"filterKeySex"
+#define kFilterKeyMinAge @"filterKeyMinAge"
+#define kFilterKeyMaxAge @"filterKeyMaxAge"
+#define kFilterKeyDistance @"filterKeyDistance"
 
 #endif /* PrefixHeader_pch */

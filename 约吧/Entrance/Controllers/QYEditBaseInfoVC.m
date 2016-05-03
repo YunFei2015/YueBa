@@ -7,6 +7,7 @@
 //
 
 #import "QYEditBaseInfoVC.h"
+#import "QYUserInfo.h"
 #import "QYImagesPicker.h"
 #import "NSDate+Extension.h"
 #import "AppDelegate.h"
@@ -57,10 +58,18 @@
         [SVProgressHUD showWithStatus:kCommitBaseInfo];
         //TODO: 网络请求
         
-        //若成功，跳转到主页
+        
+        //获取默认的筛选条件
+        QYUserInfo *myInfo = [QYAccount currentAccount].myInfo;
+        [[NSUserDefaults standardUserDefaults] setBool:!myInfo.isMan forKey:kFilterKeySex];
+        [[NSUserDefaults standardUserDefaults] setInteger:5 forKey:kFilterKeyDistance];
+        [[NSUserDefaults standardUserDefaults] setInteger:16 forKey:kFilterKeyMinAge];
+        [[NSUserDefaults standardUserDefaults] setInteger:55 forKey:kFilterKeyMinAge];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+         //若成功，跳转到主页
         [self presentToHomeViewController];
     }
-
 }
 
 -(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{

@@ -24,7 +24,8 @@
 #import "QYChatManager.h"
 
 #import <AVIMConversation.h>
-
+#import <AVIMConversationQuery.h>
+#import <AVIMClient.h>
 
 @interface QYChatsListVC () <UITableViewDelegate, UITableViewDataSource, QYNetworkDelegate, QYChatManagerDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
@@ -41,6 +42,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    
     _datas = [NSMutableArray array];
     
     [_tableView registerNib:[UINib nibWithNibName:@"QYChatCell" bundle:nil] forCellReuseIdentifier:kFriendCellIdentifier];
@@ -61,6 +64,8 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    self.navigationController.navigationBar.barTintColor = [UIColor darkGrayColor];
+    
     [QYChatManager sharedManager].delegate = self;
     
     [super viewWillAppear:animated];

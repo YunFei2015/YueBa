@@ -64,7 +64,6 @@
             [self searchNearbyUsersWithStatus:YES];
         }
     }
-    
 }
 
 
