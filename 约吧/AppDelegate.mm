@@ -10,8 +10,13 @@
 
 #import "AppDelegate.h"
 #import "QYAccount.h"
+#import "QYUserInfo.h"
 #import "QYLocationManager.h"
 #import "QYChatManager.h"
+
+#import "QYHomeVC.h"
+
+#import "UIViewController+Extension.h"
 #import <AVOSCloud.h>
 #import <BaiduMapAPI_Base/BMKMapManager.h>
 #import <Bugtags/Bugtags.h>
@@ -35,9 +40,9 @@
     //AVOSCloud
     [AVOSCloud setApplicationId:@"aMH46TYlke0QkgVqjDCFOWfW-gzGzoHsz"
                       clientKey:@"wAHzxY32rrdxx0JVB1VM2BWo"];
-    if (![UIApplication sharedApplication].isRegisteredForRemoteNotifications) {
-        [AVOSCloudIM registerForRemoteNotification];
-    }
+//    if (![UIApplication sharedApplication].isRegisteredForRemoteNotifications) {
+        [AVOSCloud registerForRemoteNotification];
+//    }
     
     
     //百度地图
@@ -58,12 +63,20 @@
         [QYChatManager sharedManager].client = [[AVIMClient alloc] initWithClientId:userId];
     }
     
+    //如果应用是通过通知打开的
+    NSDictionary *userInfo = launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey];
+    NSLog(@"推送通知：%@", userInfo);
+    //如果是添加好友成功的通知
+    if ([userInfo.allKeys containsObject:kUserName]) {
+        [self notifyNewFriend:userInfo];
+    }
+    
     return YES;
 }
 
 -(void)setRootViewControllerToHome{
     UIStoryboard *homeStoryboard = [UIStoryboard storyboardWithName:kHomeStoryboard bundle:nil];
-    UIViewController *revealVC = [homeStoryboard instantiateViewControllerWithIdentifier:kRevealVCIdentifier];
+    SWRevealViewController *revealVC = [homeStoryboard instantiateViewControllerWithIdentifier:kRevealVCIdentifier];
     self.window.rootViewController = revealVC;
 }
 
@@ -97,7 +110,8 @@
 -(void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken{
     AVInstallation *installation = [AVInstallation currentInstallation];
     [installation setDeviceTokenFromData:deviceToken];
-    [installation setChannels:@[[QYAccount currentAccount].userId]];
+    [installation setObject:[QYAccount currentAccount].userId forKey:@"userId"];
+//    [installation setChannels:@[[QYAccount currentAccount].userId]];
     [installation saveInBackground];
 }
 
@@ -105,8 +119,29 @@
     NSLog(@"%@", error);
 }
 
+//当应用正在运行时收到推送消息，会调用该方法
+//当应用在后台时，通过点击通知进入前台，也 会调用该方法
 -(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(nonnull void (^)(UIBackgroundFetchResult))completionHandler{
     NSLog(@"%@", userInfo);
+    
+    //如果是添加好友成功的通知
+    if ([userInfo.allKeys containsObject:kUserName]) {
+        [self notifyNewFriend:userInfo];
+    }
+}
+
+-(void)notifyNewFriend:(NSDictionary *)userInfo{
+    SWRevealViewController *revealVC = (SWRevealViewController *)_window.rootViewController;
+    if ([revealVC.frontViewController isKindOfClass:[UINavigationController class]]) {
+        UINavigationController *nav = (UINavigationController *)revealVC.frontViewController;
+        if ([nav.topViewController isKindOfClass:[QYHomeVC class]]) {
+            QYUserInfo *user = [[QYUserInfo alloc] init];
+            user.userId = userInfo[kUserId];
+            user.name = userInfo[kUserName];
+            user.iconUrl = userInfo[kUserIconUrl];
+            [nav.topViewController presentToNewFriendControllerForUser:user];
+        }
+    }
 }
 
 -(void)clearBadge:(UIApplication *)application{

@@ -91,6 +91,7 @@
 		7C74ABEE1CD30DF3003B0A44 /* QYPhotoBrowserTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C74ABED1CD30DF3003B0A44 /* QYPhotoBrowserTransition.m */; };
 		7C74AC3A1CD8419F003B0A44 /* NewFriend.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7C74AC391CD8419E003B0A44 /* NewFriend.storyboard */; };
 		7C74AC3D1CD84627003B0A44 /* QYNewFriendVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C74AC3C1CD84627003B0A44 /* QYNewFriendVC.m */; };
+		7C74AC431CD9A80B003B0A44 /* UIViewController+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C74AC421CD9A80B003B0A44 /* UIViewController+Extension.m */; };
 		7CF813941CB0CF4700CC79E8 /* CategorySuggestions.json in Resources */ = {isa = PBXBuildFile; fileRef = 7CF813921CB0CF4700CC79E8 /* CategorySuggestions.json */; };
 		7CF813951CB0CF4700CC79E8 /* countries.json in Resources */ = {isa = PBXBuildFile; fileRef = 7CF813931CB0CF4700CC79E8 /* countries.json */; };
 		7CF8139B1CB1435F00CC79E8 /* QYPaopaoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CF8139A1CB1435F00CC79E8 /* QYPaopaoView.m */; };
@@ -265,6 +266,8 @@
 		7C74AC391CD8419E003B0A44 /* NewFriend.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = NewFriend.storyboard; sourceTree = "<group>"; };
 		7C74AC3B1CD84627003B0A44 /* QYNewFriendVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYNewFriendVC.h; sourceTree = "<group>"; };
 		7C74AC3C1CD84627003B0A44 /* QYNewFriendVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYNewFriendVC.m; sourceTree = "<group>"; };
+		7C74AC411CD9A80B003B0A44 /* UIViewController+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+Extension.h"; sourceTree = "<group>"; };
+		7C74AC421CD9A80B003B0A44 /* UIViewController+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+Extension.m"; sourceTree = "<group>"; };
 		7CF813921CB0CF4700CC79E8 /* CategorySuggestions.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = CategorySuggestions.json; sourceTree = "<group>"; };
 		7CF813931CB0CF4700CC79E8 /* countries.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = countries.json; sourceTree = "<group>"; };
 		7CF813991CB1435F00CC79E8 /* QYPaopaoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYPaopaoView.h; sourceTree = "<group>"; };
@@ -618,6 +621,8 @@
 				7C74ABE41CD30BD2003B0A44 /* UIImage+Extension.m */,
 				7C74ABE51CD30BD2003B0A44 /* UIView+Extension.h */,
 				7C74ABE61CD30BD2003B0A44 /* UIView+Extension.m */,
+				7C74AC411CD9A80B003B0A44 /* UIViewController+Extension.h */,
+				7C74AC421CD9A80B003B0A44 /* UIViewController+Extension.m */,
 			);
 			path = Categories;
 			sourceTree = "<group>";
@@ -1028,6 +1033,7 @@
 				7C30B1961C996137001EF237 /* FunctionView.m in Sources */,
 				58CBFAA81CD8818E001BBA84 /* QLProfileInfo.m in Sources */,
 				7C4BB3A91CA8C28400136C75 /* QYLocationShareVC.m in Sources */,
+				7C74AC431CD9A80B003B0A44 /* UIViewController+Extension.m in Sources */,
 				7C30B1921C996137001EF237 /* FaceCell.m in Sources */,
 				7CF902D61CD0B77F00B64CE9 /* MARKRangeSlider.m in Sources */,
 				7C74ABB61CD30A11003B0A44 /* QYAudioPlayer.m in Sources */,

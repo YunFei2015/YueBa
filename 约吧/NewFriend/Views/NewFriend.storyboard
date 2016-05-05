@@ -10,7 +10,7 @@
         <!--New FriendVC-->
         <scene sceneID="fZW-Ip-XSH">
             <objects>
-                <viewController id="EEh-vx-E3H" customClass="QYNewFriendVC" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="newFriendVC" id="EEh-vx-E3H" customClass="QYNewFriendVC" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="ll5-tw-Tlk"/>
                         <viewControllerLayoutGuide type="bottom" id="ved-QI-YYf"/>
@@ -68,6 +68,9 @@
                                         <integer key="value" value="5"/>
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="commitMessageAction:" destination="EEh-vx-E3H" eventType="touchUpInside" id="zSb-gQ-YPv"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bKP-Lz-viR">
                                 <rect key="frame" x="50" y="586" width="314" height="50"/>
@@ -85,6 +88,9 @@
                                         <integer key="value" value="5"/>
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="keepSearchingAction:" destination="EEh-vx-E3H" eventType="touchUpInside" id="NKw-E3-JTu"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
@@ -111,7 +117,7 @@
                         <outlet property="friendIcon" destination="VRa-pS-72q" id="twt-fs-8zH"/>
                         <outlet property="keepSearchingBtn" destination="bKP-Lz-viR" id="UQI-5i-Kv7"/>
                         <outlet property="meIcon" destination="SAW-bX-X2t" id="1lk-IJ-oue"/>
-                        <outlet property="tip" destination="QXG-M9-ydL" id="fcU-6S-Aue"/>
+                        <outlet property="tip" destination="ENL-f1-UIc" id="90R-Ke-GO0"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CM7-da-ptZ" userLabel="First Responder" sceneMemberID="firstResponder"/>

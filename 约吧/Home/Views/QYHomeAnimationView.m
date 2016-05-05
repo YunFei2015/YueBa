@@ -1,6 +1,6 @@
 //
 //  DanimationView.m
-//  01-配配
+//  约吧
 //
 //  Created by qing on 16/3/8.
 //  Copyright © 2016年 qing. All rights reserved.
@@ -16,8 +16,6 @@
 #define Kspace 10
 
 @interface QYHomeAnimationView ()
-@property(nonatomic,strong)NSArray *arr;
-//标记当前是已经高亮 left Or right
 @property(nonatomic)ENLIKETYPE type;
 
 @property (strong, nonatomic) QYUserInfo *currentUser;
@@ -30,9 +28,7 @@
 -(instancetype)initWithCoder:(NSCoder *)aDecoder{
     self = [super initWithCoder:aDecoder];
     if (self) {
-        _arr = @[[UIColor redColor],[UIColor blueColor],[UIColor greenColor]];
         self.backgroundColor = [UIColor clearColor];
-//        [self addSubviewForDisplay];
     }
     return self;
 }
@@ -154,7 +150,7 @@
         QYUserInfoView *view = [[NSBundle mainBundle] loadNibNamed:@"QYUserInfoView" owner:nil options:nil][0];
         view.frame = CGRectMake(0,0,self.frame.size.width,self.frame.size.height);
 //        view.image=[UIImage imageNamed:[NSString stringWithFormat:@"%ld.jpg",i]];
-        view.userInfo = _users[count - i];
+        view.userInfo = _users[i - 1];
         [view addGestureRecognizer:[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(Action:)]];
         view.tag=i+1;
         view.layer.borderWidth=1;

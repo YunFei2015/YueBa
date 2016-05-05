@@ -7,6 +7,8 @@
 //
 
 #import "QYNewFriendVC.h"
+#import "QYAccount.h"
+#import "QYUserInfo.h"
 
 @interface QYNewFriendVC ()
 @property (weak, nonatomic) IBOutlet UIImageView *meIcon;
@@ -28,7 +30,25 @@
     [_meIcon.superview insertSubview:_friendIcon aboveSubview:_meIcon];
     
     _keepSearchingBtn.layer.borderColor = [UIColor whiteColor].CGColor;
+    
+//    QYUserInfo *me = [QYAccount currentAccount].myInfo;
+//    _meIcon.image = [UIImage imageNamed:me.iconUrl];
+    _friendIcon.image = [UIImage imageNamed:_friend.iconUrl];
+    
+    _tip.text = [NSString stringWithFormat:@"你和%@相互喜欢了对方", _friend.name];
+}
 
+#pragma mark - Events
+- (IBAction)commitMessageAction:(id)sender {
+    [self dismissViewControllerAnimated:YES completion:^{
+        if (_talkToNewFriend) {
+            _talkToNewFriend(_friend);
+        }
+    }];
+}
+
+- (IBAction)keepSearchingAction:(id)sender {
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)didReceiveMemoryWarning {

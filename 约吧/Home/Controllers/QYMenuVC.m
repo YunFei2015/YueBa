@@ -24,6 +24,14 @@
     _iconImageView.layer.masksToBounds = YES;
 }
 
+- (IBAction)iconTapAction:(id)sender {
+    UIStoryboard *profileStoryboard = [UIStoryboard storyboardWithName:@"QYProfile" bundle:nil];
+    UINavigationController *nav = [profileStoryboard instantiateViewControllerWithIdentifier:@"profileNav"];
+    [self.revealViewController pushFrontViewController:nav animated:YES];
+}
+
+
+
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     SWRevealViewController *revealVC = self.revealViewController;
     if (indexPath.row == _presentedRow) {
@@ -39,7 +47,6 @@
                 [revealVC rightRevealToggleAnimated:YES];
                 break;
             case 2:{
-//                [self.revealViewController setFrontViewPosition:FrontViewPositionRightMost animated:YES];
                 UIStoryboard *settingsStoryboard = [UIStoryboard storyboardWithName:@"Settings" bundle:nil];
                 UINavigationController *navigationController = [settingsStoryboard instantiateViewControllerWithIdentifier:kSettingsNavIdentifier];
                 [revealVC pushFrontViewController:navigationController animated:YES];

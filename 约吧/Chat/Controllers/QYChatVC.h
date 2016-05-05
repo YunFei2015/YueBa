@@ -19,6 +19,6 @@ typedef void(^QYLastMessageDidChanged)(AVIMConversation *);
 @property (strong, nonatomic) QYLastMessageDidChanged lastMessageDidChanged;
 @property (strong, nonatomic) QYMessageCell *selectedCell;
 
-
+@property (nonatomic, getter=isPresented) BOOL presented;//标注该控制器是否模态出来的，默认为否（即压栈）
 @end
 

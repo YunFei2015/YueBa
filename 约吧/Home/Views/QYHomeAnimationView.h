@@ -1,6 +1,6 @@
 //
 //  DanimationView.h
-//  01-配配
+//  约吧
 //
 //  Created by qing on 16/3/8.
 //  Copyright © 2016年 qing. All rights reserved.
@@ -18,7 +18,7 @@ typedef enum : NSUInteger {
 
 -(void)ChangeValueType:(ENLIKETYPE)type;
 -(void)FinishendValueType;
--(void)markUser:(QYUserInfo *)user asLike:(BOOL)isLike;
+-(void)markUser:(QYUserInfo *)user asLike:(ENLIKETYPE)isLike;
 
 @end
 

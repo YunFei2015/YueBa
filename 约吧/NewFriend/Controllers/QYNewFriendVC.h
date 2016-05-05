@@ -7,7 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+@class QYUserInfo;
+
+typedef void(^talkToNewFriendBlock)(QYUserInfo *);
 
 @interface QYNewFriendVC : UIViewController
+
+@property (strong, nonatomic) QYUserInfo *friend;
+@property (copy, nonatomic) talkToNewFriendBlock talkToNewFriend;
 
 @end

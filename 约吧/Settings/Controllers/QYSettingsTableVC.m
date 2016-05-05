@@ -24,6 +24,7 @@
 @property (weak, nonatomic) IBOutlet UISwitch *womanSw;
 @property (weak, nonatomic) IBOutlet UISlider *distanceSlider;
 @property (weak, nonatomic) IBOutlet UISwitch *vibrateSw;
+@property (weak, nonatomic) IBOutlet UISwitch *previewSw;
 
 @property (strong, nonatomic) UILabel *distanceRangeLabel;
 @property (strong, nonatomic) UILabel *minAgeLabel;
@@ -59,6 +60,7 @@
     [_womanSw setOn:!_manSw.on];
     _distanceSlider.value = [[NSUserDefaults standardUserDefaults] floatForKey:kFilterKeyDistance];
     [_vibrateSw setOn:[[NSUserDefaults standardUserDefaults] boolForKey:@"vibrate"]];
+    [_previewSw setOn:[[NSUserDefaults standardUserDefaults] boolForKey:@"preview"]];
 }
 
 -(void)dealloc{
@@ -94,7 +96,14 @@
 
 - (IBAction)vibrateAction:(UISwitch *)sender {
     [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"vibrate"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
+
+- (IBAction)previewSwitchAction:(UISwitch *)sender {
+    [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"preview"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 
 
 #pragma mark - Custom Methods

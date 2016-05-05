@@ -20,9 +20,14 @@
 #import "QYLocationManager.h"
 #import "QYUserStorage.h"
 
+//category
+#import "UIViewController+Extension.h"
+
 //vendors
 #import <BaiduMapAPI_Map/BMKMapView.h>
 #import <BaiduMapAPI_Radar/BMKRadarResult.h>
+#import <AVPush.h>
+#import <AVInstallation.h>
 
 @interface QYHomeVC () <QYNetworkDelegate, BMKMapViewDelegate, DanimationPro, QYRadarDelegate>
 @property (strong, nonatomic) AppDelegate *appDelegate;
@@ -140,8 +145,59 @@
     }];
 }
 
--(void)markUser:(QYUserInfo *)user asLike:(BOOL)isLike{
+-(void)markUser:(QYUserInfo *)user asLike:(ENLIKETYPE)isLike{
     //TODO: 向服务器发送数据
+    
+    
+    BOOL beLiked = YES;
+    if (isLike == like) {
+        if (beLiked) {//如果双方互相喜欢，则弹出新好友界面
+            
+            //TODO:存入数据库
+            
+            //向对方发送推送消息
+//            NSDictionary *data = @{
+//                                   @"alert":             @"你有新朋友了！", //显示内容
+//                                   @"badge":             @"Increment", //应用图标显示未读消息个数是递增当前值
+//                                   @"sound":             @"sms-received1.caf", //提示音
+//                                   @"content-available": @"1",
+//                                   kUserId:            user.userId, //用户Id
+//                                   kUserIconUrl:           user.iconUrl, //用户头像url
+//                                   kUserName:          user.name //用户姓名
+//                                   };
+//            [AVPush sendPushDataToChannelInBackground:user.userId withData:data];
+            
+            AVQuery *query = [AVInstallation query];
+            [query whereKey:@"userId" equalTo:user.userId];
+            
+            NSDictionary *data = @{
+                                   @"alert":             @"你有新朋友了！", //显示内容
+                                   @"badge":             @"Increment", //应用图标显示未读消息个数是递增当前值
+                                   @"sound":             @"sms-received1.caf", //提示音
+                                   @"content-available": @"1",
+                                   kUserId:              user.userId, //用户Id
+                                   kUserIconUrl:         user.iconUrl, //用户头像url
+                                   kUserName:            user.name //用户姓名
+                                   };
+            AVPush *push = [[AVPush alloc] init];
+            [push setQuery:query];
+            [push setData:data];
+            [push sendPushInBackground];
+            
+            [self presentToNewFriendControllerForUser:user];
+        }
+//        else{//如果对方不喜欢自己，则发送推送消息
+//            //向对方发送推送消息
+//            NSDictionary *data = @{
+//                                   @"alert":             @"有人喜欢你了哦！", //显示内容
+//                                   @"badge":             @"Increment", //应用图标显示未读消息个数是递增当前值
+//                                   @"sound":             @"sms-received1.caf", //提示音
+//                                   @"content-available": @"1"
+//                                   };
+//            [AVPush sendPushDataToChannelInBackground:user.userId withData:data];
+//        }
+        
+    }
     
     //
     [_nearbyUsers removeObject:user];

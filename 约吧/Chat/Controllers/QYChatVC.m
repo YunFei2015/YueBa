@@ -36,6 +36,7 @@
 #import <AVOSCloudIM.h>
 #import <AVFile.h>
 #import <AVPush.h>
+#import <AVInstallation.h>
 #import <Masonry.h>
 
 @interface QYChatVC () <UITableViewDelegate, UITableViewDataSource, QYChatManagerDelegate, MessageBarDelegate, QYAudioPlayerDelegate, QYFunctionViewDelegate, QYImagesPickerDelegate, UIViewControllerTransitioningDelegate>
@@ -145,16 +146,9 @@
 -(void)viewWillDisappear:(BOOL)animated{
     [[QYUserStorage sharedInstance] updateUserLastMessageAt:_user.lastMessageAt forUserId:_user.userId];
     //反向传值
-    if (_lastMessageChanged) {
+    if (_lastMessageChanged & !_presented) {
         _lastMessageDidChanged(_conversation);
     }
-    
-    //取消静音，开始接收此对话的离线推送
-    [_conversation unmuteWithCallback:^(BOOL succeeded, NSError *error) {
-        if (error) {
-            NSLog(@"%@", error);
-        }
-    }];
     
     [super viewWillDisappear:animated];
     
@@ -166,8 +160,14 @@
     self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
     self.navigationController.navigationBar.tintColor = [UIColor redColor];
     
-    UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"messages_back"] style:UIBarButtonItemStylePlain target:self action:@selector(backAction)];
-    self.navigationItem.leftBarButtonItem = leftItem;
+    if (_presented) {
+        UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithTitle:@"关闭" style:UIBarButtonItemStylePlain target:self action:@selector(closeAction)];
+        self.navigationItem.leftBarButtonItem = leftItem;
+    }else{
+        UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"messages_back"] style:UIBarButtonItemStylePlain target:self action:@selector(backAction)];
+        self.navigationItem.leftBarButtonItem = leftItem;
+    }
+    
     
     UIView *titleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 44)];
     
@@ -303,13 +303,22 @@
 
 #pragma mark - Custom Methods - send messages
 -(void)pushMessage:(NSString *)title{
+    AVQuery *query = [AVInstallation query];
+    [query whereKey:@"userId" equalTo:_user.userId];
+    
     NSDictionary *data = @{
-        @"alert":             title, //显示内容
-        @"badge":             @"Increment", //应用图标显示未读消息个数是递增当前值
-        @"sound":             @"sms-received1.caf", //提示音
-        @"content-available": @"1"
-    };
-    [AVPush sendPushDataToChannelInBackground:_user.userId withData:data];
+                           @"alert":             title, //显示内容
+                           @"badge":             @"Increment", //应用图标显示未读消息个数是递增当前值
+                           @"sound":             @"sms-received1.caf", //提示音
+                           @"content-available": @"1"
+                           };
+    AVPush *push = [[AVPush alloc] init];
+    [push setQuery:query];
+    [push setData:data];
+    [push sendPushInBackground];
+    
+    
+//    [AVPush sendPushDataToChannelInBackground:_user.userId withData:data];
 }
 
 -(void)sendTextMessageWithContent:(NSString *)message{
@@ -391,6 +400,10 @@
 -(void)backAction{
     [self.navigationController popViewControllerAnimated:YES];
     self.revealViewController.frontViewPosition = FrontViewPositionLeftSide;
+}
+
+-(void)closeAction{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 //tableView的点击事件
