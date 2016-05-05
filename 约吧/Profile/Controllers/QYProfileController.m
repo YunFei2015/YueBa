@@ -14,8 +14,9 @@
 #import "QYAutoHeightCell.h"
 #import "QLProfileInfo.h"
 #import "QYProfileSectionModel.h"
+#import "QYCreateTextController.h"
 
-@interface QYProfileController () <UITableViewDataSource, UITableViewDelegate>
+@interface QYProfileController () <UITableViewDataSource, UITableViewDelegate, QYSelectionControllerDelegate>
 {
     NSArray *_arrProfileInfos;
 }
@@ -92,48 +93,86 @@
     
     UIViewController *viewController = nil;
     if (indexPath.section == 1) {
-        if (indexPath.row == 0) {
-            viewController = [self selectionViewControllerWithSelectionType:QYSelectionTypeOccupation];
+        switch (indexPath.row) {
+            case 0:
+                viewController = [self selectionViewControllerWithSelectionType:QYSelectionTypeOccupation indexPath: indexPath];
+                break;
+            case 1:
+                viewController = [self selectionViewControllerWithSelectionType:QYSelectionTypeHometown indexPath: indexPath];
+                break;
+            case 2:
+                viewController = [self createTextViewControllerWithType:QYCreateTextTypeHaunt];
+                break;
+            case 3:
+                viewController = [self createTextViewControllerWithType:QYCreateTextTypeSignature];
+                break;
         }
+    } else if (indexPath.section == 2) {
+        if (indexPath.row == 0) {
+            viewController = [self createTextViewControllerWithType:QYCreateTextTypeWeChat];
+        }
+    } else if (indexPath.section == 3) {
+        if (indexPath.row == 0) {
+            viewController = [self selectionViewControllerWithSelectionType:QYSelectionTypePersonality indexPath: indexPath];
+        }
+    } else if (indexPath.section == 4) {
+        QYSelectionType type;
+        switch (indexPath.row) {
+            case 0:
+                type = QYSelectionTypeSports;
+                break;
+            case 1:
+                type = QYSelectionTypeMusic;
+                break;
+            case 2:
+                type = QYSelectionTypeFood;
+                break;
+            case 3:
+                type = QYSelectionTypeMovies;
+                break;
+            case 4:
+                type = QYSelectionTypeLiterature;
+                break;
+            case 5:
+                type = QYSelectionTypePlaces;
+                break;
+            default:
+                break;
+        }
+        viewController = [self selectionViewControllerWithSelectionType:type indexPath: indexPath];
     }
     
-    [self.navigationController pushViewController:viewController animated:YES];
+    if (viewController) {
+        [self.navigationController pushViewController:viewController animated:YES];
+    }
+}
+#pragma mark QYSelectionControllerDelegate
+- (void)selectionController:(QYSelectionController *)selectionController didSelectSelectModel:(QYSelectModel *)selectModel indexPath:(NSIndexPath *)indexPath {
+    NSLog(@"%@", selectModel.strText);
+    QYProfileSectionModel *sectionModel = _arrProfileInfos[indexPath.section - 1];
+    if (indexPath.section == 1) { // NormalHeight cell
+        QYNormalHeightModel *normalHeightModel = sectionModel.arrModels[indexPath.row];
+        normalHeightModel.strContent = selectModel.strText;
+        [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationBottom];
+    } else if (indexPath.section == 3 || indexPath.section == 4) {
+        //QYAutoHeightModel *autoHeightModel = sectionModel.arrModels[indexPath.row];
+        
+    }
 }
 
 #pragma mark - Private
-- (UIViewController *)selectionViewControllerWithSelectionType:(QYSelectionType)type {
+- (UIViewController *)selectionViewControllerWithSelectionType:(QYSelectionType)type indexPath:(NSIndexPath *)indexPath {
     QYSelectionController *viewController = [QYSelectionController new];
     viewController.type = type;
-    switch (type) {
-        case QYSelectionTypeOccupation:
-            viewController.title = @"职业";
-            break;
-        case QYSelectionTypeHometown:
-            viewController.title = @"来自";
-            break;
-        case QYSelectionTypePersonality:
-            viewController.title = @"我的个性标签";
-            break;
-        case QYSelectionTypeSports:
-            viewController.title = @"我喜欢的运动";
-            break;
-        case QYSelectionTypeMusic:
-            viewController.title = @"我喜欢的音乐";
-            break;
-        case QYSelectionTypeFood:
-            viewController.title = @"我喜欢的食物";
-            break;
-        case QYSelectionTypeMovies:
-            viewController.title = @"我喜欢的电影";
-            break;
-        case QYSelectionTypeLiterature:
-            viewController.title = @"我喜欢的书和动漫";
-            break;
-        case QYSelectionTypePlaces:
-            viewController.title = @"我的旅行足迹";
-            break;
-    }
+    viewController.delegate = self;
+    viewController.indexPath = indexPath;
     return viewController;
+}
+
+- (QYCreateTextController *)createTextViewControllerWithType:(QYCreateTextType)type {
+    QYCreateTextController *vcCreateText = [QYCreateTextController new];
+    vcCreateText.type = type;
+    return vcCreateText;
 }
 
 @end

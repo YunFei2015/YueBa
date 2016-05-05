@@ -30,8 +30,10 @@
     _lblTitle.text = _normalHeightModel.strTitle;
     if ([normalHeightModel.strContent isEqualToString:@""]) { // 用户暂未选择
         _lblContent.text = _normalHeightModel.strPlaceholder;
+        _lblContent.textColor = [UIColor lightGrayColor];
     } else { // 用户已经有选择的内容
         _lblContent.text = _normalHeightModel.strContent;
+        _lblContent.textColor = [UIColor darkGrayColor];
     }
 }
 

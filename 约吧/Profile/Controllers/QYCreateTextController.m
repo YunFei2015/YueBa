@@ -1,19 +1,19 @@
 //
-//  QYCreateTagViewController.m
+//  QYCreateTextViewController.m
 //  约吧
 //
 //  Created by Shreker on 16/4/28.
 //  Copyright © 2016年 云菲. All rights reserved.
 //
 
-#import "QYCreateTagViewController.h"
+#import "QYCreateTextController.h"
 #import "Masonry.h"
 
-@interface QYCreateTagViewController ()
+@interface QYCreateTextController ()
 
 @end
 
-@implementation QYCreateTagViewController
+@implementation QYCreateTextController
 
 #pragma mark - ♻️ LifeCycle Methods
 - (void)viewDidLoad {
@@ -24,6 +24,18 @@
 /** Load the default UI elements And prepare some datas needed. */
 - (void)loadDefaultSetting {
     self.view.backgroundColor = [UIColor whiteColor];
+    
+    switch (self.type) {
+        case QYCreateTextTypeHaunt:
+            self.title = @"经常出没";
+            break;
+        case QYCreateTextTypeSignature:
+            self.title = @"签名";
+            break;
+        case QYCreateTextTypeWeChat:
+            self.title = @"我的微信";
+            break;
+    }
     
     self.edgesForExtendedLayout = UIRectEdgeNone;
     
