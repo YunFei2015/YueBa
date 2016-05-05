@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "QYSelectModel.h"
 
 typedef NS_ENUM(NSUInteger, QYSelectionType) {
     /** 职业 */
@@ -37,8 +38,19 @@ typedef NS_ENUM(NSUInteger, QYSelectionType) {
     QYSelectionTypePlaces
 };
 
+@class QYSelectionController, QYSelectModel;
+
+@protocol QYSelectionControllerDelegate <NSObject>
+
+- (void)selectionController:(QYSelectionController *)selectionController didSelectSelectModel:(QYSelectModel *)selectModel indexPath:(NSIndexPath *)indexPath;
+
+@end
+
 @interface QYSelectionController : UITableViewController
 
+@property (nonatomic, strong) NSIndexPath *indexPath;
+
 @property (nonatomic, assign) QYSelectionType type;
+@property (nonatomic, weak) id<QYSelectionControllerDelegate> delegate;
 
 @end

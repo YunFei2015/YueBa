@@ -8,7 +8,9 @@
 
 #import "QYSelectionController.h"
 #import "QLCategories.h"
-#import "QYCreateTagViewController.h"
+#import "QYCreateTextController.h"
+#import "QYSelectModel.h"
+#import "QYSubselectionController.h"
 
 @interface QYSelectionController ()
 {
@@ -39,6 +41,9 @@
     /** 我的旅行足迹 */
     NSArray *_arrPlaces;
     
+    /** 临时存储 */
+    NSDictionary *_dicItems;
+    
     /** 当前显示的 */
     NSArray *_arrItems;
 }
@@ -56,44 +61,59 @@
 /** Load the default UI elements And prepare some datas needed. */
 - (void)loadDefaultSetting {
     QLCategories *categories =[QLCategories sharedCategories];
-    NSLog(@"%@", categories.arrOccupations);
     
     switch (self.type) {
         case QYSelectionTypeOccupation:
+            self.title = @"职业";
             _arrOcuupations = categories.arrOccupations;
             _arrItems = _arrOcuupations;
             break;
         case QYSelectionTypeHometown:
+            self.title = @"来自";
             _arrHometowns = categories.arrHometowns;
             _arrItems = _arrHometowns;
             break;
         case QYSelectionTypePersonality:
+            self.title = @"我的个性标签";
             _arrPersonalities = categories.arrPersonalities;
             _arrItems = _arrPersonalities;
+            self.tableView.allowsMultipleSelection = YES;
             break;
         case QYSelectionTypeSports:
+            self.title = @"我喜欢的运动";
             _arrSports = categories.arrSports;
             _arrItems = _arrSports;
+            self.tableView.allowsMultipleSelection = YES;
             break;
         case QYSelectionTypeMusic:
+            self.title = @"我喜欢的音乐";
             _arrMusics = categories.arrMusics;
             _arrItems = _arrMusics;
+            self.tableView.allowsMultipleSelection = YES;
             break;
         case QYSelectionTypeFood:
+            self.title = @"我喜欢的食物";
             _arrFoods = categories.arrFoods;
             _arrItems = _arrFoods;
+            self.tableView.allowsMultipleSelection = YES;
             break;
         case QYSelectionTypeMovies:
+            self.title = @"我喜欢的电影";
             _arrMovies = categories.arrMovies;
             _arrItems = _arrMovies;
+            self.tableView.allowsMultipleSelection = YES;
             break;
         case QYSelectionTypeLiterature:
+            self.title = @"我喜欢的书和动漫";
             _arrLiteratures = categories.arrLiteratures;
             _arrItems = _arrLiteratures;
+            self.tableView.allowsMultipleSelection = YES;
             break;
         case QYSelectionTypePlaces:
+            self.title = @"我的旅行足迹";
             _arrPlaces = categories.arrPlaces;
             _arrItems = _arrPlaces;
+            self.tableView.allowsMultipleSelection = YES;
             break;
     }
     [self.tableView reloadData];
@@ -124,7 +144,14 @@
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:strId];
             cell.textLabel.font = [UIFont systemFontOfSize:15];
         }
-        cell.textLabel.text = _arrItems[indexPath.row - 1];
+        
+        QYSelectModel *model = _arrItems[indexPath.row - 1];
+        cell.textLabel.text = model.strText;
+        if (model.arrSubitems.count > 0) {
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        } else {
+            cell.accessoryType = UITableViewCellAccessoryNone;
+        }
         
         return cell;
     }
@@ -132,10 +159,21 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     if (indexPath.row == 0) {
-        QYCreateTagViewController *vcCreateTag = [QYCreateTagViewController new];
+        QYCreateTextController *vcCreateTag = [QYCreateTextController new];
         [self.navigationController pushViewController:vcCreateTag animated:YES];
     } else {
-        
+        QYSelectModel *model = _arrItems[indexPath.row - 1];
+        if (model.arrSubitems.count > 0) { // 有子项目
+            QYSubselectionController *vcSubselection = [QYSubselectionController new];
+            [self.navigationController pushViewController:vcSubselection animated:YES];
+        } else { // 无子项目
+            if (tableView.allowsMultipleSelection) {
+                NSLog(@"%@", tableView.indexPathsForSelectedRows);
+            } else {
+                [self.delegate selectionController:self didSelectSelectModel:model indexPath:self.indexPath];
+                [self.navigationController popViewControllerAnimated:YES];
+            }
+        }
     }
 }
 

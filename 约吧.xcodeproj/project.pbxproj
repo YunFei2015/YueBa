@@ -8,8 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		58A097FF1CD884F50004B01A /* ProfileInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 58A097FE1CD884F50004B01A /* ProfileInfo.plist */; };
+		58A098021CD99C690004B01A /* QYSelectModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 58A098011CD99C690004B01A /* QYSelectModel.m */; };
+		58A098051CD9E4320004B01A /* QYSubselectionController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58A098041CD9E4320004B01A /* QYSubselectionController.m */; };
 		58CBFAA11CD8818E001BBA84 /* QYAccountInfoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58CBFA7D1CD8818E001BBA84 /* QYAccountInfoController.m */; };
-		58CBFAA21CD8818E001BBA84 /* QYCreateTagViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58CBFA7F1CD8818E001BBA84 /* QYCreateTagViewController.m */; };
+		58CBFAA21CD8818E001BBA84 /* QYCreateTextController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58CBFA7F1CD8818E001BBA84 /* QYCreateTextController.m */; };
 		58CBFAA31CD8818E001BBA84 /* QYProfileController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58CBFA811CD8818E001BBA84 /* QYProfileController.m */; };
 		58CBFAA41CD8818E001BBA84 /* QYSelectionController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58CBFA831CD8818E001BBA84 /* QYSelectionController.m */; };
 		58CBFAA51CD8818E001BBA84 /* QYUpdatePhoneController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58CBFA851CD8818E001BBA84 /* QYUpdatePhoneController.m */; };
@@ -119,10 +121,14 @@
 /* Begin PBXFileReference section */
 		53F2D9EEBB9BCB33D6F01085 /* Pods-约吧.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-约吧.debug.xcconfig"; path = "Pods/Target Support Files/Pods-约吧/Pods-约吧.debug.xcconfig"; sourceTree = "<group>"; };
 		58A097FE1CD884F50004B01A /* ProfileInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ProfileInfo.plist; sourceTree = "<group>"; };
+		58A098001CD99C690004B01A /* QYSelectModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYSelectModel.h; sourceTree = "<group>"; };
+		58A098011CD99C690004B01A /* QYSelectModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYSelectModel.m; sourceTree = "<group>"; };
+		58A098031CD9E4320004B01A /* QYSubselectionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYSubselectionController.h; sourceTree = "<group>"; };
+		58A098041CD9E4320004B01A /* QYSubselectionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYSubselectionController.m; sourceTree = "<group>"; };
 		58CBFA7C1CD8818E001BBA84 /* QYAccountInfoController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYAccountInfoController.h; sourceTree = "<group>"; };
 		58CBFA7D1CD8818E001BBA84 /* QYAccountInfoController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYAccountInfoController.m; sourceTree = "<group>"; };
-		58CBFA7E1CD8818E001BBA84 /* QYCreateTagViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYCreateTagViewController.h; sourceTree = "<group>"; };
-		58CBFA7F1CD8818E001BBA84 /* QYCreateTagViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYCreateTagViewController.m; sourceTree = "<group>"; };
+		58CBFA7E1CD8818E001BBA84 /* QYCreateTextController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYCreateTextController.h; sourceTree = "<group>"; };
+		58CBFA7F1CD8818E001BBA84 /* QYCreateTextController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYCreateTextController.m; sourceTree = "<group>"; };
 		58CBFA801CD8818E001BBA84 /* QYProfileController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYProfileController.h; sourceTree = "<group>"; };
 		58CBFA811CD8818E001BBA84 /* QYProfileController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYProfileController.m; sourceTree = "<group>"; };
 		58CBFA821CD8818E001BBA84 /* QYSelectionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYSelectionController.h; sourceTree = "<group>"; };
@@ -330,10 +336,12 @@
 				58CBFA811CD8818E001BBA84 /* QYProfileController.m */,
 				58CBFA7C1CD8818E001BBA84 /* QYAccountInfoController.h */,
 				58CBFA7D1CD8818E001BBA84 /* QYAccountInfoController.m */,
-				58CBFA7E1CD8818E001BBA84 /* QYCreateTagViewController.h */,
-				58CBFA7F1CD8818E001BBA84 /* QYCreateTagViewController.m */,
 				58CBFA821CD8818E001BBA84 /* QYSelectionController.h */,
 				58CBFA831CD8818E001BBA84 /* QYSelectionController.m */,
+				58A098031CD9E4320004B01A /* QYSubselectionController.h */,
+				58A098041CD9E4320004B01A /* QYSubselectionController.m */,
+				58CBFA7E1CD8818E001BBA84 /* QYCreateTextController.h */,
+				58CBFA7F1CD8818E001BBA84 /* QYCreateTextController.m */,
 				58CBFA841CD8818E001BBA84 /* QYUpdatePhoneController.h */,
 				58CBFA851CD8818E001BBA84 /* QYUpdatePhoneController.m */,
 				58CBFA861CD8818E001BBA84 /* QYUpdatePwdController.h */,
@@ -345,11 +353,11 @@
 		58CBFA881CD8818E001BBA84 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				58CBFA8D1CD8818E001BBA84 /* QLSingleton.h */,
 				58CBFA891CD8818E001BBA84 /* QLCategories.h */,
 				58CBFA8A1CD8818E001BBA84 /* QLCategories.m */,
 				58CBFA8B1CD8818E001BBA84 /* QLProfileInfo.h */,
 				58CBFA8C1CD8818E001BBA84 /* QLProfileInfo.m */,
-				58CBFA8D1CD8818E001BBA84 /* QLSingleton.h */,
 				58CBFA8E1CD8818E001BBA84 /* QYAutoHeightFrameModel.h */,
 				58CBFA8F1CD8818E001BBA84 /* QYAutoHeightFrameModel.m */,
 				58CBFA901CD8818E001BBA84 /* QYAutoHeightModel.h */,
@@ -358,6 +366,8 @@
 				58CBFA931CD8818E001BBA84 /* QYNormalHeightModel.m */,
 				58CBFA941CD8818E001BBA84 /* QYProfileSectionModel.h */,
 				58CBFA951CD8818E001BBA84 /* QYProfileSectionModel.m */,
+				58A098001CD99C690004B01A /* QYSelectModel.h */,
+				58A098011CD99C690004B01A /* QYSelectModel.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1013,6 +1023,7 @@
 				7C5FBAA11CB4AD0200714310 /* QYHomeAnimationView.m in Sources */,
 				7C74ABEA1CD30BD2003B0A44 /* UIView+Extension.m in Sources */,
 				7C5FBAA51CB4B32B00714310 /* QYLoginVC.m in Sources */,
+				58A098021CD99C690004B01A /* QYSelectModel.m in Sources */,
 				7C5FBA9C1CB4ACF500714310 /* QYHomeVC.m in Sources */,
 				58CBFAA51CD8818E001BBA84 /* QYUpdatePhoneController.m in Sources */,
 				7C4D3B8D1CB3F8160040FF73 /* QYEntranceVC.m in Sources */,
@@ -1021,6 +1032,7 @@
 				7C719A051CBB3B5300BE5039 /* QYHomeSearchView.m in Sources */,
 				7C4BB3AC1CA8C94F00136C75 /* QYLocationSearchResultVC.m in Sources */,
 				7C6A6E5F1CCF41FB00AC95E3 /* QYLocationMapVC.m in Sources */,
+				58A098051CD9E4320004B01A /* QYSubselectionController.m in Sources */,
 				58CBFAAA1CD8818E001BBA84 /* QYAutoHeightModel.m in Sources */,
 				58CBFAAB1CD8818E001BBA84 /* QYNormalHeightModel.m in Sources */,
 				7C30B1901C996137001EF237 /* QYMessageCell.m in Sources */,
@@ -1046,7 +1058,7 @@
 				7CF902D91CD0BDC700B64CE9 /* QYAgeRangeCell.m in Sources */,
 				7C74AC3D1CD84627003B0A44 /* QYNewFriendVC.m in Sources */,
 				7C6671E91CB4FDB500E7C20A /* QYSettingsTableVC.m in Sources */,
-				58CBFAA21CD8818E001BBA84 /* QYCreateTagViewController.m in Sources */,
+				58CBFAA21CD8818E001BBA84 /* QYCreateTextController.m in Sources */,
 				7C74ABB71CD30A11003B0A44 /* QYAudioRecorder.m in Sources */,
 				7C30B14E1C995E2A001EF237 /* main.m in Sources */,
 				7C74ABC51CD30A1D003B0A44 /* QYSoundAlert.m in Sources */,

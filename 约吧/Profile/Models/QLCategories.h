@@ -9,6 +9,16 @@
 #import <Foundation/Foundation.h>
 #import "QLSingleton.h"
 
+#define QLKeyOccupations @"occupation"
+#define QLKeyHometowns @"hometown"
+#define QLKeyPersonalities @"personality"
+#define QLKeySports @"sports"
+#define QLKeyMusics @"music"
+#define QLKeyFoods @"food"
+#define QLKeyMovies @"movies"
+#define QLKeyLiteratures @"literature"
+#define QLKeyPlaces @"places"
+
 @interface QLCategories : NSObject
 
 QLSingletonInterface(Categories)

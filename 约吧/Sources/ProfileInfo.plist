@@ -111,19 +111,7 @@
 					<key>title</key>
 					<string>我喜欢的运动</string>
 					<key>tags</key>
-					<array>
-						<string>AG</string>
-						<string>AG</string>
-						<string>AG</string>
-						<string>AG</string>
-						<string>AG</string>
-						<string>AG</string>
-						<string>AG</string>
-						<string>AG</string>
-						<string>AG</string>
-						<string>AG</string>
-						<string>AG</string>
-					</array>
+					<array/>
 					<key>type</key>
 					<string>autoHeight</string>
 				</dict>
