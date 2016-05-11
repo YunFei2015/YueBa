@@ -95,7 +95,7 @@
 -(void)didFinishUpdateLocation:(CLLocation *)location success:(BOOL)success{
     _location = location;
     if (_location) {
-        //[[QYLocationManager sharedInstance] uploadUserInfoWithLocation:location.coordinate];
+        [[QYLocationManager sharedInstance] uploadUserInfoWithLocation:location.coordinate];
         //内存中没有之前扫描过的记录，才将新的位置传给homeVC
         if (self.nearbyUsers.count == 0 && self.locationSuccess) {
             self.locationSuccess(_location);
