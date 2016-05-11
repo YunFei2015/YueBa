@@ -119,6 +119,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2F46E8271CE2EBC2006D2B2F /* ProfileCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ProfileCommon.h; sourceTree = "<group>"; };
 		53F2D9EEBB9BCB33D6F01085 /* Pods-约吧.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-约吧.debug.xcconfig"; path = "Pods/Target Support Files/Pods-约吧/Pods-约吧.debug.xcconfig"; sourceTree = "<group>"; };
 		58A097FE1CD884F50004B01A /* ProfileInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ProfileInfo.plist; sourceTree = "<group>"; };
 		58A098001CD99C690004B01A /* QYSelectModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYSelectModel.h; sourceTree = "<group>"; };
@@ -353,6 +354,7 @@
 		58CBFA881CD8818E001BBA84 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				2F46E8271CE2EBC2006D2B2F /* ProfileCommon.h */,
 				58CBFA8D1CD8818E001BBA84 /* QLSingleton.h */,
 				58CBFA891CD8818E001BBA84 /* QLCategories.h */,
 				58CBFA8A1CD8818E001BBA84 /* QLCategories.m */,

@@ -12,7 +12,7 @@
 
 @property (nonatomic, copy) NSString *strImageName;
 @property (nonatomic, copy) NSString *strTitle;
-@property (nonatomic, copy) NSArray *arrTags;
+@property (nonatomic, copy) NSArray *arrTags;           //已选中的标签
 
 + (instancetype)autoHeightModelWithDictionary:(NSDictionary *)dicData;
 

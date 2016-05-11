@@ -7,20 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ProfileCommon.h"
+@class QYSelectModel;
 
-typedef NS_ENUM(NSUInteger, QYCreateTextType) {
-    /** 经常出没 */
-    QYCreateTextTypeHaunt,
-    
-    /** 个人签名 */
-    QYCreateTextTypeSignature,
-    
-    /** 我的微信 */
-    QYCreateTextTypeWeChat
-};
+
+typedef void(^QYContentDidEndEdit)(QYSelectModel *model);
 
 @interface QYCreateTextController : UIViewController
 
 @property (nonatomic, assign) QYCreateTextType type;
 
+@property (nonatomic, strong) NSString *titleString;
+@property (nonatomic, strong) QYContentDidEndEdit contentDidEndEdit;
+@property (nonatomic, strong) NSString *textContent;
 @end

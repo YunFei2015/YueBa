@@ -60,6 +60,9 @@
 
 /** Load the default UI elements And prepare some datas needed. */
 - (void)loadDefaultSetting {
+    
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:self action:@selector(back:)];
+    
     QLCategories *categories =[QLCategories sharedCategories];
     
     switch (self.type) {
@@ -116,6 +119,31 @@
             self.tableView.allowsMultipleSelection = YES;
             break;
     }
+    
+    //当profile界面选中的单元格内容存在时，判断是否需要在_arrItems插入
+    if (self.selectedString.length > 0) {
+        __block BOOL isHas = NO;
+        [_arrItems enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([obj isKindOfClass:[QYSelectModel class]]) {
+                //_arrItems已经存在选中的描述
+                if ([((QYSelectModel *)obj).strText isEqualToString:self.selectedString]) {
+                    isHas = YES;
+                    *stop = YES;
+                }
+                
+            }
+        }];
+        
+        if (!isHas) {
+            NSMutableArray *mutableArray = [NSMutableArray arrayWithArray:_arrItems];
+            QYSelectModel *model = [QYSelectModel new];
+            model.strText = self.selectedString;
+            [mutableArray insertObject:model atIndex:0];
+            _arrItems = mutableArray;
+        }
+    }
+    
+    
     [self.tableView reloadData];
 }
 
@@ -132,6 +160,7 @@
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:strId];
             cell.imageView.contentMode = UIViewContentModeCenter;
             cell.textLabel.font = [UIFont systemFontOfSize:15];
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
         }
         cell.textLabel.text = @"创建我自己的标签";
         cell.imageView.image = [UIImage imageNamed:@""];
@@ -142,39 +171,111 @@
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:strId];
         if (!cell) {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:strId];
-            cell.textLabel.font = [UIFont systemFontOfSize:15];
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
         }
         
         QYSelectModel *model = _arrItems[indexPath.row - 1];
         cell.textLabel.text = model.strText;
-        if (model.arrSubitems.count > 0) {
-            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        } else {
-            cell.accessoryType = UITableViewCellAccessoryNone;
-        }
+        cell.textLabel.font = [model.strText isEqualToString:self.selectedString] || model.selected ? [UIFont boldSystemFontOfSize:15.0] : [UIFont systemFontOfSize:15.0];
+        //判断当有子选项的时候，UITableViewCellAccessoryDisclosureIndicator；没有子选项的时候，并且model.strText和self.selectedString相同的时候UITableViewCellAccessoryCheckmark；否则UITableViewCellAccessoryNone
+        cell.accessoryType = model.arrSubitems.count > 0 ? UITableViewCellAccessoryDisclosureIndicator : [model.strText isEqualToString:self.selectedString] || model.selected ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
         
         return cell;
     }
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    //[tableView deselectRowAtIndexPath:indexPath animated:YES];
+    __weak QYSelectionController *weakSelf = self;
     if (indexPath.row == 0) {
         QYCreateTextController *vcCreateTag = [QYCreateTextController new];
+        vcCreateTag.type = _createTextType;
+        vcCreateTag.contentDidEndEdit = ^(QYSelectModel *model){
+            if (weakSelf.createTextType == QYCreateTextTypeOccupation || weakSelf.createTextType == QYCreateTextTypeHometown) {
+                if ([weakSelf.delegate respondsToSelector:@selector(selectionController:didSelectSelectStrings:)]) {
+                    [weakSelf.delegate selectionController:self didSelectSelectStrings:@[model.strText]];
+                }
+            }else{
+                //当profile界面选中的单元格内容存在时，判断是否需要在_arrItems插入
+                if (model.strText.length > 0) {
+                    __block BOOL isHas = NO;
+                    [_arrItems enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                        if ([obj isKindOfClass:[QYSelectModel class]]) {
+                            //_arrItems已经存在选中的描述
+                            if ([((QYSelectModel *)obj).strText isEqualToString:model.strText]) {
+                                isHas = YES;
+                                *stop = YES;
+                            }
+                            
+                        }
+                    }];
+                    
+                    if (!isHas) {
+                        NSMutableArray *mutableArray = [NSMutableArray arrayWithArray:_arrItems];
+                        QYSelectModel *willInsertModel = [QYSelectModel new];
+                        willInsertModel.strText = model.strText;
+                        willInsertModel.selected = YES;
+                        [mutableArray insertObject:willInsertModel atIndex:0];
+                        _arrItems = mutableArray;
+                        
+                        [weakSelf.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:1 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
+                    }
+                }
+            }
+        };
         [self.navigationController pushViewController:vcCreateTag animated:YES];
     } else {
         QYSelectModel *model = _arrItems[indexPath.row - 1];
         if (model.arrSubitems.count > 0) { // 有子项目
             QYSubselectionController *vcSubselection = [QYSubselectionController new];
+            vcSubselection.subSelectionItems = model.arrSubitems;
+            vcSubselection.selectedSubModel = ^(QYSelectModel *model){
+                if ([weakSelf.delegate respondsToSelector:@selector(selectionController:didSelectSelectStrings:)]) {
+                    [weakSelf.delegate selectionController:self didSelectSelectStrings:@[model.strText]];
+                }
+            };
             [self.navigationController pushViewController:vcSubselection animated:YES];
         } else { // 无子项目
             if (tableView.allowsMultipleSelection) {
-                NSLog(@"%@", tableView.indexPathsForSelectedRows);
+                UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+                cell.accessoryType = UITableViewCellAccessoryCheckmark;
+                model.selected = YES;
+                cell.textLabel.font = [UIFont boldSystemFontOfSize:15.0];
+                
             } else {
-                [self.delegate selectionController:self didSelectSelectModel:model indexPath:self.indexPath];
+                if ([self.delegate respondsToSelector:@selector(selectionController:didSelectSelectStrings:)]) {
+                    [self.delegate selectionController:self didSelectSelectStrings:@[model.strText]];
+                }
                 [self.navigationController popViewControllerAnimated:YES];
             }
         }
     }
+}
+
+-(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath{
+    if (indexPath.row > 0) {
+        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        cell.accessoryType = UITableViewCellAccessoryNone;
+        QYSelectModel *model = _arrItems[indexPath.row - 1];
+        model.selected = NO;
+        cell.textLabel.font = [UIFont systemFontOfSize:15.0];
+    }
+}
+
+-(void)back:(UIBarButtonItem *)item{
+    if (self.tableView.allowsMultipleSelection) {
+        NSMutableArray *selectedStrings = [NSMutableArray array];
+        for (QYSelectModel *model in _arrItems) {
+            if (model.selected) {
+                [selectedStrings addObject:model.strText];
+            }
+        }
+        
+        if ([self.delegate respondsToSelector:@selector(selectionController:didSelectSelectStrings:)]) {
+            [self.delegate selectionController:self didSelectSelectStrings:selectedStrings];
+        }
+ 
+    }
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 @end

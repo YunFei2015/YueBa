@@ -15,7 +15,8 @@
 #import "QLProfileInfo.h"
 #import "QYProfileSectionModel.h"
 #import "QYCreateTextController.h"
-
+#import "ProfileCommon.h"
+#import "QYSelectModel.h"
 @interface QYProfileController () <UITableViewDataSource, UITableViewDelegate, QYSelectionControllerDelegate>
 {
     NSArray *_arrProfileInfos;
@@ -37,7 +38,7 @@
     _arrProfileInfos = [[QLProfileInfo sharedProfileInfo] arrProfileInfos];
     
     self.tableView.estimatedRowHeight = 80;
-    self.tableView.rowHeight = UITableViewAutomaticDimension;
+    //self.tableView.rowHeight = UITableViewAutomaticDimension;
 }
 
 #pragma mark - 🔌 Delegate Methods
@@ -63,6 +64,7 @@
         return cell;
     } else if (indexPath.section == 3 || indexPath.section == 4) {
         QYAutoHeightCell *cell = [QYAutoHeightCell cellWithTableView:tableView];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         QYProfileSectionModel *sectionModel = _arrProfileInfos[indexPath.section - 1];
         cell.autoHeightModel = sectionModel.arrModels[indexPath.row];
         return cell;
@@ -88,32 +90,34 @@
 
 #pragma mark UITableViewDelegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    NSLog(@"%s~%@", __FUNCTION__, indexPath);
+    //[tableView deselectRowAtIndexPath:indexPath animated:NO];
+    //NSLog(@"%s~%@", __FUNCTION__, indexPath);
     
     UIViewController *viewController = nil;
     if (indexPath.section == 1) {
+        QYNormalHeightCell *normalCell = [tableView cellForRowAtIndexPath:indexPath];
         switch (indexPath.row) {
             case 0:
-                viewController = [self selectionViewControllerWithSelectionType:QYSelectionTypeOccupation indexPath: indexPath];
+                viewController = [self selectionViewControllerWithSelectionType:QYSelectionTypeOccupation selectedString:normalCell.normalHeightModel.strContent createTextType:QYCreateTextTypeOccupation];
                 break;
             case 1:
-                viewController = [self selectionViewControllerWithSelectionType:QYSelectionTypeHometown indexPath: indexPath];
+                viewController = [self selectionViewControllerWithSelectionType:QYSelectionTypeHometown selectedString:normalCell.normalHeightModel.strContent createTextType:QYCreateTextTypeHometown];
                 break;
             case 2:
-                viewController = [self createTextViewControllerWithType:QYCreateTextTypeHaunt];
+                viewController = [self createTextViewControllerWithType:QYCreateTextTypeHaunt textContent:normalCell.normalHeightModel.strContent];
                 break;
             case 3:
-                viewController = [self createTextViewControllerWithType:QYCreateTextTypeSignature];
+                viewController = [self createTextViewControllerWithType:QYCreateTextTypeSignature textContent:normalCell.normalHeightModel.strContent];
                 break;
         }
     } else if (indexPath.section == 2) {
         if (indexPath.row == 0) {
-            viewController = [self createTextViewControllerWithType:QYCreateTextTypeWeChat];
+            QYNormalHeightCell *normalCell = [tableView cellForRowAtIndexPath:indexPath];
+            viewController = [self createTextViewControllerWithType:QYCreateTextTypeWeChat textContent:normalCell.normalHeightModel.strContent];
         }
     } else if (indexPath.section == 3) {
         if (indexPath.row == 0) {
-            viewController = [self selectionViewControllerWithSelectionType:QYSelectionTypePersonality indexPath: indexPath];
+            viewController = [self selectionViewControllerWithSelectionType:QYSelectionTypePersonality selectedString:nil createTextType:QYCreateTextTypeNone];
         }
     } else if (indexPath.section == 4) {
         QYSelectionType type;
@@ -139,7 +143,7 @@
             default:
                 break;
         }
-        viewController = [self selectionViewControllerWithSelectionType:type indexPath: indexPath];
+        viewController = [self selectionViewControllerWithSelectionType:type selectedString:nil createTextType:QYCreateTextTypeNone];
     }
     
     if (viewController) {
@@ -147,31 +151,41 @@
     }
 }
 #pragma mark QYSelectionControllerDelegate
-- (void)selectionController:(QYSelectionController *)selectionController didSelectSelectModel:(QYSelectModel *)selectModel indexPath:(NSIndexPath *)indexPath {
-    NSLog(@"%@", selectModel.strText);
-    QYProfileSectionModel *sectionModel = _arrProfileInfos[indexPath.section - 1];
-    if (indexPath.section == 1) { // NormalHeight cell
-        QYNormalHeightModel *normalHeightModel = sectionModel.arrModels[indexPath.row];
-        normalHeightModel.strContent = selectModel.strText;
-        [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationBottom];
-    } else if (indexPath.section == 3 || indexPath.section == 4) {
-        //QYAutoHeightModel *autoHeightModel = sectionModel.arrModels[indexPath.row];
+- (void)selectionController:(QYSelectionController *)selectionController didSelectSelectStrings:(NSArray *)selectStrings{
+    NSLog(@"%@", selectStrings);
+    NSIndexPath *selectedIndex = self.tableView.indexPathForSelectedRow;
+    QYProfileSectionModel *sectionModel = _arrProfileInfos[selectedIndex.section - 1];
+    if (selectedIndex.section == 1 || selectedIndex.section == 2) { // NormalHeight cell
+        QYNormalHeightModel *normalHeightModel = sectionModel.arrModels[selectedIndex.row];
+        normalHeightModel.strContent = selectStrings[0];
+        
+    } else if (selectedIndex.section == 3 || selectedIndex.section == 4) {
+        QYAutoHeightModel *autoHeightModel = sectionModel.arrModels[selectedIndex.row];
+        autoHeightModel.arrTags = selectStrings;
         
     }
+    [self.tableView reloadRowsAtIndexPaths:@[selectedIndex] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
 #pragma mark - Private
-- (UIViewController *)selectionViewControllerWithSelectionType:(QYSelectionType)type indexPath:(NSIndexPath *)indexPath {
+- (UIViewController *)selectionViewControllerWithSelectionType:(QYSelectionType)type selectedString:(NSString *)string createTextType:(QYCreateTextType)textType{
     QYSelectionController *viewController = [QYSelectionController new];
     viewController.type = type;
+    viewController.createTextType = textType;
     viewController.delegate = self;
-    viewController.indexPath = indexPath;
+    viewController.selectedString = string;
     return viewController;
 }
 
-- (QYCreateTextController *)createTextViewControllerWithType:(QYCreateTextType)type {
+- (QYCreateTextController *)createTextViewControllerWithType:(QYCreateTextType)type textContent:(NSString *)content{
     QYCreateTextController *vcCreateText = [QYCreateTextController new];
     vcCreateText.type = type;
+    vcCreateText.textContent = content;
+    
+    __weak QYProfileController *weakSelf = self;
+    vcCreateText.contentDidEndEdit = ^(QYSelectModel *model){
+        [weakSelf selectionController:nil didSelectSelectStrings:@[model.strText]];
+    };
     return vcCreateText;
 }
 
