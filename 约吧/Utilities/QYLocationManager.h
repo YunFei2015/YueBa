@@ -37,6 +37,11 @@
 -(void)startToUpdateLocation;
 
 /**
+ *  停止定位
+ */
+-(void)stopToUpdateLocation;
+
+/**
  *  地理编码
  *
  *  @param address 地址信息

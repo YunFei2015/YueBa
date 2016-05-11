@@ -11,7 +11,6 @@
 
 @interface QYNetworkManager ()
 @property (strong, nonatomic) AFHTTPSessionManager *manager;
-
 @end
 
 @implementation QYNetworkManager
@@ -33,15 +32,23 @@
     return _manager;
 }
 
-//TODO: 登录
 -(void)loginWithParameters:(NSDictionary *)params{
-    NSString *userId = params[kNetworkKeyTel];
-    NSDictionary *responseObject = @{kAccountKeyToken : @"token",
-                                     kAccountKeyUid : userId,
-                                     kAccountKeyUserInfo : @{kAccountKeyUid : userId}};
-    if ([self.delegate respondsToSelector:@selector(didFinishLogin:success:)]) {
-        [self.delegate didFinishLogin:responseObject success:YES];
-    }
+    [self.manager POST:[kBaseUrl stringByAppendingPathComponent:kLoginApi] parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if ([responseObject[kResponseKeySuccess] boolValue]) {
+            if ([self.delegate respondsToSelector:@selector(didFinishLogin:success:)]) {
+                [self.delegate didFinishLogin:responseObject success:YES];
+            }
+        }else{
+            if ([self.delegate respondsToSelector:@selector(didFinishLogin:success:)]) {
+                [self.delegate didFinishLogin:responseObject success:NO];
+            }
+        }
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        if ([self.delegate respondsToSelector:@selector(didFinishLogin:success:)]) {
+            [self.delegate didFinishLogin:nil success:NO];
+        }
+    }];
 }
 
 //注册
@@ -49,7 +56,7 @@
     NSString *url = [kBaseUrl stringByAppendingPathComponent:kRegisterApi];
     [self.manager POST:url parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSLog(@"%@", responseObject);
-        if ([responseObject[kResponseKeySuccess] integerValue] == 1) {
+        if ([responseObject[kResponseKeySuccess] boolValue]) {
             if ([self.delegate respondsToSelector:@selector(didFinishRegister:success:)]) {
                 [self.delegate didFinishRegister:responseObject success:YES];
             }
@@ -70,7 +77,7 @@
 -(void)getVerifyCodeWithParameters:(NSDictionary *)params{
     NSString *url = [kBaseUrl stringByAppendingPathComponent:kVerifyCodeApi];
     [self.manager POST:url parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if ([responseObject[kResponseKeySuccess] integerValue] == 1) {
+        if ([responseObject[kResponseKeySuccess] boolValue]) {
             if ([self.delegate respondsToSelector:@selector(didGetVerifyCode:success:)]) {
                 [self.delegate didGetVerifyCode:responseObject success:YES];
             }
@@ -108,6 +115,23 @@
     }
 }
 
-
+-(void)updateUserInfoWithParameters:(NSDictionary *)parameters{
+    NSString *url = [kBaseUrl stringByAppendingPathComponent:kUpdateUserInfoApi];
+    [self.manager POST:url parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if ([responseObject[kResponseKeySuccess] boolValue]) {
+            if ([self.delegate respondsToSelector:@selector(didUpdateUserInfo:success:)]) {
+                [self.delegate didUpdateUserInfo:responseObject success:YES];
+            }
+        }else{
+            if ([self.delegate respondsToSelector:@selector(didUpdateUserInfo:success:)]) {
+                [self.delegate didUpdateUserInfo:responseObject success:NO];
+            }
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        if ([self.delegate respondsToSelector:@selector(didUpdateUserInfo:success:)]) {
+            [self.delegate didUpdateUserInfo:nil success:NO];
+        }
+    }];
+}
 
 @end

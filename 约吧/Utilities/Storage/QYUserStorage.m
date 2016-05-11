@@ -79,7 +79,7 @@
 //    }
 //}
 
--(void)updateUserConversation:(AVIMKeyedConversation *)conversation forUserId:(NSString *)userId{
+-(void)updateUserConversation:(AVIMKeyedConversation *)conversation forUserId:(NSInteger)userId{
     //打开数据库
     if (![self.database open]) {
         NSLog(@"User database open failed when update user conversation!");
@@ -89,7 +89,7 @@
     //插入信息
     NSData *data = [NSKeyedArchiver archivedDataWithRootObject:conversation];
     NSLog(@"%d", self.database.open);
-    BOOL result = [self.database executeUpdate:@"update User set keyedConversation = ? where userId = ?", data, userId];
+    BOOL result = [self.database executeUpdate:@"update User set keyedConversation = ? where userId = ?", data, @(userId)];
     NSLog(@"%d", result);
     
     
@@ -99,7 +99,7 @@
     }
 }
 
--(void)updateUserLastMessageAt:(NSDate *)time forUserId:(NSString *)userId{
+-(void)updateUserLastMessageAt:(NSDate *)time forUserId:(NSInteger)userId{
     //打开数据库
     if (![self.database open]) {
         NSLog(@"User database open failed when update user lastMessageAt!");
@@ -108,7 +108,7 @@
     
     //插入信息
     NSLog(@"%d", self.database.open);
-    BOOL result = [self.database executeUpdate:@"update User set lastMessageAt = ? where userId = ?", time, userId];
+    BOOL result = [self.database executeUpdate:@"update User set lastMessageAt = ? where userId = ?", time, @(userId)];
     NSLog(@"%d", result);
     
     
@@ -118,7 +118,7 @@
     }
 }
 
--(void)updateUserMessageStatus:(QYMessageStatus)status forUserId:(NSString *)userId{
+-(void)updateUserMessageStatus:(QYMessageStatus)status forUserId:(NSInteger)userId{
     //打开数据库
     if (![self.database open]) {
         NSLog(@"User database open failed when update user message status!");
@@ -127,7 +127,7 @@
     
     //插入信息
     NSLog(@"%d", self.database.open);
-    BOOL result = [self.database executeUpdate:@"update User set messageStatus = ? where userId = ?", @(status), userId];
+    BOOL result = [self.database executeUpdate:@"update User set messageStatus = ? where userId = ?", @(status), @(userId)];
     NSLog(@"%d", result);
     
     
@@ -186,7 +186,7 @@
 }
 
 //删除指定用户
--(void)deleteUser:(NSString *)userId{
+-(void)deleteUser:(NSInteger)userId{
     //打开数据库
     if (![self.database open]) {
         NSLog(@"User database open failed when delete user!");
@@ -194,7 +194,7 @@
     }
     
     //创建sql语句
-    NSString *sql = [NSString stringWithFormat:@"delete from %@ where %@ = %@", kUserTable, kUserId, userId];\
+    NSString *sql = [NSString stringWithFormat:@"delete from %@ where %@ = %ld", kUserTable, kUserId, userId];\
     
     //执行sql
     BOOL result = [self.database executeUpdate:sql];
@@ -207,7 +207,7 @@
     
 }
 
--(QYUserInfo *)getUserForId:(NSString *)userId{
+-(QYUserInfo *)getUserForId:(NSInteger)userId{
     //打开数据库
     if (![self.database open]) {
         NSLog(@"User database open failed when select user!");
@@ -215,7 +215,7 @@
     }
     
     //创建sql语句
-    NSString *sql = [NSString stringWithFormat:@"select * from %@ where %@ = %@", kUserTable, kUserId, userId];
+    NSString *sql = [NSString stringWithFormat:@"select * from %@ where %@ = %ld", kUserTable, kUserId, userId];
     FMResultSet *result = [self.database executeQuery:sql];
     QYUserInfo *user;
     while ([result next]) {
@@ -370,7 +370,7 @@
     }
     
     //创建表
-    NSString *sql = [NSString stringWithFormat:@"create table if not exists %@(%@ TEXT PRIMARY KEY, %@ TEXT, %@ INTEGER, %@ BOOL, %@ TEXT, %@ INTEGER, %@ BLOB, %@ INTEGER, %@ INTEGER)", kUserTable, kUserId, kUserName, kUserAge, kUserSex, kUserIconUrl, kUserMatchTime, @"keyedConversation", @"lastMessageAt", @"messageStatus"];
+    NSString *sql = [NSString stringWithFormat:@"create table if not exists %@(%@ INTEGER PRIMARY KEY, %@ TEXT, %@ INTEGER, %@ BOOL, %@ TEXT, %@ INTEGER, %@ BLOB, %@ INTEGER, %@ INTEGER)", kUserTable, kUserId, kUserName, kUserAge, kUserSex, kUserIconUrl, kUserMatchTime, @"keyedConversation", @"lastMessageAt", @"messageStatus"];
     NSLog(@"create User table sql : %@", sql);
     [self.database executeUpdate:sql];
     

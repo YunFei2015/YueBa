@@ -178,7 +178,8 @@
                     [datasFromNet addObject:obj];
                     
                     //如果网络有，本地没有，则插入到本地
-                    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.userId MATCHES %@" argumentArray:@[user.userId]];
+//                    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.userId MATCHES %@" argumentArray:@[@(user.userId)]];
+                    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.userId == %ld", user.userId];
                     NSArray *results = [_datas filteredArrayUsingPredicate:predicate];
                     if (results.count <= 0) {
 //                        [_datas insertObject:user atIndex:idx];
@@ -191,7 +192,8 @@
                 [_datas enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                     //如果本地有，网络没有，则删除本地
                     QYUserInfo *user = (QYUserInfo *)obj;
-                    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.userId MATCHES %@" argumentArray:@[user.userId]];
+//                    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.userId MATCHES %@" argumentArray:@[@(user.userId)]];
+                    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.userId == %ld", user.userId];
                     NSArray *results = [datasFromNet filteredArrayUsingPredicate:predicate];
                     if (results.count <= 0) {
                         [[QYUserStorage sharedInstance] deleteUser:user.userId];
@@ -216,9 +218,9 @@
 -(void)didReceiveMessage:(AVIMTypedMessage *)message inConversation:(AVIMConversation *)conversation{
     //TODO: 新添加的好友，第一次发消息给我的情况
     [conversation.members enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if (![[QYAccount currentAccount].userId isEqualToString:obj]) {
-            NSString *userId = (NSString *)obj;
-            QYUserInfo *user = [[QYUserStorage sharedInstance] getUserForId:userId];
+        NSString *userId = (NSString *)obj;
+        if (userId.integerValue != [QYAccount currentAccount].userId) {
+            QYUserInfo *user = [[QYUserStorage sharedInstance] getUserForId:userId.integerValue];
             
             //如果当前在会话界面，则更新UI
             if (_segmentControl.selectedSegmentIndex == 1) {

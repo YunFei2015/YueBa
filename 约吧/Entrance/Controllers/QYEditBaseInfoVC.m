@@ -9,19 +9,20 @@
 #import "QYEditBaseInfoVC.h"
 #import "QYUserInfo.h"
 #import "QYImagesPicker.h"
+#import "QYNetworkManager.h"
 #import "NSDate+Extension.h"
 #import "AppDelegate.h"
 
 #import <SVProgressHUD.h>
 
-@interface QYEditBaseInfoVC () <QYImagesPickerDelegate>
+@interface QYEditBaseInfoVC () <QYImagesPickerDelegate, QYNetworkDelegate>
 @property (weak, nonatomic  ) IBOutlet UIImageView  *iconImageView;
 @property (weak, nonatomic  ) IBOutlet UITextField  *nameTf;
 @property (weak, nonatomic  ) IBOutlet UITextField  *birthdayTf;
 @property (strong, nonatomic) UIView       *birthdayInputView;
 @property (strong, nonatomic) UIDatePicker *datePicker;
 @property (strong, nonatomic) NSDate       *birthday;
-@property (nonatomic        ) BOOL         isWoman;
+@property (strong, nonatomic) NSString     *sex;
 @end
 
 @implementation QYEditBaseInfoVC
@@ -30,12 +31,12 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     _birthdayTf.inputView = self.birthdayInputView;
+    _sex = @"M";
 }
 
 #pragma mark - Events
 - (IBAction)leftBarButtonItemAction:(UIBarButtonItem *)sender {
-    //TODO: 提示用户：若不编辑基本信息，系统将会屏蔽该用户
-    UIAlertController *controller = [UIAlertController alertControllerWithTitle:@"警告" message:@"若跳过此页，系统将会将您屏蔽，确定要跳过吗？" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *controller = [UIAlertController alertControllerWithTitle:@"跳过" message:@"若跳过此页，系统将会将您屏蔽，确定要跳过吗？" preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         //确定跳过，切换到主页
         [self presentToHomeViewController];
@@ -56,19 +57,17 @@
         [SVProgressHUD showErrorWithStatus:kEditBaseInfo];
     }else{
         [SVProgressHUD showWithStatus:kCommitBaseInfo];
-        //TODO: 网络请求
+
+        //网络请求
+        NSMutableDictionary *parameters = [[QYAccount currentAccount] accountParameters];
+        [parameters setObject:_nameTf.text forKey:kUserName];
+        [parameters setObject:_sex forKey:kUserSex];
         
+        [QYNetworkManager sharedInstance].delegate = self;
+        [[QYNetworkManager sharedInstance] updateUserInfoWithParameters:parameters];
         
-        //获取默认的筛选条件
-        QYUserInfo *myInfo = [QYAccount currentAccount].myInfo;
-        [[NSUserDefaults standardUserDefaults] setBool:!myInfo.isMan forKey:kFilterKeySex];
-        [[NSUserDefaults standardUserDefaults] setInteger:5 forKey:kFilterKeyDistance];
-        [[NSUserDefaults standardUserDefaults] setInteger:16 forKey:kFilterKeyMinAge];
-        [[NSUserDefaults standardUserDefaults] setInteger:55 forKey:kFilterKeyMinAge];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        
-         //若成功，跳转到主页
-        [self presentToHomeViewController];
+        //显示正在加载
+        [SVProgressHUD show];
     }
 }
 
@@ -82,7 +81,7 @@
     [_nameTf resignFirstResponder];
     [_birthdayTf resignFirstResponder];
     
-    _isWoman = sender.selectedSegmentIndex;
+    _sex = sender.selectedSegmentIndex == 0 ? @"M" : @"F";
 }
 
 //选择出生日期
@@ -94,6 +93,38 @@
 - (IBAction)selectPhoto:(UITapGestureRecognizer *)sender {
     [QYImagesPicker sharedInstance].delegate = self;
     [[QYImagesPicker sharedInstance] selectImageWithViewController:self];
+}
+
+#pragma mark - QYNetworkManager Delegate
+-(void)didUpdateUserInfo:(id)responseObject success:(BOOL)success{
+    if (success) {
+        [SVProgressHUD dismiss];
+        
+        //保存登录信息
+        [[QYAccount currentAccount] saveAccount:responseObject[kResponseKeyData]];
+        
+        //设置默认的筛选条件
+        if ([_sex isEqualToString:@"F"]) {
+            [[NSUserDefaults standardUserDefaults] setObject:@"M" forKey:kFilterKeySex];
+        }else{
+            [[NSUserDefaults standardUserDefaults] setObject:@"F" forKey:kFilterKeySex];
+        }
+    
+        [[NSUserDefaults standardUserDefaults] setInteger:5 forKey:kFilterKeyDistance];
+        [[NSUserDefaults standardUserDefaults] setInteger:16 forKey:kFilterKeyMinAge];
+        [[NSUserDefaults standardUserDefaults] setInteger:55 forKey:kFilterKeyMaxAge];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        //若成功，跳转到主页
+        [self presentToHomeViewController];
+    }else{
+        //提示用户更新失败，说明失败原因
+        if (responseObject) {
+            [SVProgressHUD showErrorWithStatus:responseObject[kResponseKeyError]];
+        }else{
+            [SVProgressHUD showErrorWithStatus:kNetworkFail];
+        }
+    }
 }
 
 #pragma mark - Custom Methods
@@ -127,16 +158,5 @@
     }
     return _birthdayInputView;
 }
-
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

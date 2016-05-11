@@ -13,6 +13,8 @@
 #import "QYUserInfo.h"
 #import "QYLocationManager.h"
 #import "QYChatManager.h"
+#import "QYUserStorage.h"
+#import "QYSoundAlert.h"
 
 #import "QYHomeVC.h"
 
@@ -31,8 +33,6 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-    _nearbyUsers = [NSMutableArray array];
-    [self updateLocation];
     
     //Bugtags
     [Bugtags startWithAppKey:@"e827b69f5adfec0463738ac7521f7824" invocationEvent:BTGInvocationEventBubble];
@@ -40,9 +40,9 @@
     //AVOSCloud
     [AVOSCloud setApplicationId:@"aMH46TYlke0QkgVqjDCFOWfW-gzGzoHsz"
                       clientKey:@"wAHzxY32rrdxx0JVB1VM2BWo"];
-//    if (![UIApplication sharedApplication].isRegisteredForRemoteNotifications) {
+    if (![UIApplication sharedApplication].isRegisteredForRemoteNotifications) {
         [AVOSCloud registerForRemoteNotification];
-//    }
+    }
     
     
     //百度地图
@@ -53,14 +53,13 @@
         NSLog(@"manager start failed!");
     }
     
+    _nearbyUsers = [NSMutableArray array];
     //判断用户是否已登录
     BOOL isLogin = [[QYAccount currentAccount] isLogin];
     if (!isLogin) {
         [self setRootViewControllerToEntrance];
     }else{
-        //leanCloud上线
-        NSString *userId = [QYAccount currentAccount].userId;
-        [QYChatManager sharedManager].client = [[AVIMClient alloc] initWithClientId:userId];
+        [self setRootViewControllerToHome];
     }
     
     //如果应用是通过通知打开的
@@ -75,6 +74,17 @@
 }
 
 -(void)setRootViewControllerToHome{
+    NSInteger userId = [QYAccount currentAccount].userId;
+    [QYChatManager sharedManager].client = [[AVIMClient alloc] initWithClientId:@(userId).stringValue];
+    
+    //开始定位
+    [_nearbyUsers removeAllObjects];
+    [self updateLocation];
+    
+    if ([_window.rootViewController isKindOfClass:[SWRevealViewController class]]) {
+        return;
+    }
+    
     UIStoryboard *homeStoryboard = [UIStoryboard storyboardWithName:kHomeStoryboard bundle:nil];
     SWRevealViewController *revealVC = [homeStoryboard instantiateViewControllerWithIdentifier:kRevealVCIdentifier];
     self.window.rootViewController = revealVC;
@@ -103,15 +113,13 @@
     }else{
         NSLog(@"定位失败，请打开定位服务");
     }
-    
 }
 
 #pragma mark - 推送相关
 -(void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken{
     AVInstallation *installation = [AVInstallation currentInstallation];
     [installation setDeviceTokenFromData:deviceToken];
-    [installation setObject:[QYAccount currentAccount].userId forKey:@"userId"];
-//    [installation setChannels:@[[QYAccount currentAccount].userId]];
+    [installation setObject:@([QYAccount currentAccount].userId) forKey:@"userId"];
     [installation saveInBackground];
 }
 
@@ -123,6 +131,11 @@
 //当应用在后台时，通过点击通知进入前台，也 会调用该方法
 -(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(nonnull void (^)(UIBackgroundFetchResult))completionHandler{
     NSLog(@"%@", userInfo);
+    
+    //如果app在前台运行，播放提示音
+    if (application.applicationState == UIApplicationStateActive) {
+        [[QYSoundAlert sharedInstance] play];
+    }
     
     //如果是添加好友成功的通知
     if ([userInfo.allKeys containsObject:kUserName]) {
@@ -136,12 +149,15 @@
         UINavigationController *nav = (UINavigationController *)revealVC.frontViewController;
         if ([nav.topViewController isKindOfClass:[QYHomeVC class]]) {
             QYUserInfo *user = [[QYUserInfo alloc] init];
-            user.userId = userInfo[kUserId];
+            user.userId = [userInfo[kUserId] integerValue];
             user.name = userInfo[kUserName];
             user.iconUrl = userInfo[kUserIconUrl];
             [nav.topViewController presentToNewFriendControllerForUser:user];
         }
     }
+    
+    //TODO: 储存到本地
+    
 }
 
 -(void)clearBadge:(UIApplication *)application{

@@ -10,8 +10,8 @@
 @class AVIMKeyedConversation;
 
 @interface QYUserInfo : NSObject
-@property (strong, nonatomic) NSString *userId;
-@property (nonatomic) BOOL isMan;
+@property (nonatomic) NSInteger userId;
+@property (strong, nonatomic) NSString *sex;
 @property (nonatomic) NSInteger age;
 @property (strong, nonatomic) NSString *iconUrl;
 @property (strong, nonatomic) NSString *name;

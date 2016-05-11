@@ -125,7 +125,7 @@ static NSString * const kMARKRangeSliderTrackRangeImage = @"rangeSliderTrackRang
     CGFloat width = CGRectGetWidth(self.frame);
     CGFloat height = CGRectGetHeight(self.frame);
 
-    CGFloat trackHeight = _trackImage.size.height;
+//    CGFloat trackHeight = _trackImage.size.height;
 
     CGSize leftThumbImageSize = self.leftThumbImageView.image.size;
     CGSize rightThumbImageSize = self.rightThumbImageView.image.size;
@@ -152,7 +152,7 @@ static NSString * const kMARKRangeSliderTrackRangeImage = @"rangeSliderTrackRang
         rightX = 0.0;
     }
 
-    CGFloat trackY = (height - trackHeight) / 2;
+//    CGFloat trackY = (height - trackHeight) / 2;
     CGFloat gap = 1.0;
 
     // Set track frame

@@ -198,7 +198,6 @@
 //暂停录音
 - (IBAction)touchDragExitAction:(UIButton *)sender {
     //当手指从按钮内部拖动到外部，暂停录音
-#warning //TODO: 准备取消录音的界面提示
     if (self.isRecording) {
         if ([self.delegate respondsToSelector:@selector(didPauseRecording)]) {
             [self.delegate didPauseRecording];
@@ -256,8 +255,7 @@
     _talkBtn.hidden = YES;
     if (_messageTextView.isFirstResponder) {
         [UIView animateWithDuration:0 animations:^{
-#warning //FIXME: 自定义键盘的crash问题
-            [_messageTextView reloadInputViews];
+        [_messageTextView reloadInputViews];
         }];
     }else{
         [_messageTextView becomeFirstResponder];

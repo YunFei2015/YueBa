@@ -40,12 +40,12 @@ typedef void(^QYFindConversationsCompletion)(NSArray *conversations);
  *
  *  @param userId 好友ID
  */
--(void)findConversationWithUser:(NSString *)userId;
+-(void)findConversationWithUser:(NSInteger)userId;
 -(void)findConversationsOnCacheWithCompletion:(QYFindConversationsCompletion)findConversationsCompletion;
 //-(void)findConversationForId:(NSString *)conversationId withCompletion:(QYFindConversationCompletion)findConversationCompletion;
 -(AVIMConversation *)conversationFromKeyedConversation:(AVIMKeyedConversation *)keyedConversation;
 -(void)sendTextMessage:(NSString *)message withConversation:(AVIMConversation *)conversation;
--(void)sendVoiceMessageWithConversation:(AVIMConversation *)conversation;
+-(void)sendVoiceMessageWithDuration:(NSTimeInterval)duration withConversation:(AVIMConversation *)conversation;
 -(void)sendImageMessageWithData:(NSData *)data withConversation:(AVIMConversation *)conversation;
 -(void)sendLocationMessageWithAnnotation:(QYPinAnnotation *)annotation withConversation:(AVIMConversation *)conversation;
 //-(void)queryMessagesFromServerWithConversation:(AVIMConversation *)conversation beforeId:(NSString *)messageId limit:(NSInteger)limit;

@@ -13,7 +13,7 @@ typedef BOOL(^QYPrepareRecorderCompletion)();
 typedef void(^QYStartRecorderCompletion)();
 typedef void(^QYPauseRecorderCompletion)();
 typedef void(^QYContinueRecorderCompletion)();
-typedef void(^QYStopRecorderCompletion)();
+typedef void(^QYStopRecorderCompletion)(NSTimeInterval duration);
 typedef void(^QYCancelRecorderCompletion)();
 typedef void(^QYPeakPowerForChannel)(float peakPowerForChannel);
 

@@ -37,6 +37,7 @@
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *rightBarButtonItem;
 @property (weak, nonatomic) IBOutlet UIButton *dislikeBtn;
 @property (weak, nonatomic) IBOutlet UIButton *likeBtn;
+@property (weak, nonatomic) IBOutlet UIButton *detailBtn;
 @property (weak, nonatomic) IBOutlet QYHomeAnimationView *animationView;
 @property (strong, nonatomic) QYHomeSearchView *searchView;
 
@@ -71,8 +72,6 @@
     }
 }
 
-
-
 #pragma mark - Custom Methods
 -(void)configSubView{
     _searchView = [[QYHomeSearchView alloc] initWithFrame:CGRectMake(0, 64, kScreenW, kScreenH)];
@@ -80,11 +79,15 @@
     
     _dislikeBtn.layer.borderColor = [UIColor lightGrayColor].CGColor;
     _dislikeBtn.layer.borderWidth = 1;
-    _dislikeBtn.layer.cornerRadius = 50;
+    _dislikeBtn.layer.cornerRadius = _dislikeBtn.frame.size.width / 2.f;;
     
     _likeBtn.layer.borderColor = [UIColor redColor].CGColor;
     _likeBtn.layer.borderWidth = 1;
-    _likeBtn.layer.cornerRadius = 50;
+    _likeBtn.layer.cornerRadius = _likeBtn.frame.size.width / 2.f;;
+    
+    _detailBtn.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    _detailBtn.layer.borderWidth = 1;
+    _detailBtn.layer.cornerRadius = _detailBtn.frame.size.width / 2.f;
     
     _animationView.delegate = self;
     
@@ -112,6 +115,14 @@
 - (IBAction)likeAction:(UIButton *)sender {
     [_animationView selectLikeOnce:like];
 }
+
+//显示用户详情
+- (IBAction)showDetail:(UIButton *)sender {
+    UIStoryboard *sbProfile = [UIStoryboard storyboardWithName:@"QYProfile" bundle:nil];
+    UIViewController *vcInitial = [sbProfile instantiateInitialViewController];
+    [self.navigationController pushViewController:vcInitial animated:YES];
+}
+
 
 #pragma mark - DanimationPro
 -(void)ChangeValueType:(ENLIKETYPE)type{
@@ -151,39 +162,30 @@
     
     BOOL beLiked = YES;
     if (isLike == like) {
-        if (beLiked) {//如果双方互相喜欢，则弹出新好友界面
+        if (beLiked) {//如果双方互相喜欢
             
             //TODO:存入数据库
             
             //向对方发送推送消息
-//            NSDictionary *data = @{
-//                                   @"alert":             @"你有新朋友了！", //显示内容
-//                                   @"badge":             @"Increment", //应用图标显示未读消息个数是递增当前值
-//                                   @"sound":             @"sms-received1.caf", //提示音
-//                                   @"content-available": @"1",
-//                                   kUserId:            user.userId, //用户Id
-//                                   kUserIconUrl:           user.iconUrl, //用户头像url
-//                                   kUserName:          user.name //用户姓名
-//                                   };
-//            [AVPush sendPushDataToChannelInBackground:user.userId withData:data];
-            
             AVQuery *query = [AVInstallation query];
-            [query whereKey:@"userId" equalTo:user.userId];
+            [query whereKey:@"userId" equalTo:@(user.userId)];
             
             NSDictionary *data = @{
                                    @"alert":             @"你有新朋友了！", //显示内容
                                    @"badge":             @"Increment", //应用图标显示未读消息个数是递增当前值
                                    @"sound":             @"sms-received1.caf", //提示音
                                    @"content-available": @"1",
-                                   kUserId:              user.userId, //用户Id
+                                   kUserId:              @(user.userId), //用户Id
                                    kUserIconUrl:         user.iconUrl, //用户头像url
                                    kUserName:            user.name //用户姓名
                                    };
             AVPush *push = [[AVPush alloc] init];
+            [push expireAfterTimeInterval:60*60*24*7];//过期时间1 week，如果用户网络不可用，保证在网络恢复时还能收到通知
             [push setQuery:query];
             [push setData:data];
             [push sendPushInBackground];
             
+            //弹出新好友界面
             [self presentToNewFriendControllerForUser:user];
         }
 //        else{//如果对方不喜欢自己，则发送推送消息
@@ -263,13 +265,6 @@
         };
     }
     return _appDelegate;
-}
-
-
-- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    UIStoryboard *sbProfile = [UIStoryboard storyboardWithName:@"QYProfile" bundle:nil];
-    UIViewController *vcInitial = [sbProfile instantiateInitialViewController];
-    [self.navigationController pushViewController:vcInitial animated:YES];
 }
 
 @end

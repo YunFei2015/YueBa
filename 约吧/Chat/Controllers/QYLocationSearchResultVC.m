@@ -93,6 +93,7 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     BMKPoiInfo *info = _results[indexPath.row];
+    //TODO: 改成用block块
     [[NSNotificationCenter defaultCenter] postNotificationName:kAddressToLocateNotification object:self userInfo:@{@"info" : info}];
 }
 

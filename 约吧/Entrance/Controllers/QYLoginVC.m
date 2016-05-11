@@ -47,51 +47,36 @@
 
 -(void)didFinishLogin:(id)responseObject success:(BOOL)success{
     if (success) {
-        //TODO: 保存登录信息
-        [[QYAccount currentAccount] saveAccount:responseObject];
+        [[QYAccount currentAccount] saveAccount:responseObject[kResponseKeyData]];
         
-        //获取用户的筛选条件
+        //设置用户默认的筛选条件
         QYUserInfo *myInfo = [QYAccount currentAccount].myInfo;
-        [[NSUserDefaults standardUserDefaults] setBool:!myInfo.isMan forKey:kFilterKeySex];
+        if ([myInfo.sex isEqualToString:@"F"]) {
+            [[NSUserDefaults standardUserDefaults] setObject:@"M" forKey:kFilterKeySex];
+        }else{
+            [[NSUserDefaults standardUserDefaults] setObject:@"F" forKey:kFilterKeySex];
+        }
+        
         [[NSUserDefaults standardUserDefaults] setInteger:5 forKey:kFilterKeyDistance];
         [[NSUserDefaults standardUserDefaults] setInteger:16 forKey:kFilterKeyMinAge];
-        [[NSUserDefaults standardUserDefaults] setInteger:55 forKey:kFilterKeyMinAge];
+        [[NSUserDefaults standardUserDefaults] setInteger:55 forKey:kFilterKeyMaxAge];
         [[NSUserDefaults standardUserDefaults] synchronize];
+
         
-        //leanCloud上线
-        NSString *userId = [QYAccount currentAccount].userId;
-        [QYChatManager sharedManager].client = [[AVIMClient alloc] initWithClientId:userId];
-        [[QYChatManager sharedManager].client openWithCallback:^(BOOL succeeded, NSError *error) {
-            if (error) {
-                NSLog(@"client open failed : %@", error);
-                return;
-            }
-            [self dismissViewControllerAnimated:YES completion:^{}];
-            
-            //更改当前应用的根视图控制器
-            AppDelegate *app = [UIApplication sharedApplication].delegate;
-            [app setRootViewControllerToHome];
-        }];
+        
+        //更改当前应用的根视图控制器
+        AppDelegate *app = [UIApplication sharedApplication].delegate;
+        [app setRootViewControllerToHome];
+        
+        [self dismissViewControllerAnimated:YES completion:^{}];
     }else{
         if (responseObject) {
-            [SVProgressHUD showErrorWithStatus:responseObject[kResponseKeyData]];
+            [SVProgressHUD showErrorWithStatus:responseObject[kResponseKeyError]];
         }else{
             [SVProgressHUD showErrorWithStatus:kNetworkFail];
         }
         
     }
 }
-
-
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

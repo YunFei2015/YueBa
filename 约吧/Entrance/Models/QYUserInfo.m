@@ -14,40 +14,42 @@
 -(instancetype)initWithDictionary:(NSDictionary *)dict{
     self = [super init];
     if (self) {
-        _userId = dict[kNetworkKeyUserId];
-        _isMan = dict[@"sex"];
-        _age = [dict[@"age"] integerValue];
-        _iconUrl = dict[@"iconUrl"];
-        _name = dict[@"name"];
-        _matchTime = [NSDate dateWithTimeIntervalSince1970:[dict[@"matchTime"] integerValue]];
-        
-        if (dict[@"keyedConversation"] == nil || dict[@"keyedConversation"] == [NSNull null]) {
-            _keyedConversation = nil;
+        _userId = [dict[kUserId] integerValue];
+        _sex = [dict objectForKey:kUserSex];
+        _age = [[dict objectForKey:kUserAge] integerValue];
+        _iconUrl = [dict objectForKey: kUserIconUrl];
+        _name = [dict objectForKey:kUserName];
+        if ([dict objectForKey:kUserMatchTime]) {
+            _matchTime = [NSDate dateWithTimeIntervalSince1970:[[dict objectForKey:kUserMatchTime] integerValue]];
         }else{
-            _keyedConversation = dict[@"keyedConversation"];
+            _matchTime = nil;
         }
         
-        if (dict[@"lastMessageAt"] == nil || dict[@"lastMessageAt"] == [NSNull null]) {
-            _lastMessageAt = nil;
+        _keyedConversation = [dict objectForKey:@"keyedConversation"];
+        _lastMessageAt = [dict objectForKey:@"lastMessageAt"];
+        
+        NSNumber *messageStatus = [dict objectForKey:@"messageStatus"];
+        if (messageStatus) {
+            switch ([dict[@"messageStatus"] integerValue]) {
+                case 0:
+                    _messageStatus = QYMessageStatusDefault;
+                    break;
+                    
+                case 1:
+                    _messageStatus = QYMessageStatusUnread;
+                    break;
+                    
+                case 2:
+                    _messageStatus = QYMessageStatusFailed;
+                    break;
+                    
+                default:
+                    break;
+            }
         }else{
-            _lastMessageAt = dict[@"lastMessageAt"];
+            _messageStatus = -1;
         }
         
-        switch ([dict[@"messageStatus"] integerValue]) {
-            case 0:
-                _messageStatus = QYMessageStatusDefault;
-                break;
-
-            case 1:
-                _messageStatus = QYMessageStatusUnread;
-                break;
-                
-            case 2:
-                _messageStatus = QYMessageStatusFailed;
-                break;
-            default:
-                break;
-        }
         
     }
     return self;

@@ -81,8 +81,6 @@
     
     //开始计时，60s
     _second = kMsmCodeSeconds;
-    //    _countDownLabel.text = [NSString stringWithFormat:@"%ld秒后可重新发送验证码", _second];
-    //    _countDownLabel.hidden = NO;
     _countDownTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(countDown60s) userInfo:nil repeats:YES];
     
     //请求获取验证码
@@ -141,15 +139,6 @@
 
         return;
     }
-    
-//    if ([_verifyCodeTf isFirstResponder]) {
-//        if ([_verifyCodeTf.text isEqualToString:@""]) {
-//            [_nextItem setEnabled:NO];
-//        }else{
-//            [_nextItem setEnabled:YES];
-//        }
-//        return;
-//    }
 }
 
 #pragma mark - Custom Methods
@@ -160,13 +149,11 @@
     if (_second == 0) {//60s倒计时结束
         [_countDownTimer invalidate];
         _countDownTimer = nil;
-//        _countDownLabel.hidden = YES;
         _getVerifyCodeBtn.codeState = kVerifyCodeStateReGet;//标记为重新获取验证码状态
         return;
     }
     
     [_getVerifyCodeBtn setTitle:[NSString stringWithFormat:@"%lds", _second] forState:UIControlStateDisabled];
-//     _countDownLabel.text = [NSString stringWithFormat:@"%ld秒后可重新发送验证码", _second];
 }
 
 #pragma mark - QYNetwork Delegate
@@ -188,20 +175,21 @@
         //提示用户注册成功
         [SVProgressHUD showSuccessWithStatus:kRegisterSuccess];
         
-        //TODO: 保存登录信息
-        //            NSDictionary *data = responseObject[kResponseKeyData];
-        //            NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:data[kAccountKeyToken], kAccountKeyToken, data[kAccountKeyUid], kAccountKeyUid, nil];
-        //            [[QYAccount currentAccount] saveAccount:dict];
+        //保存登录信息
+        NSDictionary *data = responseObject[kResponseKeyData];
+//        NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:data[kAccountKeyToken], kAccountKeyToken, data[kAccountKeyUid], kAccountKeyUid, nil];
+        [[QYAccount currentAccount] saveAccount:data];
+        
         //leanCloud上线
-        NSString *userId = [QYAccount currentAccount].userId;
-        [QYChatManager sharedManager].client = [[AVIMClient alloc] initWithClientId:userId];
+        NSInteger userId = [QYAccount currentAccount].userId;
+        [QYChatManager sharedManager].client = [[AVIMClient alloc] initWithClientId:@(userId).stringValue];
         [[QYChatManager sharedManager].client openWithCallback:^(BOOL succeeded, NSError *error) {
             if (error) {
                 NSLog(@"client open failed : %@", error);
                 return;
             }
             //进入下一界面
-            NSNumber *userId = responseObject[kResponseKeyData][kNetworkKeyUserId];
+            NSNumber *userId = responseObject[kResponseKeyData][kUserId];
             UIViewController *baseInfoVC = [self.storyboard instantiateViewControllerWithIdentifier:kUserBaseInfo];
             [baseInfoVC setValue:userId forKey:@"userId"];
             [self.navigationController pushViewController:baseInfoVC animated:YES];
@@ -217,26 +205,6 @@
         
     }
 }
-
-#pragma mark - Navigation
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-//- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-//    // Get the new view controller using [segue destinationViewController].
-//    // Pass the selected object to the new view controller.
-//    
-//    
-//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-//    NSString *url = [kBaseUrl stringByAppendingPathComponent:kRegisterApi];
-//    NSDictionary *parames = @{@"telephone" : _telNumberTf.text,
-//                              @"password" : _passwdTf.text,
-//                              @"msmCoden" : _verifyCodeTf.text};
-//    [manager POST:url parameters:parames progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-//        NSLog(@"%@", responseObject);
-//    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-//        NSLog(@"%@", error);
-//    }];
-//    
-//}
 
 
 @end

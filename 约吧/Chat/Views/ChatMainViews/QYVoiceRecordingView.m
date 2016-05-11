@@ -42,7 +42,6 @@
 }
 
 -(void)setPeakPower:(float)peakPower{
-#warning //TODO: 音量峰值更新
     NSLog(@"peakPowerValue：%f", peakPower);
     for (int i = 0; i < 8; i++) {
         float j = (i + 1) / 10.f;

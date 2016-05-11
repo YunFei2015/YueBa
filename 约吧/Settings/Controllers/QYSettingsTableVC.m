@@ -10,6 +10,7 @@
 #import "QYAccount.h"
 #import "AppDelegate.h"
 #import "QYNetworkManager.h"
+#import "QYLocationManager.h"
 #import "QYAgeRangeCell.h"
 #import <Masonry.h>
 #import <AVFile.h>
@@ -56,8 +57,19 @@
     _logoutBtn.layer.borderWidth = .5f;
     
     
-    [_manSw setOn:[[NSUserDefaults standardUserDefaults] boolForKey:kFilterKeySex]];
-    [_womanSw setOn:!_manSw.on];
+    NSString *sex = [[NSUserDefaults standardUserDefaults] objectForKey:kFilterKeySex];
+    if ([sex isEqualToString:@"F"]) {
+        [_manSw setOn:NO];
+        [_womanSw setOn:YES];
+    }else if ([sex isEqualToString:@"M"]){
+        [_manSw setOn:YES];
+        [_womanSw setOn:NO];
+    }else{
+        [_manSw setOn:YES];
+        [_womanSw setOn:YES];
+    }
+    
+    
     _distanceSlider.value = [[NSUserDefaults standardUserDefaults] floatForKey:kFilterKeyDistance];
     [_vibrateSw setOn:[[NSUserDefaults standardUserDefaults] boolForKey:@"vibrate"]];
     [_previewSw setOn:[[NSUserDefaults standardUserDefaults] boolForKey:@"preview"]];
@@ -73,18 +85,38 @@
 
 - (IBAction)logout:(UIButton *)sender {
     [[QYAccount currentAccount] logout];
+    
+    //停止定位
+    [[QYLocationManager sharedInstance] stopToUpdateLocation];
+    
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kFilterKeySex];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kFilterKeyMinAge];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kFilterKeyMaxAge];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kFilterKeyDistance];
     AppDelegate *app = [UIApplication sharedApplication].delegate;
     [app setRootViewControllerToEntrance];
 }
 
 - (IBAction)selectSexAction:(UISwitch *)sender {
+    //两个性别必须有一个选中
     if (sender == _manSw) {
-        [_womanSw setOn:!sender.isOn animated:YES];
+        if (!sender.isOn) {
+            [_womanSw setOn:YES animated:YES];
+        }
     }else{
-        [_manSw setOn:!sender.isOn animated:YES];
+        if (!sender.isOn) {
+            [_manSw setOn:YES animated:YES];
+        }
     }
     
-    [[NSUserDefaults standardUserDefaults] setBool:_manSw.on forKey:kFilterKeySex];
+    NSString *sex = [NSString string];
+    if (_manSw.isOn && _womanSw.isOn) {
+        sex = @"FM";
+    }else{
+        sex = _manSw.isOn ? @"M" : @"F";
+    }
+    
+    [[NSUserDefaults standardUserDefaults] setObject:sex forKey:kFilterKeySex];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 

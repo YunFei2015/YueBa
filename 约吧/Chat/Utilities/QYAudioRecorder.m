@@ -114,16 +114,20 @@
 }
 
 -(void)startToRecordWithStartRecorderCompletion:(QYStartRecorderCompletion)startRecorderCompletion{
+    if (_recorder.isRecording) {
+        [_recorder stop];
+    }
+    
     if ([_recorder record]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self resetTimer];
-#warning //???: 为什么只调用了一次？原因是：NSTimer被加到了当前runloop上，因此需要派发到主线程上执行
             self.timer = [NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(updatePowerValue) userInfo:nil repeats:YES];
             if (startRecorderCompletion) {
                 startRecorderCompletion();
             }
         });
     }
+    
 }
 
 -(void)pauseToRecordWithPauseRecorderCompletion:(QYPauseRecorderCompletion)pauseRecorderCompletion{
@@ -149,9 +153,13 @@
 }
 
 -(void)stopRecordingWithStopRecorderCompletion:(QYStopRecorderCompletion)stopRecorderCompletion{
-//    [self getVoiceDuration:_recordPath];
+    NSLog(@"%@", [@(_recorder.currentTime) stringValue]);
+    NSTimeInterval duration = _recorder.currentTime < 1 ? 1 : _recorder.currentTime;
+    
     [self stopRecording];
-    dispatch_async(dispatch_get_main_queue(), stopRecorderCompletion);
+    dispatch_async(dispatch_get_main_queue(), ^{
+        stopRecorderCompletion(duration);
+    });
 }
 
 -(void)cancelRecordingWithCancelRecorderCompletion:(QYCancelRecorderCompletion)cancelRecorderCompletion{
@@ -215,14 +223,15 @@
             }
 //        });
     
-        if (self.currentTimeInterval > kVoiceRecorderMaxTime) {
-            NSLog(@"达到最长时间，计时器停止");
-            [self stopRecording];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                _maxTimeStopRecorderCompletion();
-            });
-        }
-        
+    //TODO: 取消最长时间限制
+//        if (self.currentTimeInterval > kVoiceRecorderMaxTime) {
+//            NSLog(@"达到最长时间，计时器停止");
+//            [self stopRecording];
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                _maxTimeStopRecorderCompletion();
+//            });
+//        }
+    
 //    });
 }
 

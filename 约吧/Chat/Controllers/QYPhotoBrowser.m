@@ -9,6 +9,8 @@
 #import "QYPhotoBrowser.h"
 #import "QYPhotoBrowserCell.h"
 
+#import <UIImageView+WebCache.h>
+
 @interface QYPhotoBrowser () <UICollectionViewDelegate, UICollectionViewDataSource>
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (weak, nonatomic) IBOutlet UICollectionViewFlowLayout *flowLayout;
@@ -34,11 +36,11 @@
 -(void)longPressAction:(UILongPressGestureRecognizer *)sender{
     CGPoint point = [sender locationInView:_collectionView];
     NSIndexPath *indexPath = [_collectionView indexPathForItemAtPoint:point];
-    UIImage *image = _photos[indexPath.row];
+    QYPhotoBrowserCell *cell = (QYPhotoBrowserCell *)[_collectionView cellForItemAtIndexPath:indexPath];
     
     UIAlertController *controller = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     UIAlertAction *action = [UIAlertAction actionWithTitle:@"保存图片" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
+        UIImageWriteToSavedPhotosAlbum(cell.photoView.image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
     }];
     [controller addAction:action];
     
@@ -65,8 +67,8 @@
 }
 
 #pragma mark - Setters
--(void)setPhotos:(NSArray *)photos{
-    _photos = photos;
+-(void)setUrls:(NSArray *)urls{
+    _urls = urls;
     
     [_collectionView reloadData];
 }
@@ -79,19 +81,21 @@
 
 #pragma mark - UICollectionView Delegate & Datasource
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-    return _photos.count;
+    return _urls.count;
 }
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     QYPhotoBrowserCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"photoBrowserCell" forIndexPath:indexPath];
-    cell.image = _photos[indexPath.row];
+    
+    NSString *url = _urls[indexPath.row];
+    [cell.photoView sd_setImageWithURL:[NSURL fileURLWithPath:url]];
     
     return cell;
 }
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     _selectedCell = (QYPhotoBrowserCell *)[collectionView cellForItemAtIndexPath:indexPath];
-    [self dismissViewControllerAnimated:YES completion:nil];
+   [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)didReceiveMemoryWarning {

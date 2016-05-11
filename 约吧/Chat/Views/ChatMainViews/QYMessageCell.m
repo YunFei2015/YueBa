@@ -19,9 +19,13 @@
 #import "UIView+Extension.h"
 #import "NSString+Extension.h"
 
+//语音View的宽度
+#define audioMaxWidth kScreenW / 2.f //最长宽度
+#define audioMinWidth 50.f //最短宽度
+#define widthPerSec (audioMaxWidth - audioMinWidth) / 30.f //每秒的宽度
 
 #define kLocationViewWidth kScreenW * 0.75 //位置视图宽度
-#define kLocationViewHeight 100
+#define kLocationViewHeight 100 //位置视图高度
 
 #pragma mark - MessageTableViewCell
 @interface QYMessageCell ()
@@ -57,6 +61,7 @@
 @end
 
 @implementation QYMessageCell
+
 - (void)awakeFromNib {
     // Initialization code
     _messageLab.preferredMaxLayoutWidth = kMessageMaxWidth;
@@ -121,7 +126,7 @@
     
     AVIMAudioMessage *audioMessage = (AVIMAudioMessage *)_message;
     _voiceAnimatingImageView.animationDuration = 1;
-    _voiceAnimatingImageView.animationRepeatCount = ceilf(audioMessage.duration);
+    _voiceAnimatingImageView.animationRepeatCount = audioMessage.duration;
     _voiceAnimatingViewWidthConstraint.constant = _voiceAnimatingImageView.image.size.width;
 }
 
@@ -129,10 +134,6 @@
 -(void)configPhotoMessage{
     self.messageType = kMessageTypePhoto;
     _photoViewHeightConstraint.constant = kPhotoHeight;
-    
-//    [_message.file getThumbnail:YES width:kScreenW / 2.f height:kPhotoHeight withBlock:^(UIImage *image, NSError *error) {
-//         _photoImageView.image = image;
-//    }];
     [_message.file getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
         _photoImageView.image = [UIImage imageWithData:data];
     }];
@@ -147,10 +148,24 @@
 }
 
 -(void)calculateLayoutWith:(NSAttributedString *)text{
-    //根据文本内容调整布局
     CGRect rect = [text boundingRectWithSize:CGSizeMake(kMessageMaxWidth, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin context:nil];
-    _messageViewWidthConstraint.constant = ceilf(rect.size.width) + _voiceAnimatingViewWidthConstraint.constant + 10 + 20;
     _messageViewHeightConstraint.constant = ceilf(rect.size.height) + 10 + 10;
+    
+    //根据文本内容调整文本消息布局
+    if (_message.mediaType == kAVIMMessageMediaTypeText) {
+        _messageViewWidthConstraint.constant = ceilf(rect.size.width) + _voiceAnimatingViewWidthConstraint.constant + 10 + 20;
+    }
+    
+    //根据时长调整语音消息布局
+    if (_message.mediaType == kAVIMMessageMediaTypeAudio) {
+        NSInteger duration = [text.string integerValue];
+        if (duration >= 30) {
+            _messageViewWidthConstraint.constant = kScreenW / 2.f + _voiceAnimatingViewWidthConstraint.constant + 10 + 20;
+        }else{
+            _messageViewWidthConstraint.constant = audioMinWidth + widthPerSec * duration + _voiceAnimatingViewWidthConstraint.constant + 10 + 20;
+        }
+    }
+    
 }
 
 
@@ -210,7 +225,7 @@
 @implementation QYLeftMessageCell
 -(void)configAudioMessage{
     AVIMAudioMessage *audioMessage = (AVIMAudioMessage *)self.message;
-    NSString *text = [NSString stringWithFormat:@"          %.f\''", audioMessage.duration];
+    NSString *text = [NSString stringWithFormat:@"          %@\''", audioMessage.text];
     self.messageLab.attributedText = [[NSAttributedString alloc] initWithString:text attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:15]}];
     self.voiceAnimatingImageView.animationImages = @[
                                                  [UIImage imageNamed:@"ReceiverVoiceNodePlaying000"],
@@ -241,7 +256,7 @@
 @implementation QYRightMessageCell
 -(void)configAudioMessage{
     AVIMAudioMessage *audioMessage = (AVIMAudioMessage *)self.message;
-    NSString *text = [NSString stringWithFormat:@"%.f\''          ", ceilf(audioMessage.duration)];
+    NSString *text = [NSString stringWithFormat:@"%@\''          ", audioMessage.text];
     self.messageLab.attributedText = [[NSAttributedString alloc] initWithString:text attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:15]}];
     self.voiceAnimatingImageView.animationImages = @[
                                                  [UIImage imageNamed:@"SenderVoiceNodePlaying000"],

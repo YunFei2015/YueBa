@@ -32,15 +32,16 @@
 }
 
 -(void)saveAccount:(NSDictionary *)info{
-    self.userId = info[kAccountKeyUid];
-    self.token = info[kAccountKeyToken];
-    self.userInfo = info[kAccountKeyUserInfo];
+    self.userId = [info[kAccountKeyUid] integerValue];
+//    self.token = info[kAccountKeyToken];
+    self.token = @"111111";
+    self.userInfo = info;
     NSString *filePath = [NSString pathInDocumentWithFileName:kAccountFileName];
     [NSKeyedArchiver archiveRootObject:self toFile:filePath];
 }
 
 -(void)logout{
-    self.userId = nil;
+    self.userId = -1;
     self.token = nil;
     self.userInfo = nil;
     NSString *filePath = [NSString pathInDocumentWithFileName:kAccountFileName];
@@ -62,7 +63,7 @@
 -(NSMutableDictionary *)accountParameters{
     NSMutableDictionary *accountParams = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                           self.token, kAccountKeyToken,
-                                          self.userId, kAccountKeyUid,
+                                          @(self.userId), kAccountKeyUid,
                                           nil];
     return accountParams;
 }
@@ -74,7 +75,7 @@
 #pragma mark - NSCoding
 -(void)encodeWithCoder:(NSCoder *)aCoder{
     [aCoder encodeObject:self.token forKey:kAccountKeyToken];
-    [aCoder encodeObject:self.userId forKey:kAccountKeyUid];
+    [aCoder encodeObject:@(self.userId) forKey:kAccountKeyUid];
     [aCoder encodeObject:self.userInfo forKey:kAccountKeyUserInfo];
 }
 
@@ -82,7 +83,7 @@
     self = [super init];
     if (self) {
         self.token = [aDecoder decodeObjectForKey:kAccountKeyToken];
-        self.userId = [aDecoder decodeObjectForKey:kAccountKeyUid];
+        self.userId = [[aDecoder decodeObjectForKey:kAccountKeyUid] integerValue];
         self.userInfo = [aDecoder decodeObjectForKey:kAccountKeyUserInfo];
     }
     return self;

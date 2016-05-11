@@ -38,6 +38,7 @@
 #import <AVPush.h>
 #import <AVInstallation.h>
 #import <Masonry.h>
+#import <AVFileQuery.h>
 
 @interface QYChatVC () <UITableViewDelegate, UITableViewDataSource, QYChatManagerDelegate, MessageBarDelegate, QYAudioPlayerDelegate, QYFunctionViewDelegate, QYImagesPickerDelegate, UIViewControllerTransitioningDelegate>
 @property (strong, nonatomic) MessageBar *messageBar;
@@ -45,7 +46,9 @@
 
 @property (strong, nonatomic) NSMutableDictionary *groups;//消息按时间分组
 @property (strong, atomic) NSMutableArray *messages;//消息列表
-@property (strong, nonatomic) NSMutableArray *images;//图片列表，用于图片轮播
+@property (strong, nonatomic) NSMutableArray *imageUrls;//图片列表，用于图片轮播
+@property (strong, nonatomic) QYPhotoBrowser *photoBrowser;
+
 
 
 @property (strong, nonatomic) QYAudioRecorder *voiceRecorder;
@@ -81,10 +84,10 @@
     if (_voiceRecorder == nil) {
         WEAKSELF
         _voiceRecorder = [[QYAudioRecorder alloc] init];
-        _voiceRecorder.maxTimeStopRecorderCompletion = ^{
-            NSLog(@"已经达到最大限制时间了，进入下一步的提示");
-            [weakSelf finishRecord];
-        };
+//        _voiceRecorder.maxTimeStopRecorderCompletion = ^{
+//            NSLog(@"已经达到最大限制时间了，进入下一步的提示");
+//            [weakSelf finishRecord];
+//        };
         _voiceRecorder.peakPowerForChannel = ^(float peakPowerForChannel){
             weakSelf.voiceRecordingView.peakPower = peakPowerForChannel;
         };
@@ -101,6 +104,15 @@
     return _voiceRecordingView;
 }
 
+-(QYPhotoBrowser *)photoBrowser{
+    if (_photoBrowser == nil) {
+        QYPhotoBrowser *photoBrowser = [[QYPhotoBrowser alloc] initWithNibName:@"QYPhotoBrowser" bundle:nil];
+        photoBrowser.transitioningDelegate = self;
+        _photoBrowser = photoBrowser;
+    }
+    return _photoBrowser;
+}
+
 #pragma mark - Life Cycles
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -111,7 +123,7 @@
     [self.view addSubview:self.tableView];
     
     _messages = [NSMutableArray array];
-    _images = [NSMutableArray array];
+    _imageUrls = [NSMutableArray array];
     
     
     [QYAudioPlayer sharedInstance].delegate = self;
@@ -198,7 +210,6 @@
 -(void)getUserDetailInfo{
     NSLog(@"正在查看用户详细信息");
 }
-
 
 - (void)addMessageBar{
     _messageBar = [[NSBundle mainBundle] loadNibNamed:@"MessageBar" owner:nil options:nil][0];
@@ -304,7 +315,7 @@
 #pragma mark - Custom Methods - send messages
 -(void)pushMessage:(NSString *)title{
     AVQuery *query = [AVInstallation query];
-    [query whereKey:@"userId" equalTo:_user.userId];
+    [query whereKey:@"userId" equalTo:@(_user.userId)];
     
     NSDictionary *data = @{
                            @"alert":             title, //显示内容
@@ -313,32 +324,30 @@
                            @"content-available": @"1"
                            };
     AVPush *push = [[AVPush alloc] init];
+    [push expireAfterTimeInterval:60*60*24*7];//过期时间1 week
     [push setQuery:query];
     [push setData:data];
     [push sendPushInBackground];
-    
-    
-//    [AVPush sendPushDataToChannelInBackground:_user.userId withData:data];
 }
 
 -(void)sendTextMessageWithContent:(NSString *)message{
     [[QYChatManager sharedManager] sendTextMessage:message withConversation:_conversation];
-    [self pushMessage:[NSString stringWithFormat:@"%@:%@", _user.name, message]];
+    [self pushMessage:[NSString stringWithFormat:@"%@:%@", [QYAccount currentAccount].myInfo.name, message]];
 }
 
 -(void)sendImageMessageWithData:(NSData *)data{
     [[QYChatManager sharedManager] sendImageMessageWithData:data withConversation:_conversation];
-    [self pushMessage:[NSString stringWithFormat:@"%@发来一张图片", _user.name]];
+    [self pushMessage:[NSString stringWithFormat:@"%@发来一张图片", [QYAccount currentAccount].myInfo.name]];
 }
 
--(void)sendVoiceMessage{
-    [[QYChatManager sharedManager] sendVoiceMessageWithConversation:_conversation];
-    [self pushMessage:[NSString stringWithFormat:@"%@发来一段语音", _user.name]];
+-(void)sendVoiceMessageWithDuration:(NSTimeInterval)duration{
+    [[QYChatManager sharedManager] sendVoiceMessageWithDuration:(NSInteger)duration withConversation:_conversation];
+    [self pushMessage:[NSString stringWithFormat:@"%@发来一段语音", [QYAccount currentAccount].myInfo.name]];
 }
 
 -(void)sendLocationMessageWithAnnotation:(QYPinAnnotation *)annotation{
     [[QYChatManager sharedManager] sendLocationMessageWithAnnotation:annotation withConversation:_conversation];
-    [self pushMessage:[NSString stringWithFormat:@"%@发来位置信息", _user.name]];
+    [self pushMessage:[NSString stringWithFormat:@"%@发来位置信息", [QYAccount currentAccount].myInfo.name]];
 }
 
 #pragma mark - Custom Methods - audio recorder
@@ -362,7 +371,6 @@
     NSLog(@"暂停录音");
     WEAKSELF
     [self.voiceRecorder pauseToRecordWithPauseRecorderCompletion:^{
-        //TODO: 提示取消录音
         weakSelf.voiceRecordingView.recording = NO;
     }];
 }
@@ -371,7 +379,6 @@
     NSLog(@"继续录音");
     WEAKSELF
     [self.voiceRecorder continueToRecordWithContinueRecordCompletion:^{
-        //TODO: 继续录音
         weakSelf.voiceRecordingView.recording = YES;
     }];
 }
@@ -389,9 +396,9 @@
     NSLog(@"结束录音");
     WEAKSELF
     //发送录音
-    [self.voiceRecorder stopRecordingWithStopRecorderCompletion:^{
+    [self.voiceRecorder stopRecordingWithStopRecorderCompletion:^(NSTimeInterval duration) {
         [weakSelf.voiceRecordingView removeFromSuperview];
-        [weakSelf sendVoiceMessage];
+        [weakSelf sendVoiceMessageWithDuration:duration];
     }];
 }
 
@@ -448,11 +455,13 @@
 -(void)tapVoiceCellAction{
 #if 1
     _currentSelectedVoiceCell = _selectedCell;
+
     AVIMAudioMessage *message = (AVIMAudioMessage *)_currentSelectedVoiceCell.message;
     [message.file getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
         NSLog(@"音频数据下载或从本地读取成功");
         [[QYAudioPlayer sharedInstance] playAudioWithData:data];
     }];
+    
 #else
     
     NSString *voicePath = [[QYDataManager sharedInstance] voiceFilePathForMessageID:message.messageId];
@@ -467,41 +476,35 @@
     //网络下载
     [[QYNetworkManager sharedInstance] downloadWithUrl:message.file.url withMessageID:message.messageId completion:^(NSString *filePath) {
         NSLog(@"下载成功");
-        [[QYAudioPlayer sharedInstance] playAudio:filePath];
+        [[QYAudioPlayer sharedInstance] ,,playAudio:filePath];
     }];
 #endif
 }
 
 -(void)tapPhotoCellAction{
-    NSIndexPath *indexPath = [_tableView indexPathForCell:_selectedCell];
-    NSInteger index = indexPath.row;
-    
-    //获取从当前消息开始往前的50条消息
-    NSArray *messages = [_conversation queryMessagesFromCacheWithLimit:_messages.count - index + 50];
+    [_imageUrls removeAllObjects];
+
+    NSArray *messages = [_conversation queryMessagesFromCacheWithLimit:NSUIntegerMax];
     AVFile *selectedFile = _selectedCell.message.file;
     __block NSInteger currentIndex;
-    //遍历50条消息，将所有image消息过滤出来，并把图片数据流存储到内存中
-    [_images removeAllObjects];
+
+    //将所有image消息过滤出来，并把图片url存储到内存中
     [messages enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         AVIMTypedMessage *message = (AVIMTypedMessage *)obj;
         if (message.mediaType == kAVIMMessageMediaTypeImage) {
             AVFile *file = message.file;
-            UIImage *image = [UIImage imageWithData:[file getData]];
-            [_images addObject:image];
+            [_imageUrls addObject:file.localPath];
             
             if ([file.objectId isEqualToString:selectedFile.objectId]) {
-                currentIndex = [_images indexOfObject:image];
+                currentIndex = [_imageUrls indexOfObject:file.localPath];
             }
         }
     }];
     
-    QYPhotoBrowser *photoBrowser = [[QYPhotoBrowser alloc] initWithNibName:@"QYPhotoBrowser" bundle:nil];
-    photoBrowser.transitioningDelegate = self;
-    self.transitioningDelegate = self;
-    photoBrowser.photos = _images;
-    [self.revealViewController presentViewController:photoBrowser animated:YES completion:^{
-    }];
-    photoBrowser.currentIndex = currentIndex;
+    //打开图片浏览器
+    self.photoBrowser.urls = _imageUrls;
+    [self.revealViewController presentViewController:self.photoBrowser animated:YES completion:nil];
+    self.photoBrowser.currentIndex = currentIndex;
 }
 
 -(void)tapLocationCellAction{
@@ -535,7 +538,8 @@
 }
 
 -(void)didAudioPlayerPausePlay:(AVAudioPlayer *)player{
-    
+    NSLog(@"====播放暂停");
+    [_currentSelectedVoiceCell stopVoiceAnimating];
 }
 
 -(void)didAudioPlayerStopPlay:(AVAudioPlayer *)player{
@@ -614,8 +618,9 @@
         [self presentViewController:navVC animated:YES completion:nil];
     }else{
         UIAlertController *controller = [UIAlertController alertControllerWithTitle:@"提示" message:@"请打开定位服务" preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction *action = [UIAlertAction actionWithTitle:@"知道了" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-            //TODO: 跳转到设置界面
+        UIAlertAction *action = [UIAlertAction actionWithTitle:@"现在打开" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+            //跳转到设置界面
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"prefs:root=LOCATION_SERVICES"]];
         }];
         [controller addAction:action];
         
@@ -656,6 +661,7 @@
     //将文件上传至云端
     if (message.file) {
         [message.file saveInBackground];
+//        [message.file save];
     }
     
     [self insertRowWithMessage:message];

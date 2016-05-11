@@ -11,5 +11,5 @@
 @interface QYVoiceRecordingView : UIView
 @property (nonatomic, getter=isRecording) BOOL recording;
 @property (nonatomic) float peakPower;
--(void)updatePowerValueViewWith:(float)peakPowerValue;
+//-(void)updatePowerValueViewWith:(float)peakPowerValue;
 @end

@@ -42,6 +42,7 @@
 
 #pragma mark - custom public methods
 //播放
+/*
 -(void)playAudio:(NSString *)fileName{
     if (fileName.length > 0) {
         [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
@@ -76,11 +77,12 @@
         self.playingFileName = fileName;
     }
 }
+ */
 
 -(void)playAudioWithData:(NSData *)data{
     if (data) {
         [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
-        if (_playingData && (_playingData == data)) {
+        if (_playingData && ([_playingData isEqualToData:data])) {
             if (_player) {
                 if (_player.isPlaying) {
                     [self stop];

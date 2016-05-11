@@ -12,7 +12,7 @@
 @interface QYAccount : NSObject
 
 @property (strong, nonatomic) QYUserInfo *myInfo;
-@property (strong, nonatomic) NSString *userId;
+@property (nonatomic) NSInteger userId;
 
 
 

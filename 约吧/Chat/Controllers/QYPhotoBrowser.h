@@ -12,7 +12,8 @@
 typedef void(^QYPhotoBrowserPopMenu)(UIImage *image);
 
 @interface QYPhotoBrowser : UIViewController
-@property (strong, nonatomic) NSArray *photos;
+@property (strong, nonatomic) NSArray *urls;
+
 @property (nonatomic) NSInteger currentIndex;
 
 @property (nonatomic) CGRect finalFrame;

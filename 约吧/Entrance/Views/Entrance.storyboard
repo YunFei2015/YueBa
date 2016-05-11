@@ -402,15 +402,11 @@
                                 <action selector="leftBarButtonItemAction:" destination="auF-a8-x2H" id="x8K-Yk-ZWr"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" enabled="NO" title="注册" id="m4q-eQ-u0R">
-                            <color key="tintColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
-                        </barButtonItem>
                     </navigationItem>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina55"/>
                     <connections>
                         <outlet property="countDownLabel" destination="hGG-Xk-VhS" id="Ozj-gC-BOq"/>
                         <outlet property="getVerifyCodeBtn" destination="jD2-Xw-T7o" id="GBx-w0-Re4"/>
-                        <outlet property="nextItem" destination="m4q-eQ-u0R" id="3X2-nB-bIK"/>
                         <outlet property="passwdAgainTf" destination="nI6-rf-OnD" id="mlU-Oe-CXd"/>
                         <outlet property="passwdTf" destination="Gr9-2E-hwP" id="JhI-gQ-SHq"/>
                         <outlet property="registerBtn" destination="cHH-Yk-hdd" id="Q6e-2A-hJO"/>
@@ -420,7 +416,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FZr-IP-UV4" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2027" y="335"/>
+            <point key="canvasLocation" x="1613" y="337"/>
         </scene>
         <!--完善个人信息-->
         <scene sceneID="XD1-qV-W9d">
@@ -434,8 +430,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Jvw-W8-845">
-                                <rect key="frame" x="0.0" y="114" width="414" height="80"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Jvw-W8-845">
+                                <rect key="frame" x="0.0" y="70" width="414" height="80"/>
                                 <subviews>
                                     <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="5519-11" translatesAutoresizingMaskIntoConstraints="NO" id="rjI-pp-S68">
                                         <rect key="frame" x="5" y="-10" width="80" height="80"/>
@@ -517,8 +513,8 @@
                                     </mask>
                                 </variation>
                             </view>
-                            <segmentedControl opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="hIE-oW-mS5">
-                                <rect key="frame" x="5" y="305" width="399" height="41"/>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="hIE-oW-mS5">
+                                <rect key="frame" x="5" y="261" width="399" height="41"/>
                                 <color key="backgroundColor" red="0.91668247329999997" green="0.91668247329999997" blue="0.91668247329999997" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="8K2-oa-wtk"/>
@@ -532,14 +528,14 @@
                                     <action selector="sexSelectedAction:" destination="ob1-dU-XSp" eventType="valueChanged" id="f6h-IV-ALn"/>
                                 </connections>
                             </segmentedControl>
-                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="账号密码：" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7Ec-Fg-Xde">
-                                <rect key="frame" x="5" y="425" width="409" height="21"/>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="账号密码：" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7Ec-Fg-Xde">
+                                <rect key="frame" x="5" y="381" width="409" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="我是：" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3Jp-Av-KFs">
-                                <rect key="frame" x="5" y="274" width="409" height="21"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="我是：" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3Jp-Av-KFs">
+                                <rect key="frame" x="5" y="230" width="409" height="21"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="21" id="4fx-OK-Cqc"/>
                                     <constraint firstAttribute="width" constant="42" id="WYM-wT-wYj"/>
@@ -553,8 +549,8 @@
                                     </mask>
                                 </variation>
                             </label>
-                            <textField hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="   设置密码（至少6个字符）" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="HKn-j8-xVg">
-                                <rect key="frame" x="0.0" y="451" width="414" height="40"/>
+                            <textField hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="   设置密码（至少6个字符）" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="HKn-j8-xVg">
+                                <rect key="frame" x="0.0" y="407" width="414" height="40"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="CTi-xn-Ayn"/>
@@ -613,7 +609,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="2727" y="348"/>
+            <point key="canvasLocation" x="2131" y="324"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="6Qq-Ib-iWx">
@@ -649,7 +645,7 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="auF-a8-x2H" kind="relationship" relationship="rootViewController" id="Ntt-nV-dFR"/>
+                        <segue destination="auF-a8-x2H" kind="relationship" relationship="rootViewController" id="5JQ-mm-HM9"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="X7a-Do-yPU" userLabel="First Responder" sceneMemberID="firstResponder"/>

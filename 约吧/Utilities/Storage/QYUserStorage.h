@@ -38,9 +38,9 @@
  */
 
 //-(void)updateUserMessage:(NSString *)message time:(NSInteger)time forUserId:(NSString *)userId;
--(void)updateUserConversation:(AVIMKeyedConversation *)conversation forUserId:(NSString *)userId;
--(void)updateUserLastMessageAt:(NSDate *)time forUserId:(NSString *)userId;
--(void)updateUserMessageStatus:(QYMessageStatus)status forUserId:(NSString *)userId;
+-(void)updateUserConversation:(AVIMKeyedConversation *)conversation forUserId:(NSInteger)userId;
+-(void)updateUserLastMessageAt:(NSDate *)time forUserId:(NSInteger)userId;
+-(void)updateUserMessageStatus:(QYMessageStatus)status forUserId:(NSInteger)userId;
 
 ///**
 // *  更新多个用户
@@ -56,7 +56,7 @@
  *  @param userId 用户Id
  */
 
--(void)deleteUser:(NSString *)userId;
+-(void)deleteUser:(NSInteger)userId;
 
 //-(QYUserInfo *)getUser:(NSString *)userId;
 
@@ -68,5 +68,5 @@
 
 -(NSArray *)getAllUsersWithSortType:(NSString *)key;
 
--(QYUserInfo *)getUserForId:(NSString *)userId;
+-(QYUserInfo *)getUserForId:(NSInteger)userId;
 @end

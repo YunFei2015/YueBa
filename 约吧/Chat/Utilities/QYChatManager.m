@@ -37,17 +37,18 @@
 }
 
 //查询我和好友userId之间的会话，若不存在则创建
--(void)findConversationWithUser:(NSString *)userId{
+-(void)findConversationWithUser:(NSInteger)userId{
+    NSString *userIdStr = @(userId).stringValue;
     AVIMConversationQuery *query = [self.client conversationQuery];
     query.cachePolicy = kAVIMCachePolicyCacheElseNetwork;
     query.cacheMaxAge = CLTimeIntervalMax;
-    [query whereKey:@"m" containsAllObjectsInArray:@[self.client.clientId, userId]];
+    [query whereKey:@"m" containsAllObjectsInArray:@[self.client.clientId, userIdStr]];
     [query whereKey:@"m" sizeEqualTo:2];
     [query findConversationsWithCallback:^(NSArray *objects, NSError *error) {
         __block AVIMConversation *result;
         if (objects.count == 0) {
-            NSString *conversationName = [NSString stringWithFormat:@"%@ and %@", self.client.clientId, userId];
-            [self.client createConversationWithName:conversationName clientIds:@[userId] attributes:nil options:AVIMConversationOptionNone callback:^(AVIMConversation *conversation, NSError *error) {
+            NSString *conversationName = [NSString stringWithFormat:@"%@ and %@", self.client.clientId, userIdStr];
+            [self.client createConversationWithName:conversationName clientIds:@[userIdStr] attributes:nil options:AVIMConversationOptionNone callback:^(AVIMConversation *conversation, NSError *error) {
                 if ([self.delegate respondsToSelector:@selector(didFindConversation:succeeded:)]) {
                     [self.delegate didFindConversation:conversation succeeded:YES];
                 }
@@ -84,15 +85,16 @@
 }
 
 //发送语音消息
--(void)sendVoiceMessageWithConversation:(AVIMConversation *)conversation{
+-(void)sendVoiceMessageWithDuration:(NSTimeInterval)duration withConversation:(AVIMConversation *)conversation{
     if (![[NSFileManager defaultManager] fileExistsAtPath:kAudioPath]) {
         return;
     }
     AVFile *file = [AVFile fileWithName:@"temwwwp.caf" contentsAtPath:kAudioPath];
-#if 0
+#if 1
     [file saveInBackground];//将文件上传到云端
 #endif
-    AVIMAudioMessage *message = [AVIMAudioMessage messageWithText:nil file:file attributes:nil];
+    
+    AVIMAudioMessage *message = [AVIMAudioMessage messageWithText:@(duration).stringValue file:file attributes:nil];
     [self sendTypedMessage:message withConversation:(AVIMConversation *)conversation];
 }
 
@@ -165,9 +167,10 @@
 -(void)conversation:(AVIMConversation *)conversation didReceiveTypedMessage:(AVIMTypedMessage *)message{
 
     [conversation.members enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if (![[QYAccount currentAccount].userId isEqualToString:obj]) {
-            NSString *userId = (NSString *)obj;
-           QYUserInfo *user = [[QYUserStorage sharedInstance] getUserForId:userId];
+        NSString *userId = (NSString *)obj;
+        if (userId.integerValue != [QYAccount currentAccount].userId) {
+            
+           QYUserInfo *user = [[QYUserStorage sharedInstance] getUserForId:userId.integerValue];
             
             //如果数据库中没有该用户，临时构造一个，等做好了网络接口部分，新添加的好友会立刻存入数据库
             if (user == nil) {

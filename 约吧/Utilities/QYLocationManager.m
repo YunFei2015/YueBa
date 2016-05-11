@@ -16,6 +16,7 @@
 @property (strong, nonatomic) BMKGeoCodeSearch *geocodeSearch;
 @property (strong, nonatomic) BMKRadarManager *radarManager;
 
+@property (nonatomic) CLLocationCoordinate2D location;
 
 @end
 
@@ -42,6 +43,10 @@
 
 -(void)startToUpdateLocation{
     [self.locationService startUserLocationService];
+}
+
+-(void)stopToUpdateLocation{
+    [self.locationService stopUserLocationService];
 }
 
 -(void)getLocationWithAddress:(NSString *)address{
@@ -75,36 +80,81 @@
     }else{
         NSLog(@"发起雷达检索失败,%f,%f", location.latitude, location.longitude);
     }
-    
 }
 
 -(void)uploadUserInfoWithLocation:(CLLocationCoordinate2D)location{
-    BMKRadarUploadInfo *myinfo = [[BMKRadarUploadInfo alloc] init];
-    myinfo.extInfo = @"hello,world";//扩展信息
-    myinfo.pt = location;
-    //上传我的位置信息
-    BOOL res = [self.radarManager uploadInfoRequest:myinfo];
-    if (res) {
-        NSLog(@"上传我的位置信息成功");
-    } else {
-        NSLog(@"上传我的位置信息失败");
-    }
+    
+//    [self.radarManager clearMyInfoRequest];
+    _location = location;
+    [self.radarManager startAutoUpload:5];
 }
 
 #pragma mark - BMKLocation Service Delegate
 -(void)didUpdateBMKUserLocation:(BMKUserLocation *)userLocation{
     CLLocation *location = userLocation.location;
-//    [self.locationService stopUserLocationService];
     NSLog(@"%f,%f", location.coordinate.latitude, location.coordinate.longitude);
     if ([self.delegate respondsToSelector:@selector(didFinishUpdateLocation:success:)]) {
         [self.delegate didFinishUpdateLocation:location success:YES];
     }
 }
 
+-(void)didStopLocatingUser{
+    _radarManager = nil;
+}
+
 -(void)didFailToLocateUserWithError:(NSError *)error{
     NSLog(@"%@", error);
     if ([self.delegate respondsToSelector:@selector(didFinishUpdateLocation:success:)]) {
         [self.delegate didFinishUpdateLocation:nil success:NO];
+    }
+}
+
+#pragma mark - BMKRadarManagement delegate
+-(void)onGetRadarClearMyInfoResult:(BMKRadarErrorCode)error{
+    if (error == BMK_RADAR_PERMISSION_UNFINISHED) {
+        [self.radarManager clearMyInfoRequest];
+    }
+    NSLog(@"清除位置信息 ：%d", error);
+}
+
+-(BMKRadarUploadInfo *)getRadarAutoUploadInfo{
+    BMKRadarUploadInfo *myinfo = [[BMKRadarUploadInfo alloc] init];
+    myinfo.extInfo = @"hello,world";//扩展信息
+    myinfo.pt = _location;
+    return myinfo;
+}
+
+-(void)onGetRadarUploadResult:(BMKRadarErrorCode)error{
+    if (error != BMK_RADAR_NO_ERROR) {
+        NSLog(@"上传我的位置失败 ：%d", error);
+    }else{
+        NSLog(@"上传我的位置成功");
+        [self.radarManager stopAutoUpload];
+    }
+}
+
+-(void)onGetRadarNearbySearchResult:(BMKRadarNearbyResult *)result error:(BMKRadarErrorCode)error{
+    if (error == BMK_RADAR_NO_ERROR) {
+        //TODO: 调试的，需要删除
+        [result.infoList enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            NSLog(@"扫描到的用户userId ：%@", [obj valueForKey:@"userId"]);
+        }];
+        if ([self.radarDelegate respondsToSelector:@selector(didFinishSearchNearbyUsers:success:)]) {
+            [self.radarDelegate didFinishSearchNearbyUsers:result success:YES];
+        }
+    }else if (error == BMK_RADAR_NO_RESULT){
+        if ([self.radarDelegate respondsToSelector:@selector(didFinishSearchNearbyUsers:success:)]) {
+            [self.radarDelegate didFinishSearchNearbyUsers:nil success:YES];
+        }
+    }else if (error == BMK_RADAR_PERMISSION_UNFINISHED){
+        NSLog(@"雷达尚未完成鉴权，继续检索");
+        sleep(5);
+        [self searchNearByUsersWithLocation:_location];
+    }else{
+        if ([self.radarDelegate respondsToSelector:@selector(didFinishSearchNearbyUsers:success:)]) {
+            NSLog(@"雷达检索失败：%u", error);
+            [self.radarDelegate didFinishSearchNearbyUsers:nil success:NO];
+        }
     }
 }
 
@@ -137,29 +187,14 @@
     }
 }
 
--(void)onGetRadarNearbySearchResult:(BMKRadarNearbyResult *)result error:(BMKRadarErrorCode)error{
-    if (error == BMK_RADAR_NO_ERROR) {
-        if ([self.radarDelegate respondsToSelector:@selector(didFinishSearchNearbyUsers:success:)]) {
-            [self.radarDelegate didFinishSearchNearbyUsers:result success:YES];
-        }
-    }else if (error == BMK_RADAR_NO_RESULT){
-        if ([self.radarDelegate respondsToSelector:@selector(didFinishSearchNearbyUsers:success:)]) {
-            [self.radarDelegate didFinishSearchNearbyUsers:nil success:YES];
-        }
-    }else{
-        if ([self.radarDelegate respondsToSelector:@selector(didFinishSearchNearbyUsers:success:)]) {
-            NSLog(@"雷达检索失败：%u", error);
-            [self.radarDelegate didFinishSearchNearbyUsers:nil success:NO];
-        }
-    }
-}
 
 #pragma mark - Getters
 -(BMKLocationService *)locationService{
     if (_locationService == nil) {
         _locationService = [[BMKLocationService alloc] init];
+        _locationService.allowsBackgroundLocationUpdates = YES;
         _locationService.desiredAccuracy = kCLLocationAccuracyBest;
-        _locationService.distanceFilter = 10;
+        _locationService.distanceFilter = 0;
         _locationService.delegate = self;
     }
     return _locationService;
@@ -177,12 +212,12 @@
     if (_radarManager == nil) {
         _radarManager = [BMKRadarManager getRadarManagerInstance];
         [_radarManager addRadarManagerDelegate:self];
-        //TODO: 用户Id需要从bundle中读取
-        NSString *myId = [[QYAccount currentAccount] valueForKeyPath:@"myInfo.userId"];
+        NSString *myId = [@([QYAccount currentAccount].userId) stringValue];
+        NSLog(@"myId : %@", myId);
         if (myId) {
             _radarManager.userId = myId;
+//            _radarManager.userId = @"0";
         }
-        
     }
     return _radarManager;
 }

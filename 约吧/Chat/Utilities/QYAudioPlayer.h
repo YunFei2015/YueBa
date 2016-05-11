@@ -25,7 +25,7 @@
 +(instancetype)sharedInstance;
 -(BOOL)isPlaying;
 -(void)playAudioWithData:(NSData *)data;
--(void)playAudio:(NSString *)fileName;
+//-(void)playAudio:(NSString *)fileName;
 -(void)pauseAudio;
 -(void)stopAudio;
 @end

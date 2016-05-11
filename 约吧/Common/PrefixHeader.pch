@@ -26,12 +26,12 @@ typedef enum{
 //Account
 #define kAccountFileName @"account"
 #define kAccountKeyUid @"userId"
-#define kAccountKeyToken @"token"
+#define kAccountKeyToken @"access_token"
 #define kAccountKeyUserInfo @"userInfo"
 #define kUserId @"userId"
 #define kUserName @"name"
 #define kUserAge @"age"
-#define kUserSex @"isMan"
+#define kUserSex @"gender"
 #define kUserIconUrl @"iconUrl"
 #define kUserMatchTime @"matchTime"
 
@@ -47,16 +47,14 @@ typedef enum{
 //network url
 #define kBaseUrl @"http://yueba.applinzi.com"
 #define kRegisterApi @"users/regist.json"
+#define kLoginApi @"users/login.json"
 #define kVerifyCodeApi @"users/msmCaptcha.json"
+#define kUpdateUserInfoApi @"users/upload_user_info.json"
 
 //network key
 #define kResponseKeySuccess @"success"
 #define kResponseKeyError @"errors"
 #define kResponseKeyData @"data"
-#define kNetworkKeyUserId @"userId"
-#define kNetworkKeyName @"name"
-#define kNetworkKeyAge @"age"
-#define kNetworkKeySex @"sex"
 #define kNetworkKeyTel @"telephone"
 #define kNetworkKeyPasswd @"password"
 #define kNetworkKeyMsmCode @"msmCode"
