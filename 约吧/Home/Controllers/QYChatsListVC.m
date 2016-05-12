@@ -74,7 +74,7 @@
 #pragma mark - Custom Methods
 //从本地获取用户列表
 -(NSMutableArray *)getFriendsListFromDB{
-    NSArray *friends = [[QYUserStorage sharedInstance] getAllUsersWithSortType:@"matchTime"];
+    NSArray *friends = [[QYUserStorage sharedInstance] getAllUsersWithSortType:kUserMatchTime];
     return [NSMutableArray arrayWithArray:friends];
 }
 
@@ -165,7 +165,7 @@
 -(void)didGetFriendsList:(id)responseObject success:(BOOL)success{
     if (success) {
         if (responseObject[kResponseKeySuccess]) {
-            NSArray *list = responseObject[kResponseKeyData][@"users"];
+            NSArray *list = responseObject[kResponseKeyData];
             NSMutableArray *friends = [self getFriendsListFromDB];
             if (friends.count == 0) {
                 [[QYUserStorage sharedInstance] addUsers:list];
@@ -178,7 +178,6 @@
                     [datasFromNet addObject:obj];
                     
                     //如果网络有，本地没有，则插入到本地
-//                    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.userId MATCHES %@" argumentArray:@[@(user.userId)]];
                     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.userId == %ld", user.userId];
                     NSArray *results = [_datas filteredArrayUsingPredicate:predicate];
                     if (results.count <= 0) {

@@ -13,6 +13,9 @@
 @interface QYUserStorage : NSObject
 
 +(instancetype)sharedInstance;
+
+-(void)removeDatabase;
+
 /**
  *  插入1个用户
  *

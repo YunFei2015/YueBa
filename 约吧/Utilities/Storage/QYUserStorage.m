@@ -12,7 +12,6 @@
 #import <AVIMConversation.h>
 #import <AVIMKeyedConversation.h>
 
-#define kUserDBFileName @"users.db"
 #define kUserTable @"User"
 
 @interface QYUserStorage ()
@@ -30,6 +29,18 @@
         sharedInstance = [[self alloc] init];
     });
     return sharedInstance;
+}
+
+-(void)removeDatabase{
+    //删除数据库
+    NSString *dbPath = [kTempDirectory stringByAppendingPathComponent:kUserDBFileName];
+    NSError *error;
+    [[NSFileManager defaultManager] removeItemAtPath:dbPath error: &error];
+    if (error) {
+        NSLog(@"删除数据库文件失败：%@", error);
+    }
+    
+    self.database = nil;
 }
 
 #pragma mark - Custom Methods - 外部接口
@@ -370,7 +381,7 @@
     }
     
     //创建表
-    NSString *sql = [NSString stringWithFormat:@"create table if not exists %@(%@ INTEGER PRIMARY KEY, %@ TEXT, %@ INTEGER, %@ BOOL, %@ TEXT, %@ INTEGER, %@ BLOB, %@ INTEGER, %@ INTEGER)", kUserTable, kUserId, kUserName, kUserAge, kUserSex, kUserIconUrl, kUserMatchTime, @"keyedConversation", @"lastMessageAt", @"messageStatus"];
+    NSString *sql = [NSString stringWithFormat:@"create table if not exists %@(%@ INTEGER PRIMARY KEY, %@ TEXT, %@ INTEGER, %@ BOOL, %@ BLOB, %@ INTEGER, %@ BLOB, %@ INTEGER, %@ INTEGER)", kUserTable, kUserId, kUserName, kUserAge, kUserSex, kUserPhotos, kUserMatchTime, @"keyedConversation", @"lastMessageAt", @"messageStatus"];
     NSLog(@"create User table sql : %@", sql);
     [self.database executeUpdate:sql];
     

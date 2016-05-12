@@ -29,6 +29,8 @@
 #import <AVPush.h>
 #import <AVInstallation.h>
 
+typedef void(^markCompletionBlock)(void);
+
 @interface QYHomeVC () <QYNetworkDelegate, BMKMapViewDelegate, DanimationPro, QYRadarDelegate>
 @property (strong, nonatomic) AppDelegate *appDelegate;
 
@@ -45,6 +47,9 @@
 @property (strong, nonatomic) CLLocation *location;
 @property (strong, nonatomic) NSString *userId;//当前用户Id
 @property (strong, atomic) NSMutableArray *nearbyUsers;//每次雷达检索到的用户
+
+@property (strong, nonatomic) markCompletionBlock markCompletion;
+
 
 
 @end
@@ -108,12 +113,12 @@
 #pragma mark - Events
 //不喜欢当前显示的用户
 - (IBAction)unlikeAction:(UIButton *)sender {
-    [_animationView selectLikeOnce:dislike];
+    [_animationView selectLikeOnce:NO];
 }
 
 //喜欢当前显示的用户
 - (IBAction)likeAction:(UIButton *)sender {
-    [_animationView selectLikeOnce:like];
+    [_animationView selectLikeOnce:YES];
 }
 
 //显示用户详情
@@ -125,27 +130,18 @@
 
 
 #pragma mark - DanimationPro
--(void)ChangeValueType:(ENLIKETYPE)type{
+-(void)ChangeValueType:(BOOL)type{
     //放大
-    switch (type) {
-        case like:{
-            [UIView animateWithDuration:1 animations:^{
-                _likeBtn.transform=CGAffineTransformMakeScale(2, 2);
-                _likeBtn.transform=CGAffineTransformIdentity;
-            }];
-            
-        }
-            break;
-        case dislike:{
-            [ UIView animateWithDuration:1 animations:^{
-                _dislikeBtn.transform=CGAffineTransformMakeScale(2, 2);
-                _dislikeBtn.transform=CGAffineTransformIdentity;
-            }];
-            
-        }
-            break;
-        default:
-            break;
+    if (type) {
+        [UIView animateWithDuration:1 animations:^{
+            _likeBtn.transform=CGAffineTransformMakeScale(2, 2);
+            _likeBtn.transform=CGAffineTransformIdentity;
+        }];
+    }else{
+        [ UIView animateWithDuration:1 animations:^{
+            _dislikeBtn.transform=CGAffineTransformMakeScale(2, 2);
+            _dislikeBtn.transform=CGAffineTransformIdentity;
+        }];
     }
 }
 -(void)FinishendValueType{
@@ -156,52 +152,46 @@
     }];
 }
 
--(void)markUser:(QYUserInfo *)user asLike:(ENLIKETYPE)isLike{
-    //TODO: 向服务器发送数据
-    
-    
-    BOOL beLiked = YES;
-    if (isLike == like) {
-        if (beLiked) {//如果双方互相喜欢
-            
-            //TODO:存入数据库
-            
-            //向对方发送推送消息
-            AVQuery *query = [AVInstallation query];
-            [query whereKey:@"userId" equalTo:@(user.userId)];
-            
-            NSDictionary *data = @{
-                                   @"alert":             @"你有新朋友了！", //显示内容
-                                   @"badge":             @"Increment", //应用图标显示未读消息个数是递增当前值
-                                   @"sound":             @"sms-received1.caf", //提示音
-                                   @"content-available": @"1",
-                                   kUserId:              @(user.userId), //用户Id
-                                   kUserIconUrl:         user.iconUrl, //用户头像url
-                                   kUserName:            user.name //用户姓名
-                                   };
-            AVPush *push = [[AVPush alloc] init];
-            [push expireAfterTimeInterval:60*60*24*7];//过期时间1 week，如果用户网络不可用，保证在网络恢复时还能收到通知
-            [push setQuery:query];
-            [push setData:data];
-            [push sendPushInBackground];
-            
-            //弹出新好友界面
-            [self presentToNewFriendControllerForUser:user];
-        }
-//        else{//如果对方不喜欢自己，则发送推送消息
-//            //向对方发送推送消息
-//            NSDictionary *data = @{
-//                                   @"alert":             @"有人喜欢你了哦！", //显示内容
-//                                   @"badge":             @"Increment", //应用图标显示未读消息个数是递增当前值
-//                                   @"sound":             @"sms-received1.caf", //提示音
-//                                   @"content-available": @"1"
-//                                   };
-//            [AVPush sendPushDataToChannelInBackground:user.userId withData:data];
-//        }
+-(void)markUser:(QYUserInfo *)user asLike:(BOOL)isLike{
+    [QYNetworkManager sharedInstance].delegate = self;
+    //标记成功后的block回调
+    WEAKSELF
+    _markCompletion = ^(){
+        //存入数据库
+        NSDictionary *userDict = @{kUserId : @(user.userId),
+                                   kUserName : user.name,
+                                   kUserPhotos : @[user.iconUrl]};
+        [[QYUserStorage sharedInstance] addUser:userDict];
         
-    }
+        //向对方发送推送消息
+        AVQuery *query = [AVInstallation query];
+        [query whereKey:@"userId" equalTo:@(user.userId)];
+        
+        NSDictionary *data = @{
+                               @"alert":             @"你有新朋友了！", //显示内容
+                               @"badge":             @"Increment", //应用图标显示未读消息个数是递增当前值
+                               @"sound":             @"sms-received1.caf", //提示音
+                               @"content-available": @"1",
+                               kUserPhotos:         @[user.iconUrl], //用户头像url
+                               kUserName:            user.name //用户姓名
+                               };
+        AVPush *push = [[AVPush alloc] init];
+        [push expireAfterTimeInterval:60 * 60 * 24 * 7];//过期时间1 week，如果用户网络不可用，保证在网络恢复时还能收到通知
+        [push setQuery:query];
+        [push setData:data];
+        [push sendPushInBackground];
+        
+        //弹出新好友界面
+        [weakSelf presentToNewFriendControllerForUser:user];
+    };
     
-    //
+    //向服务器发送数据
+    NSMutableDictionary *params = [[QYAccount currentAccount] accountParameters];
+    [params setValue:@(user.userId) forKey:@"friendId"];
+    [params setValue:@(isLike) forKey:@"like"];
+    [[QYNetworkManager sharedInstance] markUserRelationshipWithParameters:params];
+    
+    //UI
     [_nearbyUsers removeObject:user];
     if (_nearbyUsers.count == 0) {
         [self.view addSubview:self.searchView];
@@ -211,6 +201,7 @@
 }
 
 #pragma mark - QYLocationManager Delegate
+//雷达扫描附近使用该app的用户
 -(void)didFinishSearchNearbyUsers:(BMKRadarNearbyResult *)result success:(BOOL)success{
     if (success) {
         if (result) {
@@ -221,8 +212,16 @@
                 [ids addObject:nearbyInfo.userId];
             }];
             //TODO: 请求用户信息
-            NSDictionary *params = @{@"ids" : ids};
-            [[QYNetworkManager sharedInstance] getUserInfoWithParameters:params];
+            NSMutableDictionary *parameters = [[QYAccount currentAccount] accountParameters];
+            NSString *idstr = [ids componentsJoinedByString:@","];
+            [parameters setObject:idstr forKey:@"userIds"];
+            
+            NSString *sex = [[NSUserDefaults standardUserDefaults] objectForKey:kFilterKeySex];
+            if (![sex isEqualToString:@"FM"]) {
+                [parameters setObject:sex forKey:@"gender"];
+            }
+            
+            [[QYNetworkManager sharedInstance] getUsersWithParameters:parameters];
             
         }else{
             [self searchNearbyUsersWithStatus:NO];
@@ -234,17 +233,35 @@
 }
 
 #pragma mark - QYNetworkManager Delegate
--(void)didGetUserInfo:(id)responseObject success:(BOOL)success{
+//获取周围用户列表
+-(void)didGetUsers:(id)responseObject success:(BOOL)success{
     if (success) {
-        [responseObject[kResponseKeyData][@"users"] enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [responseObject[kResponseKeyData] enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             QYUserInfo *userInfo = [QYUserInfo userWithDictionary:obj];
             [_nearbyUsers addObject:userInfo];
         }];
         
+        NSLog(@"有%ld个符合条件的用户", _nearbyUsers.count);
         dispatch_async(dispatch_get_main_queue(), ^{
             _animationView.users = _nearbyUsers;
             [_searchView removeFromSuperview];
         });
+    }
+}
+
+//标记用户关系(喜欢 or 不喜欢)
+-(void)didMarkUserRelationship:(id)responseObject success:(BOOL)success{
+    if (success) {
+        NSDictionary *dataDict = responseObject[kResponseKeyData];
+        
+        BOOL isFriend = [dataDict[@"friend"] boolValue];
+        if (isFriend) {//如果双方互相喜欢
+            _markCompletion();
+        }
+        
+        NSLog(@"标记成功");
+    }else{
+        NSLog(@"标记失败");
     }
 }
 

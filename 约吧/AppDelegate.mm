@@ -151,7 +151,7 @@
             QYUserInfo *user = [[QYUserInfo alloc] init];
             user.userId = [userInfo[kUserId] integerValue];
             user.name = userInfo[kUserName];
-            user.iconUrl = userInfo[kUserIconUrl];
+            user.userPhotos = userInfo[kUserPhotos];
             [nav.topViewController presentToNewFriendControllerForUser:user];
         }
     }

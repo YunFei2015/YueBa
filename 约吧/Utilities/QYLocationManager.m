@@ -71,7 +71,7 @@
 
 -(void)searchNearByUsersWithLocation:(CLLocationCoordinate2D)location{
     BMKRadarNearbySearchOption *option = [[BMKRadarNearbySearchOption alloc] init];
-    option.radius = 1000;
+    option.radius = [[NSUserDefaults standardUserDefaults] integerForKey:kFilterKeyDistance];
     option.sortType = BMK_RADAR_SORT_TYPE_DISTANCE_FROM_NEAR_TO_FAR;
     option.centerPt = location;
     BOOL result = [self.radarManager getRadarNearbySearchRequest:option];
@@ -192,7 +192,6 @@
 -(BMKLocationService *)locationService{
     if (_locationService == nil) {
         _locationService = [[BMKLocationService alloc] init];
-        _locationService.allowsBackgroundLocationUpdates = YES;
         _locationService.desiredAccuracy = kCLLocationAccuracyBest;
         _locationService.distanceFilter = 0;
         _locationService.delegate = self;

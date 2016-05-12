@@ -16,7 +16,7 @@
 #define Kspace 10
 
 @interface QYHomeAnimationView ()
-@property(nonatomic)ENLIKETYPE type;
+@property(nonatomic)BOOL type;
 
 @property (strong, nonatomic) QYUserInfo *currentUser;
 
@@ -59,14 +59,14 @@
 -(void)judgeLeftOrRightFromPoint:(CGPoint)Point{
     if (_delegate) {
         if (Point.x-(KframeSizeWidth/2.0)<-30) {
-            if (_type!=dislike) {
-                _type=dislike;
-                [_delegate ChangeValueType:dislike];
+            if (_type) {
+                _type = NO;
+                [_delegate ChangeValueType:NO];
             }
         }else if(Point.x-(KframeSizeWidth/2.0)>30){
-            if (_type!=like) {
-                _type=like;
-                [_delegate ChangeValueType:like];
+            if (!_type) {
+                _type = YES;
+                [_delegate ChangeValueType:YES];
             }
         }
     }
@@ -74,24 +74,23 @@
 
 #pragma mark 左右滑动
 
--(void)selectLikeOnce:(ENLIKETYPE)dlike{
+-(void)selectLikeOnce:(BOOL)like{
     UIView *view=[self.subviews lastObject];
-    float moveX = dlike==like?kScreenW*1.5:kScreenW/2.0*(-1);
+    float moveX = like ? kScreenW * 1.5 : kScreenW / 2.0 * (-1);
     //快速滑动
     [UIView animateWithDuration:.3 animations:^{
         //当前试图移除屏幕
         view.center = CGPointMake(moveX,view.center.y);
         view.alpha = .2;
-        
     }completion:^(BOOL finished) {
         //按钮动画
         if ([self.delegate respondsToSelector:@selector(ChangeValueType:)]) {
-            [self.delegate ChangeValueType:dlike];
+            [self.delegate ChangeValueType:like];
         }
         
         //将当前用户标记为like或dislike
         if ([self.delegate respondsToSelector:@selector(markUser:asLike:)]) {
-            [self.delegate markUser:_currentUser asLike:dlike];
+            [self.delegate markUser:_currentUser asLike:like];
         }
         
         //显示下一个用户
@@ -121,7 +120,7 @@
             NSLog(@"=====结束");
             CGPoint point=[gesture velocityInView:gesture.view.superview];
             if (ABS(point.x)>1500){
-                ENLIKETYPE isLike = point.x > 0 ? like : dislike;
+                BOOL isLike = point.x > 0 ? YES : NO;
                 [self selectLikeOnce:isLike];
         }else{
                 /**

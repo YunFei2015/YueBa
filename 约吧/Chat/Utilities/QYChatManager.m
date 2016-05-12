@@ -176,7 +176,7 @@
             if (user == nil) {
                 NSDictionary *userDict = @{kUserId : userId,
                                            kUserName : @"新来的",
-                                           kUserIconUrl : @"2",
+                                           kUserPhotos : @[@"2"],
                                            kUserMatchTime : @([[NSDate date] timeIntervalSince1970]),
                                            kUserAge : @20};
                 [[QYUserStorage sharedInstance] addUser:userDict];

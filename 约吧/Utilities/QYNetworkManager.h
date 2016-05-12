@@ -14,9 +14,10 @@
 -(void)didFinishLogin:(id)responseObject success:(BOOL)success;
 -(void)didFinishRegister:(id)responseObject success:(BOOL)success;
 -(void)didGetVerifyCode:(id)responseObject success:(BOOL)success;
--(void)didGetUserInfo:(id)responseObject success:(BOOL)success;
+-(void)didGetUsers:(id)responseObject success:(BOOL)success;
 -(void)didGetFriendsList:(id)responseObject success:(BOOL)success;
 -(void)didUpdateUserInfo:(id)responseObject success:(BOOL)success;
+-(void)didMarkUserRelationship:(id)responseObject success:(BOOL)success;
 @end
 
 @interface QYNetworkManager : NSObject
@@ -32,12 +33,15 @@
 -(void)getVerifyCodeWithParameters:(NSDictionary *)params;
 
 //查询用户信息
--(void)getUserInfoWithParameters:(NSDictionary *)parameters;
+-(void)getUsersWithParameters:(NSDictionary *)parameters;
 
 //获取好友列表
 -(void)getFriendsListWithParameters:(NSDictionary *)parameters;
 
 //更新个人信息
 -(void)updateUserInfoWithParameters:(NSDictionary *)parameters;
+
+//标记与用户的关系(喜欢 or 不喜欢)
+-(void)markUserRelationshipWithParameters:(NSDictionary *)parameters;
 
 @end

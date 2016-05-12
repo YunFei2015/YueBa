@@ -17,7 +17,7 @@
         _userId = [dict[kUserId] integerValue];
         _sex = [dict objectForKey:kUserSex];
         _age = [[dict objectForKey:kUserAge] integerValue];
-        _iconUrl = [dict objectForKey: kUserIconUrl];
+        _userPhotos = [dict objectForKey: kUserPhotos];
         _name = [dict objectForKey:kUserName];
         if ([dict objectForKey:kUserMatchTime]) {
             _matchTime = [NSDate dateWithTimeIntervalSince1970:[[dict objectForKey:kUserMatchTime] integerValue]];

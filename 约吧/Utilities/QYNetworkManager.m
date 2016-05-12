@@ -95,26 +95,59 @@
     }];
 }
 
--(void)getUserInfoWithParameters:(NSDictionary *)parameters{
-    //TODO: 等待网络接口
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSString *path = [[NSBundle mainBundle] pathForResource:@"users" ofType:@"plist"];
-        NSDictionary *responseObject = [NSDictionary dictionaryWithContentsOfFile:path];
-        if ([self.delegate respondsToSelector:@selector(didGetUserInfo:success:)]) {
-            [self.delegate didGetUserInfo:responseObject success:YES];
+//获取用户信息
+-(void)getUsersWithParameters:(NSDictionary *)parameters{
+    NSString *url = [kBaseUrl stringByAppendingPathComponent:kGetUsersApi];
+    [self.manager POST:url parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if ([responseObject[kResponseKeySuccess] boolValue]) {
+            if ([self.delegate respondsToSelector:@selector(didGetUsers:success:)]) {
+                [self.delegate didGetUsers:responseObject success:YES];
+            }
+        }else{
+            if ([self.delegate respondsToSelector:@selector(didGetUsers:success:)]) {
+                [self.delegate didGetUsers:responseObject success:NO];
+            }
         }
-    });
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        if ([self.delegate respondsToSelector:@selector(didGetUsers:success:)]) {
+            [self.delegate didGetUsers:nil success:NO];
+        }
+    }];
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//        NSString *path = [[NSBundle mainBundle] pathForResource:@"users" ofType:@"plist"];
+//        NSDictionary *responseObject = [NSDictionary dictionaryWithContentsOfFile:path];
+//        if ([self.delegate respondsToSelector:@selector(didGetUsers:success:)]) {
+//            [self.delegate didGetUsers:responseObject success:YES];
+//        }
+//    });
 }
 
+//获取好友列表
 -(void)getFriendsListWithParameters:(NSDictionary *)parameters{
     //TODO: 等待网络接口
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"users" ofType:@"plist"];
-    NSDictionary *responseObject = [NSDictionary dictionaryWithContentsOfFile:path];
-    if ([self.delegate respondsToSelector:@selector(didGetFriendsList:success:)]) {
-        [self.delegate didGetFriendsList:responseObject success:YES];
-    }
+    NSString *url = [kBaseUrl stringByAppendingPathComponent:kGetFriendListApi];
+    [self.manager POST:url parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if ([responseObject[kResponseKeySuccess] boolValue]) {
+            if ([self.delegate respondsToSelector:@selector(didGetFriendsList:success:)]) {
+                [self.delegate didGetFriendsList:responseObject success:YES];
+            }
+        }else{
+            if ([self.delegate respondsToSelector:@selector(didGetFriendsList:success:)]) {
+                [self.delegate didGetFriendsList:responseObject success:NO];
+            }
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        if ([self.delegate respondsToSelector:@selector(didGetFriendsList:success:)]) {
+            [self.delegate didGetFriendsList:nil success:NO];
+        }
+    }];
+    
+//    NSString *path = [[NSBundle mainBundle] pathForResource:@"users" ofType:@"plist"];
+//    NSDictionary *responseObject = [NSDictionary dictionaryWithContentsOfFile:path];
+    
 }
 
+//更新用户信息
 -(void)updateUserInfoWithParameters:(NSDictionary *)parameters{
     NSString *url = [kBaseUrl stringByAppendingPathComponent:kUpdateUserInfoApi];
     [self.manager POST:url parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -130,6 +163,25 @@
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if ([self.delegate respondsToSelector:@selector(didUpdateUserInfo:success:)]) {
             [self.delegate didUpdateUserInfo:nil success:NO];
+        }
+    }];
+}
+
+-(void)markUserRelationshipWithParameters:(NSDictionary *)parameters{
+    NSString *url = [kBaseUrl stringByAppendingPathComponent:kMarkUserRelationshipApi];
+    [self.manager POST:url parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if ([responseObject[kResponseKeySuccess] boolValue]) {
+            if ([self.delegate respondsToSelector:@selector(didMarkUserRelationship:success:)]) {
+                [self.delegate didMarkUserRelationship:responseObject success:YES];
+            }
+        }else{
+            if ([self.delegate respondsToSelector:@selector(didMarkUserRelationship:success:)]) {
+                [self.delegate didMarkUserRelationship:responseObject success:NO];
+            }
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        if ([self.delegate respondsToSelector:@selector(didMarkUserRelationship:success:)]) {
+            [self.delegate didMarkUserRelationship:nil success:NO];
         }
     }];
 }

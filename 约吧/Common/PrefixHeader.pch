@@ -23,7 +23,10 @@ typedef enum{
 #define kRGBColor(r, g, b, a)  [UIColor colorWithRed:r / 255.f green:g/ 255.f blue:b / 255.f alpha:a]
 #define kMsmCodeSeconds 60 //验证码倒计时秒数
 
-//Account
+//database
+#define kUserDBFileName @"users.db"
+
+//User
 #define kAccountFileName @"account"
 #define kAccountKeyUid @"userId"
 #define kAccountKeyToken @"access_token"
@@ -32,8 +35,9 @@ typedef enum{
 #define kUserName @"name"
 #define kUserAge @"age"
 #define kUserSex @"gender"
-#define kUserIconUrl @"iconUrl"
-#define kUserMatchTime @"matchTime"
+//#define kUserIconUrl @"iconUrl"
+#define kUserMatchTime @"createAt"
+#define kUserPhotos @"userPhoto"
 
 //block self
 #define WEAKSELF typeof(self) __weak weakSelf = self;
@@ -49,7 +53,10 @@ typedef enum{
 #define kRegisterApi @"users/regist.json"
 #define kLoginApi @"users/login.json"
 #define kVerifyCodeApi @"users/msmCaptcha.json"
+#define kGetUsersApi @"users/get_other_info_list.json"
+#define kGetFriendListApi @"users/friend_list.json"
 #define kUpdateUserInfoApi @"users/upload_user_info.json"
+#define kMarkUserRelationshipApi @"users/friend_tie.json"
 
 //network key
 #define kResponseKeySuccess @"success"

@@ -8,17 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-typedef enum : NSUInteger {
-    like,   //right
-    dislike,//left
-} ENLIKETYPE ;
-
-
 @protocol DanimationPro <NSObject>
 
--(void)ChangeValueType:(ENLIKETYPE)type;
+-(void)ChangeValueType:(BOOL)type;
 -(void)FinishendValueType;
--(void)markUser:(QYUserInfo *)user asLike:(ENLIKETYPE)isLike;
+-(void)markUser:(QYUserInfo *)user asLike:(BOOL)isLike;
 
 @end
 
@@ -27,5 +21,5 @@ typedef enum : NSUInteger {
 @property (strong, nonatomic) NSMutableArray *users;
 
 //喜欢不喜欢
--(void)selectLikeOnce:(ENLIKETYPE)dlike;
+-(void)selectLikeOnce:(BOOL)like;
 @end

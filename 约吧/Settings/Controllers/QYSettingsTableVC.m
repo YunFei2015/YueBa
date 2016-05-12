@@ -11,6 +11,7 @@
 #import "AppDelegate.h"
 #import "QYNetworkManager.h"
 #import "QYLocationManager.h"
+#import "QYUserStorage.h"
 #import "QYAgeRangeCell.h"
 #import <Masonry.h>
 #import <AVFile.h>
@@ -89,10 +90,16 @@
     //停止定位
     [[QYLocationManager sharedInstance] stopToUpdateLocation];
     
+    //清除用户过滤条件设置
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:kFilterKeySex];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:kFilterKeyMinAge];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:kFilterKeyMaxAge];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:kFilterKeyDistance];
+    
+    //清除数据库信息
+    [[QYUserStorage sharedInstance] removeDatabase];
+    
+    //切换到入口页
     AppDelegate *app = [UIApplication sharedApplication].delegate;
     [app setRootViewControllerToEntrance];
 }
