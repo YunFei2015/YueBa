@@ -120,31 +120,29 @@
             break;
     }
     
-    //当profile界面选中的单元格内容存在时，判断是否需要在_arrItems插入
-    if (self.selectedString.length > 0) {
-        __block BOOL isHas = NO;
-        [_arrItems enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            if ([obj isKindOfClass:[QYSelectModel class]]) {
-                //_arrItems已经存在选中的描述
-                if ([((QYSelectModel *)obj).strText isEqualToString:self.selectedString]) {
-                    isHas = YES;
-                    *stop = YES;
-                }
-                
-            }
-        }];
-        
-        if (!isHas) {
-            NSMutableArray *mutableArray = [NSMutableArray arrayWithArray:_arrItems];
-            QYSelectModel *model = [QYSelectModel new];
-            model.strText = self.selectedString;
-            [mutableArray insertObject:model atIndex:0];
-            _arrItems = mutableArray;
-        }
-    }
-    
+    [self chagngeDatas:_selectedStrings];
     
     [self.tableView reloadData];
+}
+
+//更改数据源（_arrItems）
+-(void)chagngeDatas:(NSArray *)strings{
+    if (strings.count == 0) {
+        return;
+    }
+    NSMutableArray *mutableArray = [NSMutableArray arrayWithArray:_arrItems];
+    //过滤_selectedStrings包含的model.strText
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.strText IN %@",strings];
+    NSArray *filterArray = [mutableArray filteredArrayUsingPredicate:predicate];
+    [mutableArray removeObjectsInArray:filterArray];
+    
+    for (NSString *str in strings) {
+        QYSelectModel *model = [QYSelectModel new];
+        model.strText = str;
+        model.selected = YES;
+        [mutableArray insertObject:model atIndex:0];
+    }
+    _arrItems = mutableArray;
 }
 
 #pragma mark - 🔌 Delegate Methods
@@ -176,9 +174,9 @@
         
         QYSelectModel *model = _arrItems[indexPath.row - 1];
         cell.textLabel.text = model.strText;
-        cell.textLabel.font = [model.strText isEqualToString:self.selectedString] || model.selected ? [UIFont boldSystemFontOfSize:15.0] : [UIFont systemFontOfSize:15.0];
+        cell.textLabel.font = model.selected ? [UIFont boldSystemFontOfSize:15.0] : [UIFont systemFontOfSize:15.0];
         //判断当有子选项的时候，UITableViewCellAccessoryDisclosureIndicator；没有子选项的时候，并且model.strText和self.selectedString相同的时候UITableViewCellAccessoryCheckmark；否则UITableViewCellAccessoryNone
-        cell.accessoryType = model.arrSubitems.count > 0 ? UITableViewCellAccessoryDisclosureIndicator : [model.strText isEqualToString:self.selectedString] || model.selected ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
+        cell.accessoryType = model.arrSubitems.count > 0 ? UITableViewCellAccessoryDisclosureIndicator : model.selected ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
         
         return cell;
     }
@@ -197,28 +195,10 @@
             }else{
                 //当profile界面选中的单元格内容存在时，判断是否需要在_arrItems插入
                 if (model.strText.length > 0) {
-                    __block BOOL isHas = NO;
-                    [_arrItems enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                        if ([obj isKindOfClass:[QYSelectModel class]]) {
-                            //_arrItems已经存在选中的描述
-                            if ([((QYSelectModel *)obj).strText isEqualToString:model.strText]) {
-                                isHas = YES;
-                                *stop = YES;
-                            }
-                            
-                        }
-                    }];
                     
-                    if (!isHas) {
-                        NSMutableArray *mutableArray = [NSMutableArray arrayWithArray:_arrItems];
-                        QYSelectModel *willInsertModel = [QYSelectModel new];
-                        willInsertModel.strText = model.strText;
-                        willInsertModel.selected = YES;
-                        [mutableArray insertObject:willInsertModel atIndex:0];
-                        _arrItems = mutableArray;
-                        
-                        [weakSelf.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:1 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
-                    }
+                    [weakSelf chagngeDatas:@[model.strText]];
+                    
+                    [weakSelf.tableView reloadData];
                 }
             }
         };
@@ -236,11 +216,11 @@
             [self.navigationController pushViewController:vcSubselection animated:YES];
         } else { // 无子项目
             if (tableView.allowsMultipleSelection) {
-                UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-                cell.accessoryType = UITableViewCellAccessoryCheckmark;
-                model.selected = YES;
-                cell.textLabel.font = [UIFont boldSystemFontOfSize:15.0];
-                
+//                UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+//                cell.accessoryType = UITableViewCellAccessoryCheckmark;
+//                model.selected = YES;
+//                cell.textLabel.font = [UIFont boldSystemFontOfSize:15.0];
+                [self setAppearanceForCell:indexPath];
             } else {
                 if ([self.delegate respondsToSelector:@selector(selectionController:didSelectSelectStrings:)]) {
                     [self.delegate selectionController:self didSelectSelectStrings:@[model.strText]];
@@ -253,25 +233,38 @@
 
 -(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath{
     if (indexPath.row > 0) {
-        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-        cell.accessoryType = UITableViewCellAccessoryNone;
-        QYSelectModel *model = _arrItems[indexPath.row - 1];
-        model.selected = NO;
-        cell.textLabel.font = [UIFont systemFontOfSize:15.0];
+//        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+//        cell.accessoryType = UITableViewCellAccessoryNone;
+//        QYSelectModel *model = _arrItems[indexPath.row - 1];
+//        model.selected = NO;
+//        cell.textLabel.font = [UIFont systemFontOfSize:15.0];
+        [self setAppearanceForCell:indexPath];
     }
+}
+
+-(void)setAppearanceForCell:(NSIndexPath *)indexPath{
+    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+    QYSelectModel *model = _arrItems[indexPath.row - 1];
+    model.selected = !model.selected;
+    cell.accessoryType = model.selected ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
+    cell.textLabel.font = model.selected ? [UIFont boldSystemFontOfSize:15.0] : [UIFont systemFontOfSize:15.0];
 }
 
 -(void)back:(UIBarButtonItem *)item{
     if (self.tableView.allowsMultipleSelection) {
-        NSMutableArray *selectedStrings = [NSMutableArray array];
-        for (QYSelectModel *model in _arrItems) {
-            if (model.selected) {
-                [selectedStrings addObject:model.strText];
+        NSMutableArray *didSelectedStrings = [NSMutableArray array];
+        
+        [_arrItems enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([obj isKindOfClass:[QYSelectModel class]]) {
+                QYSelectModel *selectModel = (QYSelectModel *)obj;
+                if (selectModel.selected) {
+                    [didSelectedStrings addObject:selectModel.strText];
+                }
             }
-        }
+        }];
         
         if ([self.delegate respondsToSelector:@selector(selectionController:didSelectSelectStrings:)]) {
-            [self.delegate selectionController:self didSelectSelectStrings:selectedStrings];
+            [self.delegate selectionController:self didSelectSelectStrings:didSelectedStrings];
         }
  
     }

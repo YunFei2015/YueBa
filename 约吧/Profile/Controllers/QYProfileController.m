@@ -17,11 +17,12 @@
 #import "QYCreateTextController.h"
 #import "ProfileCommon.h"
 #import "QYSelectModel.h"
+#import "PhotoWall.h"
 @interface QYProfileController () <UITableViewDataSource, UITableViewDelegate, QYSelectionControllerDelegate>
 {
     NSArray *_arrProfileInfos;
 }
-
+@property (nonatomic, strong) PhotoWall *wall;
 @end
 
 @implementation QYProfileController
@@ -34,11 +35,18 @@
 
 /** Load the default UI elements And prepare some datas needed. */
 - (void)loadDefaultSetting {
-    self.tableView.contentInset = UIEdgeInsetsMake(-35, 0, 0, 0);
     _arrProfileInfos = [[QLProfileInfo sharedProfileInfo] arrProfileInfos];
     
     self.tableView.estimatedRowHeight = 80;
     //self.tableView.rowHeight = UITableViewAutomaticDimension;
+    self.tableView.tableHeaderView = self.wall;
+}
+
+-(PhotoWall *)wall{
+    if (_wall == nil) {
+        _wall = [PhotoWall photoWall];
+    }
+    return _wall;
 }
 
 #pragma mark - 🔌 Delegate Methods
@@ -94,14 +102,19 @@
     //NSLog(@"%s~%@", __FUNCTION__, indexPath);
     
     UIViewController *viewController = nil;
-    if (indexPath.section == 1) {
+    
+    if (indexPath.section == 0) {
+        viewController = [self.storyboard instantiateViewControllerWithIdentifier:@"accountInfo"];
+        
+    }else if (indexPath.section == 1) {
         QYNormalHeightCell *normalCell = [tableView cellForRowAtIndexPath:indexPath];
+        NSArray *contents = normalCell.normalHeightModel.strContent.length ? @[normalCell.normalHeightModel.strContent] : @[];
         switch (indexPath.row) {
             case 0:
-                viewController = [self selectionViewControllerWithSelectionType:QYSelectionTypeOccupation selectedString:normalCell.normalHeightModel.strContent createTextType:QYCreateTextTypeOccupation];
+                viewController = [self selectionViewControllerWithSelectionType:QYSelectionTypeOccupation selectedStrings:contents createTextType:QYCreateTextTypeOccupation];
                 break;
             case 1:
-                viewController = [self selectionViewControllerWithSelectionType:QYSelectionTypeHometown selectedString:normalCell.normalHeightModel.strContent createTextType:QYCreateTextTypeHometown];
+                viewController = [self selectionViewControllerWithSelectionType:QYSelectionTypeHometown selectedStrings:contents createTextType:QYCreateTextTypeHometown];
                 break;
             case 2:
                 viewController = [self createTextViewControllerWithType:QYCreateTextTypeHaunt textContent:normalCell.normalHeightModel.strContent];
@@ -117,7 +130,8 @@
         }
     } else if (indexPath.section == 3) {
         if (indexPath.row == 0) {
-            viewController = [self selectionViewControllerWithSelectionType:QYSelectionTypePersonality selectedString:nil createTextType:QYCreateTextTypeNone];
+            QYAutoHeightCell *autoCell = [tableView cellForRowAtIndexPath:indexPath];
+            viewController = [self selectionViewControllerWithSelectionType:QYSelectionTypePersonality selectedStrings:autoCell.autoHeightModel.arrTags createTextType:QYCreateTextTypeNone];
         }
     } else if (indexPath.section == 4) {
         QYSelectionType type;
@@ -143,7 +157,8 @@
             default:
                 break;
         }
-        viewController = [self selectionViewControllerWithSelectionType:type selectedString:nil createTextType:QYCreateTextTypeNone];
+        QYAutoHeightCell *autoCell = [tableView cellForRowAtIndexPath:indexPath];
+        viewController = [self selectionViewControllerWithSelectionType:type selectedStrings:autoCell.autoHeightModel.arrTags createTextType:QYCreateTextTypeNone];
     }
     
     if (viewController) {
@@ -168,12 +183,13 @@
 }
 
 #pragma mark - Private
-- (UIViewController *)selectionViewControllerWithSelectionType:(QYSelectionType)type selectedString:(NSString *)string createTextType:(QYCreateTextType)textType{
+- (UIViewController *)selectionViewControllerWithSelectionType:(QYSelectionType)type selectedStrings:(NSArray *)strings createTextType:(QYCreateTextType)textType{
     QYSelectionController *viewController = [QYSelectionController new];
     viewController.type = type;
     viewController.createTextType = textType;
     viewController.delegate = self;
-    viewController.selectedString = string;
+    //viewController.selectedString = string;
+    viewController.selectedStrings = strings;
     return viewController;
 }
 
