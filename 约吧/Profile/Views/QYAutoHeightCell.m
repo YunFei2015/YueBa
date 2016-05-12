@@ -74,8 +74,9 @@
             UIFont *font = [UIFont systemFontOfSize:13];
             lblTag.font = font;
             lblTag.textAlignment = NSTextAlignmentCenter;
-            [_viewTags addSubview:lblTag];
             lblTag.backgroundColor = QLColorRandom;
+            [_viewTags addSubview:lblTag];
+            
             
             NSString *strText = arrTags[index];
             lblTag.text = strText;

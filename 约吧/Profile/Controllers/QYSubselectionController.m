@@ -7,7 +7,7 @@
 //
 
 #import "QYSubselectionController.h"
-
+#import "QYSelectModel.h"
 @interface QYSubselectionController ()
 
 @end
@@ -28,7 +28,7 @@
 #pragma mark - 🔌 Delegate Methods
 #pragma mark UITableViewDataSource, UITableViewDelegate
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 20;
+    return self.subSelectionItems.count;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *strId = @"cellStyle1";
@@ -36,13 +36,17 @@
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:strId];
     }
-    cell.textLabel.text = [NSString stringWithFormat:@"Text_Row:%zi", indexPath.row];
+    cell.textLabel.text = ((QYSelectModel *)self.subSelectionItems[indexPath.row]).strText;
     
     return cell;
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     NSLog(@"%s~%@", __FUNCTION__, indexPath);
+    if (_selectedSubModel) {
+        _selectedSubModel((QYSelectModel *)self.subSelectionItems[indexPath.row]);
+        [self.navigationController popToRootViewControllerAnimated:YES];
+    }
     
 }
 
