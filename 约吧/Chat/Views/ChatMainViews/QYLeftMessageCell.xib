@@ -15,8 +15,9 @@
                 <rect key="frame" x="0.0" y="0.0" width="367" height="170.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="小丸子" translatesAutoresizingMaskIntoConstraints="NO" id="Fio-Gc-O7P">
+                    <imageView clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="小丸子" translatesAutoresizingMaskIntoConstraints="NO" id="Fio-Gc-O7P">
                         <rect key="frame" x="10" y="30" width="40" height="40"/>
+                        <gestureRecognizers/>
                         <constraints>
                             <constraint firstAttribute="height" constant="40" id="noF-uf-rnv"/>
                             <constraint firstAttribute="width" constant="40" id="run-Us-mU8"/>

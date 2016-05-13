@@ -13,7 +13,7 @@
 @property (nonatomic) NSInteger userId;
 @property (strong, nonatomic) NSString *sex;
 @property (nonatomic) NSInteger age;
-@property (strong, nonatomic) NSString *iconUrl;
+//@property (strong, nonatomic) NSString *iconUrl;
 @property (strong, nonatomic) NSArray *userPhotos;
 
 @property (strong, nonatomic) NSString *name;

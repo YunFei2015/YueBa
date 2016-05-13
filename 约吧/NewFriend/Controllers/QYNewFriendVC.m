@@ -9,6 +9,7 @@
 #import "QYNewFriendVC.h"
 #import "QYAccount.h"
 #import "QYUserInfo.h"
+#import <UIImageView+WebCache.h>
 
 @interface QYNewFriendVC ()
 @property (weak, nonatomic) IBOutlet UIImageView *meIcon;
@@ -26,14 +27,23 @@
     
     _meIcon.layer.cornerRadius = _meIcon.frame.size.width / 2.f;
     _friendIcon.layer.cornerRadius = _meIcon.layer.cornerRadius;
-    
+    _keepSearchingBtn.layer.borderColor = [UIColor whiteColor].CGColor;
     [_meIcon.superview insertSubview:_friendIcon aboveSubview:_meIcon];
     
-    _keepSearchingBtn.layer.borderColor = [UIColor whiteColor].CGColor;
+    QYUserInfo *me = [QYAccount currentAccount].myInfo;
+    if (me.userPhotos && me.userPhotos.count > 0) {
+        NSString *url = me.userPhotos.firstObject;
+        [_meIcon sd_setImageWithURL:[NSURL URLWithString:url]];
+    }else{
+        _meIcon.image = [UIImage imageNamed:@"小心"];
+    }
     
-//    QYUserInfo *me = [QYAccount currentAccount].myInfo;
-//    _meIcon.image = [UIImage imageNamed:me.iconUrl];
-    _friendIcon.image = [UIImage imageNamed:_friend.iconUrl];
+    if (_friend.userPhotos && _friend.userPhotos.count > 0) {
+        NSString *url = me.userPhotos.firstObject;
+        [_friendIcon sd_setImageWithURL:[NSURL URLWithString:url]];
+    }else{
+        _friendIcon.image = [UIImage imageNamed:@"小丸子"];
+    }
     
     _tip.text = [NSString stringWithFormat:@"你和%@相互喜欢了对方", _friend.name];
 }

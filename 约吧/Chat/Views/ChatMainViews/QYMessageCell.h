@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 @class AVIMTypedMessage;
+@class QYUserInfo;
 
 typedef enum {
     kMessageTypeText,
@@ -17,6 +18,8 @@ typedef enum {
 }kMessageType;
 
 @interface QYMessageCell : UITableViewCell
+@property (strong, nonatomic) QYUserInfo *user;
+
 
 @property (nonatomic) kMessageType messageType;
 @property (strong, nonatomic) AVIMTypedMessage *message;

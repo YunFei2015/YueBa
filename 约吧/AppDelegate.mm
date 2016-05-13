@@ -40,10 +40,6 @@
     //AVOSCloud
     [AVOSCloud setApplicationId:@"aMH46TYlke0QkgVqjDCFOWfW-gzGzoHsz"
                       clientKey:@"wAHzxY32rrdxx0JVB1VM2BWo"];
-    if (![UIApplication sharedApplication].isRegisteredForRemoteNotifications) {
-        [AVOSCloud registerForRemoteNotification];
-    }
-    
     
     //百度地图
     _mapManager = [[BMKMapManager alloc]init];
@@ -75,7 +71,14 @@
 
 -(void)setRootViewControllerToHome{
     NSInteger userId = [QYAccount currentAccount].userId;
+    
+    //上线
     [QYChatManager sharedManager].client = [[AVIMClient alloc] initWithClientId:@(userId).stringValue];
+    
+    //注册推送通知
+    //    if (![UIApplication sharedApplication].isRegisteredForRemoteNotifications) {
+    [AVOSCloud registerForRemoteNotification];
+    //    }
     
     //开始定位
     [_nearbyUsers removeAllObjects];
@@ -119,12 +122,19 @@
 -(void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken{
     AVInstallation *installation = [AVInstallation currentInstallation];
     [installation setDeviceTokenFromData:deviceToken];
-    [installation setObject:@([QYAccount currentAccount].userId) forKey:@"userId"];
-    [installation saveInBackground];
+    [installation setObject:[@([QYAccount currentAccount].userId) stringValue] forKey:@"userId"];
+    [installation saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (succeeded) {
+            NSLog(@"installation上传成功");
+        }else{
+            NSLog(@"installation上传失败：%@", error);
+        }
+        
+    }];
 }
 
 -(void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error{
-    NSLog(@"%@", error);
+    NSLog(@"远程推送注册失败：%@", error);
 }
 
 //当应用正在运行时收到推送消息，会调用该方法

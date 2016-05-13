@@ -15,6 +15,7 @@
 #import "QYPhotoBrowser.h"
 
 //Models
+#import "QYAccount.h"
 #import "QYUserInfo.h"
 
 //Views
@@ -39,6 +40,7 @@
 #import <AVInstallation.h>
 #import <Masonry.h>
 #import <AVFileQuery.h>
+#import <UIImageView+WebCache.h>
 
 @interface QYChatVC () <UITableViewDelegate, UITableViewDataSource, QYChatManagerDelegate, MessageBarDelegate, QYAudioPlayerDelegate, QYFunctionViewDelegate, QYImagesPickerDelegate, UIViewControllerTransitioningDelegate>
 @property (strong, nonatomic) MessageBar *messageBar;
@@ -188,7 +190,13 @@
     CGFloat iconX = 0;
     CGFloat iconY = (44 - iconH) / 2.f;
     UIImageView *iconView = [[UIImageView alloc] initWithFrame:CGRectMake(iconX, iconY, iconW, iconH)];
-    iconView.image = [UIImage imageNamed:_user.iconUrl];
+    
+    if (self.user.userPhotos && self.user.userPhotos.count > 0) {
+        NSString *url = self.user.userPhotos.firstObject;
+        [iconView sd_setImageWithURL:[NSURL URLWithString:url]];
+    }else{
+        iconView.image = [UIImage imageNamed:@"小丸子"];
+    }
     [UIView drawRoundCornerOnImageView:iconView];
     [titleView addSubview:iconView];
     
@@ -202,13 +210,8 @@
     [titleView addSubview:name];
     
     self.navigationItem.titleView = titleView;
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(getUserDetailInfo)];
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(titleTapAction)];
     [titleView addGestureRecognizer:tap];
-}
-
-//TODO: 查看用户详细信息
--(void)getUserDetailInfo{
-    NSLog(@"正在查看用户详细信息");
 }
 
 - (void)addMessageBar{
@@ -315,7 +318,12 @@
 #pragma mark - Custom Methods - send messages
 -(void)pushMessage:(NSString *)title{
     AVQuery *query = [AVInstallation query];
-    [query whereKey:@"userId" equalTo:@(_user.userId)];
+    [query whereKey:@"userId" equalTo:[@(_user.userId) stringValue]];
+    
+    //如果没有开启消息预览，则不显示消息内容
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:kSettingPreview]) {
+        title = [NSString stringWithFormat:@"%@发来一条消息", [QYAccount currentAccount].myInfo.name];
+    }
     
     NSDictionary *data = @{
                            @"alert":             title, //显示内容
@@ -413,6 +421,10 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+-(void)titleTapAction{
+    [self showUserInfo:_user];
+}
+
 //tableView的点击事件
 - (void)tapAction:(UITapGestureRecognizer *)sender {
     //重置第一响应
@@ -447,7 +459,7 @@
     }
     
     if ([_selectedCell isTapedInIcon:sender]) {
-        [self getUserDetailInfo];
+        [self showUserInfo:_selectedCell.user];
         return;
     }
 }
@@ -512,6 +524,10 @@
     QYLocationMapVC *mapVC = [[QYLocationMapVC alloc] initWithLocation:[[CLLocation alloc] initWithLatitude:message.latitude longitude:message.longitude] title:message.text];
     UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:mapVC];
     [self presentViewController:navVC animated:YES completion:nil];
+}
+
+-(void)showUserInfo:(QYUserInfo *)user{
+    //TODO: 查看用户信息
 }
 
 #pragma mark - UIViewControllerTransitioning Delegate
@@ -661,7 +677,6 @@
     //将文件上传至云端
     if (message.file) {
         [message.file saveInBackground];
-//        [message.file save];
     }
     
     [self insertRowWithMessage:message];
@@ -724,6 +739,14 @@
     }
     
     NSLog(@"cell : %@", cell);
+    if ([cell.reuseIdentifier isEqualToString:kRightCellIdentifier]) {
+        cell.user = self.user;
+    }
+    
+    if ([cell.reuseIdentifier isEqualToString:kLeftCellIdentifier]) {
+        cell.user = [QYAccount currentAccount].myInfo;
+    }
+    
     cell.message = message;
     return cell;
 }

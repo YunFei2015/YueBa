@@ -107,7 +107,7 @@
 -(void)reloadLastMessage:(AVIMTypedMessage *)message forUser:(QYUserInfo *)user{
     //把最新会话置顶
     //从当前列表中查找用户
-    NSArray *results = [_datas filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF.userId MATCHES %@", user.userId]];
+    NSArray *results = [_datas filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF.userId == %ld", user.userId]];
     if (results.count <= 0) {//如果当前列表没有该用户，则从数据库中获取到，并插入到当前列表的顶部
         [_datas insertObject:user atIndex:0];
         [_tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationTop];
@@ -228,8 +228,6 @@
             *stop = TRUE;
         }
     }];
-    
-    
 }
 
 #pragma mark - UITableView Delegate & Datasource
@@ -328,16 +326,4 @@
     
     return @[deleteAction, clearAction];
 }
-
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
-
 @end

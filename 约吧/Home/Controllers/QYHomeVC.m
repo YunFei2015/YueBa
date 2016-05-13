@@ -160,19 +160,20 @@ typedef void(^markCompletionBlock)(void);
         //存入数据库
         NSDictionary *userDict = @{kUserId : @(user.userId),
                                    kUserName : user.name,
-                                   kUserPhotos : @[user.iconUrl]};
+                                   kUserPhotos : @[user.userPhotos]};
         [[QYUserStorage sharedInstance] addUser:userDict];
         
         //向对方发送推送消息
         AVQuery *query = [AVInstallation query];
-        [query whereKey:@"userId" equalTo:@(user.userId)];
+        [query whereKey:@"userId" equalTo:[@(user.userId)stringValue]];
         
         NSDictionary *data = @{
                                @"alert":             @"你有新朋友了！", //显示内容
                                @"badge":             @"Increment", //应用图标显示未读消息个数是递增当前值
                                @"sound":             @"sms-received1.caf", //提示音
                                @"content-available": @"1",
-                               kUserPhotos:         @[user.iconUrl], //用户头像url
+                               kUserId:              @(user.userId),
+                               kUserPhotos:         @[user.userPhotos], //用户头像url
                                kUserName:            user.name //用户姓名
                                };
         AVPush *push = [[AVPush alloc] init];
@@ -211,7 +212,8 @@ typedef void(^markCompletionBlock)(void);
                 BMKRadarNearbyInfo *nearbyInfo = (BMKRadarNearbyInfo *)obj;
                 [ids addObject:nearbyInfo.userId];
             }];
-            //TODO: 请求用户信息
+            
+            //按照过滤条件筛选用户
             NSMutableDictionary *parameters = [[QYAccount currentAccount] accountParameters];
             NSString *idstr = [ids componentsJoinedByString:@","];
             [parameters setObject:idstr forKey:@"userIds"];
@@ -236,6 +238,13 @@ typedef void(^markCompletionBlock)(void);
 //获取周围用户列表
 -(void)didGetUsers:(id)responseObject success:(BOOL)success{
     if (success) {
+        NSArray *users = responseObject[kResponseKeyData];
+        if (users.count <= 0) {
+            [self searchNearbyUsersWithStatus:NO];
+            NSLog(@"附近没有更多的人了...");
+            return;
+        }
+        
         [responseObject[kResponseKeyData] enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             QYUserInfo *userInfo = [QYUserInfo userWithDictionary:obj];
             [_nearbyUsers addObject:userInfo];

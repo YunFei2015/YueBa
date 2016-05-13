@@ -72,8 +72,8 @@
     
     
     _distanceSlider.value = [[NSUserDefaults standardUserDefaults] floatForKey:kFilterKeyDistance];
-    [_vibrateSw setOn:[[NSUserDefaults standardUserDefaults] boolForKey:@"vibrate"]];
-    [_previewSw setOn:[[NSUserDefaults standardUserDefaults] boolForKey:@"preview"]];
+    [_vibrateSw setOn:[[NSUserDefaults standardUserDefaults] boolForKey:kSettingVibrate]];
+    [_previewSw setOn:[[NSUserDefaults standardUserDefaults] boolForKey:kSettingPreview]];
 }
 
 -(void)dealloc{
@@ -134,16 +134,14 @@
 }
 
 - (IBAction)vibrateAction:(UISwitch *)sender {
-    [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"vibrate"];
+    [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:kSettingVibrate];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (IBAction)previewSwitchAction:(UISwitch *)sender {
-    [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"preview"];
+    [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:kSettingPreview];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
-
-
 
 #pragma mark - Custom Methods
 
@@ -253,6 +251,28 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     return 50;
+}
+
+-(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+    if (section == 4) {
+        UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 30)];
+        footerView.backgroundColor = [UIColor clearColor];
+        UILabel *tipLab = [[UILabel alloc] initWithFrame:CGRectMake(20, 5, kScreenW - 40, footerView.frame.size.height - 10)];
+        tipLab.numberOfLines = 0;
+        tipLab.font = [UIFont systemFontOfSize:9];
+        tipLab.textColor = [UIColor lightGrayColor];
+        tipLab.text = @"清理本地缓存数据只会移除所有媒体文件";
+    }
+    
+    return nil;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+    if (section == 4) {
+        return 30;
+    }
+    
+    return 0;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{

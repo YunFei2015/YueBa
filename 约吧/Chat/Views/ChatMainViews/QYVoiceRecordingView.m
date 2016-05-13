@@ -17,18 +17,6 @@
 
 @implementation QYVoiceRecordingView
 
--(void)awakeFromNib{
-//    _powerValueAnimatingImgView.animationImages = @[
-//                                                [UIImage imageNamed:@"RecordingSignal001"],
-//                                                [UIImage imageNamed:@"RecordingSignal002"],
-//                                                [UIImage imageNamed:@"RecordingSignal003"],
-//                                                [UIImage imageNamed:@"RecordingSignal004"],
-//                                                [UIImage imageNamed:@"RecordingSignal005"],
-//                                                [UIImage imageNamed:@"RecordingSignal006"],
-//                                                [UIImage imageNamed:@"RecordingSignal007"],
-//                                                [UIImage imageNamed:@"RecordingSignal008"]];
-}
-
 -(void)setRecording:(BOOL)recording{
     _recording = recording;
     

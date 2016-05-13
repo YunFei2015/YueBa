@@ -16,6 +16,7 @@
 #import <AVIMConversation.h>
 #import <AVIMMessage.h>
 #import <AVIMTypedMessage.h>
+#import <UIImageView+WebCache.h>
 
 @interface QYChatCell ()
 @property (weak, nonatomic) IBOutlet UIImageView *iconImageView;
@@ -41,7 +42,12 @@
 -(void)setUser:(QYUserInfo *)user{
     _user = user;
     
-    _iconImageView.image = [UIImage imageNamed:user.iconUrl];
+    if (user.userPhotos && user.userPhotos.count > 0) {
+        NSString *url = user.userPhotos.firstObject;
+        [_iconImageView sd_setImageWithURL:[NSURL URLWithString:url]];
+    }else{
+        _iconImageView.image = [UIImage imageNamed:@"小丸子"];
+    }
     [UIView drawRoundCornerOnImageView:_iconImageView];
     
     _nameLabel.text = user.name;

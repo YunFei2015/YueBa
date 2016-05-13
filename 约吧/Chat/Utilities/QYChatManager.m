@@ -172,16 +172,16 @@
             
            QYUserInfo *user = [[QYUserStorage sharedInstance] getUserForId:userId.integerValue];
             
-            //如果数据库中没有该用户，临时构造一个，等做好了网络接口部分，新添加的好友会立刻存入数据库
-            if (user == nil) {
-                NSDictionary *userDict = @{kUserId : userId,
-                                           kUserName : @"新来的",
-                                           kUserPhotos : @[@"2"],
-                                           kUserMatchTime : @([[NSDate date] timeIntervalSince1970]),
-                                           kUserAge : @20};
-                [[QYUserStorage sharedInstance] addUser:userDict];
-                user = [QYUserInfo userWithDictionary:userDict];
-            }
+//            //如果数据库中没有该用户，临时构造一个，等做好了网络接口部分，新添加的好友会立刻存入数据库
+//            if (user == nil) {
+//                NSDictionary *userDict = @{kUserId : userId,
+//                                           kUserName : @"新来的",
+//                                           kUserPhotos : @[@"2"],
+//                                           kUserMatchTime : @([[NSDate date] timeIntervalSince1970]),
+//                                           kUserAge : @20};
+//                [[QYUserStorage sharedInstance] addUser:userDict];
+//                user = [QYUserInfo userWithDictionary:userDict];
+//            }
             
             //如果用户的会话属性为空，则将会话存储到本地
             if (user.keyedConversation == nil) {

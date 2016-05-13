@@ -8,6 +8,7 @@
 
 #import "QYMessageCell.h"
 #import "FaceModel.h"
+#import "QYUserInfo.h"
 
 #import <AVFile.h>
 #import <AVIMAudioMessage.h>
@@ -73,11 +74,16 @@
     _messageViewHeightConstraint.constant = 0;
     _photoViewHeightConstraint.constant = 0;
     _locationViewHeightConstraint.constant = 0;
+    self.messageLab.textAlignment = NSTextAlignmentRight;
     
     [super prepareForReuse];
 }
 
 #pragma mark - setters
+-(void)setUser:(QYUserInfo *)user{
+    _user = user;
+}
+
 -(void)setMessage:(AVIMTypedMessage *)message{
     if (!message) {
         return;
@@ -105,7 +111,7 @@
     }
 }
 
-#pragma mark - custom methods
+#pragma mark - Custom methods
 ////计算cell的高度
 //-(CGFloat)heightWithMessage:(AVIMMessage *)message{
 //    return _messageViewHeightConstraint.constant + _photoViewHeightConstraint.constant + _locationViewHeightConstraint.constant + 10 + 10 + 1;
@@ -137,6 +143,8 @@
     [_message.file getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
         _photoImageView.image = [UIImage imageWithData:data];
     }];
+    
+//    [_photoImageView sd_setImageWithURL:[NSURL fileURLWithPath:_message.file.localPath]];
 }
 
 //填充位置内容
@@ -223,10 +231,22 @@
 
 #pragma mark - LeftMessageTableViewCell
 @implementation QYLeftMessageCell
+-(void)setUser:(QYUserInfo *)user{
+    if (user.userPhotos && user.userPhotos.count > 0) {
+        NSString *url = user.userPhotos.firstObject;
+        [self.iconImgView sd_setImageWithURL:[NSURL URLWithString:url]];
+    }else{
+        self.iconImgView.image = [UIImage imageNamed:@"小丸子"];
+    }
+    
+    [super setUser:user];
+}
+
 -(void)configAudioMessage{
     AVIMAudioMessage *audioMessage = (AVIMAudioMessage *)self.message;
-    NSString *text = [NSString stringWithFormat:@"          %@\''", audioMessage.text];
+    NSString *text = [NSString stringWithFormat:@"%@\''", audioMessage.text];
     self.messageLab.attributedText = [[NSAttributedString alloc] initWithString:text attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:15]}];
+    self.messageLab.textAlignment = NSTextAlignmentRight;
     self.voiceAnimatingImageView.animationImages = @[
                                                  [UIImage imageNamed:@"ReceiverVoiceNodePlaying000"],
                                                  [UIImage imageNamed:@"ReceiverVoiceNodePlaying001"],
@@ -254,10 +274,22 @@
 
 #pragma mark - RightMessageTableViewCell
 @implementation QYRightMessageCell
+-(void)setUser:(QYUserInfo *)user{
+    if (user.userPhotos && user.userPhotos.count > 0) {
+        NSString *url = user.userPhotos.firstObject;
+        [self.iconImgView sd_setImageWithURL:[NSURL URLWithString:url]];
+    }else{
+        self.iconImgView.image = [UIImage imageNamed:@"小心"];
+    }
+    
+    [super setUser:user];
+}
+
 -(void)configAudioMessage{
     AVIMAudioMessage *audioMessage = (AVIMAudioMessage *)self.message;
-    NSString *text = [NSString stringWithFormat:@"%@\''          ", audioMessage.text];
+    NSString *text = [NSString stringWithFormat:@"%@\''", audioMessage.text];
     self.messageLab.attributedText = [[NSAttributedString alloc] initWithString:text attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:15]}];
+    self.messageLab.textAlignment = NSTextAlignmentLeft;
     self.voiceAnimatingImageView.animationImages = @[
                                                  [UIImage imageNamed:@"SenderVoiceNodePlaying000"],
                                                  [UIImage imageNamed:@"SenderVoiceNodePlaying001"],

@@ -8,6 +8,7 @@
 
 #import "QYUserInfoView.h"
 #import "QYUserInfo.h"
+#import <UIImageView+WebCache.h>
 
 @interface QYUserInfoView ()
 @property (weak, nonatomic) IBOutlet UIImageView *iconImageView;
@@ -18,16 +19,16 @@
 
 @implementation QYUserInfoView
 
--(void)setImage:(UIImage *)image{
-    _image = image;
-    
-    _iconImageView.image = image;
-}
-
 -(void)setUserInfo:(QYUserInfo *)userInfo{
     _userInfo = userInfo;
     
-    _iconImageView.image = [UIImage imageNamed:userInfo.iconUrl];
+    if (userInfo.userPhotos && userInfo.userPhotos.count > 0) {
+        NSString *url = userInfo.userPhotos.firstObject;
+        [_iconImageView sd_setImageWithURL:[NSURL URLWithString:url]];
+    }else{
+        _iconImageView.image = [UIImage imageNamed:@"小丸子"];
+    }
+    
     _nameAndAgeLabel.text = [NSString stringWithFormat:@"%@, %ld", userInfo.name, userInfo.age];
 }
 

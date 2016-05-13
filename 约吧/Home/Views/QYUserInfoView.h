@@ -10,7 +10,6 @@
 @class QYUserInfo;
 
 @interface QYUserInfoView : UIView
-@property (strong, nonatomic) UIImage  *image;
 @property (strong, nonatomic) QYUserInfo *userInfo;
 
 @end

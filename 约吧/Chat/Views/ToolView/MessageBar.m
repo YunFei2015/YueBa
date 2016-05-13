@@ -54,7 +54,6 @@
     _selectedFaces = [NSMutableArray array];
     _talkBtn.layer.borderColor = [UIColor lightGrayColor].CGColor;
     _nilImage = [[UIImage alloc] init];
-//    [QYAudioRecorder sharedInstance].delegate = self;
 }
 
 #pragma mark - events
