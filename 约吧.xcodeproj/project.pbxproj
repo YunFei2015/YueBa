@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2F46E82C1CE4D460006D2B2F /* PhotoWall.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F46E8291CE4D460006D2B2F /* PhotoWall.m */; };
+		2F46E82D1CE4D460006D2B2F /* QYImageTile.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F46E82B1CE4D460006D2B2F /* QYImageTile.m */; };
 		58A097FF1CD884F50004B01A /* ProfileInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 58A097FE1CD884F50004B01A /* ProfileInfo.plist */; };
 		58A098021CD99C690004B01A /* QYSelectModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 58A098011CD99C690004B01A /* QYSelectModel.m */; };
 		58A098051CD9E4320004B01A /* QYSubselectionController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58A098041CD9E4320004B01A /* QYSubselectionController.m */; };
@@ -120,6 +122,10 @@
 
 /* Begin PBXFileReference section */
 		2F46E8271CE2EBC2006D2B2F /* ProfileCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ProfileCommon.h; sourceTree = "<group>"; };
+		2F46E8281CE4D460006D2B2F /* PhotoWall.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoWall.h; sourceTree = "<group>"; };
+		2F46E8291CE4D460006D2B2F /* PhotoWall.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoWall.m; sourceTree = "<group>"; };
+		2F46E82A1CE4D460006D2B2F /* QYImageTile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYImageTile.h; sourceTree = "<group>"; };
+		2F46E82B1CE4D460006D2B2F /* QYImageTile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYImageTile.m; sourceTree = "<group>"; };
 		53F2D9EEBB9BCB33D6F01085 /* Pods-约吧.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-约吧.debug.xcconfig"; path = "Pods/Target Support Files/Pods-约吧/Pods-约吧.debug.xcconfig"; sourceTree = "<group>"; };
 		58A097FE1CD884F50004B01A /* ProfileInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ProfileInfo.plist; sourceTree = "<group>"; };
 		58A098001CD99C690004B01A /* QYSelectModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYSelectModel.h; sourceTree = "<group>"; };
@@ -386,6 +392,10 @@
 				58CBFA9D1CD8818E001BBA84 /* QYNormalHeightCell.h */,
 				58CBFA9E1CD8818E001BBA84 /* QYNormalHeightCell.m */,
 				58CBFA9F1CD8818E001BBA84 /* QYNormalHeightCell.xib */,
+				2F46E8281CE4D460006D2B2F /* PhotoWall.h */,
+				2F46E8291CE4D460006D2B2F /* PhotoWall.m */,
+				2F46E82A1CE4D460006D2B2F /* QYImageTile.h */,
+				2F46E82B1CE4D460006D2B2F /* QYImageTile.m */,
 				58CBFAA01CD8818E001BBA84 /* QYProfile.storyboard */,
 			);
 			path = Views;
@@ -1021,6 +1031,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2F46E82D1CE4D460006D2B2F /* QYImageTile.m in Sources */,
+				2F46E82C1CE4D460006D2B2F /* PhotoWall.m in Sources */,
 				7C74ABE71CD30BD2003B0A44 /* NSDate+Extension.m in Sources */,
 				7C5FBAA11CB4AD0200714310 /* QYHomeAnimationView.m in Sources */,
 				7C74ABEA1CD30BD2003B0A44 /* UIView+Extension.m in Sources */,

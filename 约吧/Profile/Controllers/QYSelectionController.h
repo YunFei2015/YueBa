@@ -18,7 +18,7 @@
 
 @interface QYSelectionController : UITableViewController
 
-@property (nonatomic, strong) NSString *selectedString;     //已经选中的描述
+@property (nonatomic, strong) NSArray *selectedStrings;     //已经选中的描述的集合
 
 @property (nonatomic, assign) QYSelectionType type;
 @property (nonatomic, assign) QYCreateTextType createTextType;

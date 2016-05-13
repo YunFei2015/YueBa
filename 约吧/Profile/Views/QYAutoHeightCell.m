@@ -86,7 +86,7 @@
             
             [lblTag mas_makeConstraints:^(MASConstraintMaker *make) {
                 make.width.equalTo(@(lblActualWidth));
-                make.height.equalTo(@(20));
+                make.height.equalTo(@(28));
                 
                 if (lblTagLast == nil) { // 第一个 UILabel
                     make.left.top.equalTo(_viewTags);

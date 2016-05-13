@@ -58,6 +58,4 @@ typedef NS_ENUM(NSUInteger, QYCreateTextType) {
     QYCreateTextTypeNone,
 };
 
-
-
 #endif /* ProfileCommon_h */
