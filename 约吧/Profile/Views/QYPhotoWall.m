@@ -37,18 +37,17 @@
         [self addSubview:imageTile];
         imageTile.tileIndex = imageTile.tag = 100 + i;
         //imageTile.image = [UIImage imageNamed:[NSString stringWithFormat:@"cat%d.jpg",i]];
-        imageTile.userInteractionEnabled = YES;
-        
+        //添加平移手势
+        UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
+        [imageTile addGestureRecognizer:pan];
+        //设置图片
         imageTile.addImageForTile = ^(UIImage *image){
             [_weakSelf addImageForTile:image];
         };
-        
+        //删除图片
         imageTile.deleteImageFormTile = ^(QYImageTile *tile){
             [_weakSelf deleteImageFormTile:tile];
         };
-        
-        UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
-        [imageTile addGestureRecognizer:pan];
     }
 }
 
@@ -86,7 +85,7 @@
         NSInteger findTag = [self pointInView:panView point:panView.center];
         //4、判断找到的tag有效([101-106]),并且现在没有在执行动画
         if (findTag != -1) {
-            [self moveTileWithTagChanged:panView didFindTag:findTag didFinish:^(BOOL isFinish) {}];
+            [self moveTileWithTagChanged:panView didFindTag:findTag];
         }
         
     }else if (sender.state == UIGestureRecognizerStateEnded) {
@@ -112,7 +111,7 @@
 }
 
 //根据tag的更改移动瓦片
--(void)moveTileWithTagChanged:(QYImageTile *)tile didFindTag:(NSInteger)findTag didFinish:(DidFinishMoveTile)isFinish{
+-(void)moveTileWithTagChanged:(QYImageTile *)tile didFindTag:(NSInteger)findTag{
     //利用临时变量来保存找到的有效的findTag
     NSInteger tempTag = findTag;
     
@@ -138,9 +137,7 @@
     //执行动画
     [UIView animateWithDuration:AnimationDuration delay:0 usingSpringWithDamping:AnimationDamping initialSpringVelocity:AnimationVelocity options:UIViewAnimationOptionCurveLinear animations:^{
         [_weakSelf layoutIfNeeded];
-    } completion:^(BOOL finished) {
-        isFinish(finished);
-    }];
+    } completion:^(BOOL finished) {}];
 }
 
 //判断当前手势所在的点在self.subviews中的哪个视图中（除了当前手势作用的视图以外）
@@ -169,19 +166,18 @@
 -(void)addImageForTile:(UIImage *)image{
     _maxTagOfHadImageTile++;
     QYImageTile *willHandleTile = [self viewWithTag:_maxTagOfHadImageTile];
-    
     willHandleTile.image = image;
 }
 
 //删除图片（把删除图片的瓦片归置到后面）
 -(void)deleteImageFormTile:(QYImageTile *)tile{
-    [self moveTileWithTagChanged:tile didFindTag:_maxTagOfHadImageTile didFinish:^(BOOL isFinish) {}];
+    [self moveTileWithTagChanged:tile didFindTag:_maxTagOfHadImageTile];
     tile.image = nil;
     tile.tileIndex = tile.tag;
-    
     _maxTagOfHadImageTile--;
 }
 
+//返回照片墙上所有的图片
 -(NSArray *)imagesOfWall{
     NSMutableArray *images = [NSMutableArray array];
     [self.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {

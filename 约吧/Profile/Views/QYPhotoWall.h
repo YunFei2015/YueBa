@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-typedef void(^DidFinishMoveTile)(BOOL isFinish);
-
 @interface QYPhotoWall : UIView
 
 //照片墙中可用的图片

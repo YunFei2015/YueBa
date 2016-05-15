@@ -9,12 +9,13 @@
 /* Begin PBXBuildFile section */
 		2F46E82C1CE4D460006D2B2F /* QYPhotoWall.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F46E8291CE4D460006D2B2F /* QYPhotoWall.m */; };
 		2F46E82D1CE4D460006D2B2F /* QYImageTile.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F46E82B1CE4D460006D2B2F /* QYImageTile.m */; };
+		2F5B34E41CE8AD680076CE18 /* QYProfileController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F5B34E31CE8AD680076CE18 /* QYProfileController.m */; };
 		58A097FF1CD884F50004B01A /* ProfileInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 58A097FE1CD884F50004B01A /* ProfileInfo.plist */; };
 		58A098021CD99C690004B01A /* QYSelectModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 58A098011CD99C690004B01A /* QYSelectModel.m */; };
 		58A098051CD9E4320004B01A /* QYSubselectionController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58A098041CD9E4320004B01A /* QYSubselectionController.m */; };
 		58CBFAA11CD8818E001BBA84 /* QYAccountInfoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58CBFA7D1CD8818E001BBA84 /* QYAccountInfoController.m */; };
 		58CBFAA21CD8818E001BBA84 /* QYCreateTextController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58CBFA7F1CD8818E001BBA84 /* QYCreateTextController.m */; };
-		58CBFAA31CD8818E001BBA84 /* QYProfileController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58CBFA811CD8818E001BBA84 /* QYProfileController.m */; };
+		58CBFAA31CD8818E001BBA84 /* QYEditProfileController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58CBFA811CD8818E001BBA84 /* QYEditProfileController.m */; };
 		58CBFAA41CD8818E001BBA84 /* QYSelectionController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58CBFA831CD8818E001BBA84 /* QYSelectionController.m */; };
 		58CBFAA51CD8818E001BBA84 /* QYUpdatePhoneController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58CBFA851CD8818E001BBA84 /* QYUpdatePhoneController.m */; };
 		58CBFAA61CD8818E001BBA84 /* QYUpdatePwdController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58CBFA871CD8818E001BBA84 /* QYUpdatePwdController.m */; };
@@ -126,6 +127,8 @@
 		2F46E8291CE4D460006D2B2F /* QYPhotoWall.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYPhotoWall.m; sourceTree = "<group>"; };
 		2F46E82A1CE4D460006D2B2F /* QYImageTile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYImageTile.h; sourceTree = "<group>"; };
 		2F46E82B1CE4D460006D2B2F /* QYImageTile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYImageTile.m; sourceTree = "<group>"; };
+		2F5B34E21CE8AD680076CE18 /* QYProfileController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYProfileController.h; sourceTree = "<group>"; };
+		2F5B34E31CE8AD680076CE18 /* QYProfileController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYProfileController.m; sourceTree = "<group>"; };
 		53F2D9EEBB9BCB33D6F01085 /* Pods-约吧.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-约吧.debug.xcconfig"; path = "Pods/Target Support Files/Pods-约吧/Pods-约吧.debug.xcconfig"; sourceTree = "<group>"; };
 		58A097FE1CD884F50004B01A /* ProfileInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ProfileInfo.plist; sourceTree = "<group>"; };
 		58A098001CD99C690004B01A /* QYSelectModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYSelectModel.h; sourceTree = "<group>"; };
@@ -136,8 +139,8 @@
 		58CBFA7D1CD8818E001BBA84 /* QYAccountInfoController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYAccountInfoController.m; sourceTree = "<group>"; };
 		58CBFA7E1CD8818E001BBA84 /* QYCreateTextController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYCreateTextController.h; sourceTree = "<group>"; };
 		58CBFA7F1CD8818E001BBA84 /* QYCreateTextController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYCreateTextController.m; sourceTree = "<group>"; };
-		58CBFA801CD8818E001BBA84 /* QYProfileController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYProfileController.h; sourceTree = "<group>"; };
-		58CBFA811CD8818E001BBA84 /* QYProfileController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYProfileController.m; sourceTree = "<group>"; };
+		58CBFA801CD8818E001BBA84 /* QYEditProfileController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYEditProfileController.h; sourceTree = "<group>"; };
+		58CBFA811CD8818E001BBA84 /* QYEditProfileController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYEditProfileController.m; sourceTree = "<group>"; };
 		58CBFA821CD8818E001BBA84 /* QYSelectionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYSelectionController.h; sourceTree = "<group>"; };
 		58CBFA831CD8818E001BBA84 /* QYSelectionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYSelectionController.m; sourceTree = "<group>"; };
 		58CBFA841CD8818E001BBA84 /* QYUpdatePhoneController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYUpdatePhoneController.h; sourceTree = "<group>"; };
@@ -151,7 +154,7 @@
 		58CBFA8D1CD8818E001BBA84 /* QLSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QLSingleton.h; sourceTree = "<group>"; };
 		58CBFA8E1CD8818E001BBA84 /* QYAutoHeightFrameModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYAutoHeightFrameModel.h; sourceTree = "<group>"; };
 		58CBFA8F1CD8818E001BBA84 /* QYAutoHeightFrameModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYAutoHeightFrameModel.m; sourceTree = "<group>"; };
-		58CBFA901CD8818E001BBA84 /* QYAutoHeightModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYAutoHeightModel.h; sourceTree = "<group>"; };
+		58CBFA901CD8818E001BBA84 /* QYAutoHeightModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QYAutoHeightModel.h; path = ../Models/QYAutoHeightModel.h; sourceTree = "<group>"; };
 		58CBFA911CD8818E001BBA84 /* QYAutoHeightModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYAutoHeightModel.m; sourceTree = "<group>"; };
 		58CBFA921CD8818E001BBA84 /* QYNormalHeightModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYNormalHeightModel.h; sourceTree = "<group>"; };
 		58CBFA931CD8818E001BBA84 /* QYNormalHeightModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYNormalHeightModel.m; sourceTree = "<group>"; };
@@ -339,8 +342,10 @@
 		58CBFA7B1CD8818E001BBA84 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				58CBFA801CD8818E001BBA84 /* QYProfileController.h */,
-				58CBFA811CD8818E001BBA84 /* QYProfileController.m */,
+				2F5B34E21CE8AD680076CE18 /* QYProfileController.h */,
+				2F5B34E31CE8AD680076CE18 /* QYProfileController.m */,
+				58CBFA801CD8818E001BBA84 /* QYEditProfileController.h */,
+				58CBFA811CD8818E001BBA84 /* QYEditProfileController.m */,
 				58CBFA7C1CD8818E001BBA84 /* QYAccountInfoController.h */,
 				58CBFA7D1CD8818E001BBA84 /* QYAccountInfoController.m */,
 				58CBFA821CD8818E001BBA84 /* QYSelectionController.h */,
@@ -368,7 +373,6 @@
 				58CBFA8C1CD8818E001BBA84 /* QLProfileInfo.m */,
 				58CBFA8E1CD8818E001BBA84 /* QYAutoHeightFrameModel.h */,
 				58CBFA8F1CD8818E001BBA84 /* QYAutoHeightFrameModel.m */,
-				58CBFA901CD8818E001BBA84 /* QYAutoHeightModel.h */,
 				58CBFA911CD8818E001BBA84 /* QYAutoHeightModel.m */,
 				58CBFA921CD8818E001BBA84 /* QYNormalHeightModel.h */,
 				58CBFA931CD8818E001BBA84 /* QYNormalHeightModel.m */,
@@ -384,6 +388,7 @@
 			isa = PBXGroup;
 			children = (
 				58CBFA971CD8818E001BBA84 /* QYAccountInfoEntranceCell.h */,
+				58CBFA901CD8818E001BBA84 /* QYAutoHeightModel.h */,
 				58CBFA981CD8818E001BBA84 /* QYAccountInfoEntranceCell.m */,
 				58CBFA991CD8818E001BBA84 /* QYAccountInfoEntranceCell.xib */,
 				58CBFA9A1CD8818E001BBA84 /* QYAutoHeightCell.h */,
@@ -1064,7 +1069,7 @@
 				7CF902D61CD0B77F00B64CE9 /* MARKRangeSlider.m in Sources */,
 				7C74ABB61CD30A11003B0A44 /* QYAudioPlayer.m in Sources */,
 				7C4D3B901CB3F87D0040FF73 /* QYRegisterVC.m in Sources */,
-				58CBFAA31CD8818E001BBA84 /* QYProfileController.m in Sources */,
+				58CBFAA31CD8818E001BBA84 /* QYEditProfileController.m in Sources */,
 				58CBFAAC1CD8818E001BBA84 /* QYProfileSectionModel.m in Sources */,
 				7C3B9AE21CB7B71400C6C30E /* QYUserInfoView.m in Sources */,
 				7CFF658F1CAA5EE20068987A /* QYPinAnnotationView.m in Sources */,
@@ -1088,6 +1093,7 @@
 				58CBFAA41CD8818E001BBA84 /* QYSelectionController.m in Sources */,
 				7C74ABE91CD30BD2003B0A44 /* UIImage+Extension.m in Sources */,
 				7C74ABB81CD30A11003B0A44 /* QYChatManager.m in Sources */,
+				2F5B34E41CE8AD680076CE18 /* QYProfileController.m in Sources */,
 				7C30B1941C996137001EF237 /* FacesView.m in Sources */,
 				7C74ABC21CD30A1D003B0A44 /* QYImagesPicker.m in Sources */,
 				58CBFAA91CD8818E001BBA84 /* QYAutoHeightFrameModel.m in Sources */,

@@ -9,10 +9,11 @@
 #import "QYImageTile.h"
 #import "Masonry.h"
 
-
 #define BorderWidth 0.25
+
 @interface QYImageTile ()<UIImagePickerControllerDelegate,UINavigationControllerDelegate>
 @property (nonatomic,weak) UIViewController *topViewController;
+@property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizer;//平移手势（当瓦片没有图片的时候，平移手势不可用）
 @end
 
 @implementation QYImageTile
@@ -36,6 +37,8 @@
         self.layer.borderColor = [UIColor whiteColor].CGColor;
         self.layer.masksToBounds = YES;
         self.image = nil;
+        self.userInteractionEnabled = YES;
+        
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(selectImageFromImagePicker)];
         [self addGestureRecognizer:tap];
     }
@@ -47,12 +50,31 @@
     if (image) {
         [super setImage:image];
         self.contentMode = UIViewContentModeScaleAspectFill;
-        _hadImage = YES;
+        self.hadImage = YES;
     }else{
         [super setImage:[UIImage imageNamed:@"messageBar_Add"]];
         self.contentMode = UIViewContentModeCenter;
-        _hadImage = NO;
+        self.hadImage = NO;
     }
+}
+
+//添加手势（如果添加的手势是平移手势，那么保留下来，便于后期修改enable）
+-(void)addGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer{
+    [super addGestureRecognizer:gestureRecognizer];
+    if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+        self.panGestureRecognizer = (UIPanGestureRecognizer *)gestureRecognizer;
+    }
+}
+//设置panGestureRecognizer的可用状态
+-(void)setPanGestureRecognizer:(UIPanGestureRecognizer *)panGestureRecognizer{
+    _panGestureRecognizer = panGestureRecognizer;
+    _panGestureRecognizer.enabled = self.hadImage;
+}
+
+//设置hadImage
+-(void)setHadImage:(BOOL)hadImage{
+    _hadImage = hadImage;
+    self.panGestureRecognizer.enabled = self.hadImage;
 }
 
 //通过重写setTileIndex方法来设置瓦片的约束，来固定瓦片的尺寸和位置
