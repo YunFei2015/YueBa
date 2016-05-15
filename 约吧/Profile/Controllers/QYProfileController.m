@@ -17,12 +17,12 @@
 #import "QYCreateTextController.h"
 #import "ProfileCommon.h"
 #import "QYSelectModel.h"
-#import "PhotoWall.h"
+#import "QYPhotoWall.h"
 @interface QYProfileController () <UITableViewDataSource, UITableViewDelegate, QYSelectionControllerDelegate>
 {
     NSArray *_arrProfileInfos;
 }
-@property (nonatomic, strong) PhotoWall *wall;
+@property (nonatomic, strong) QYPhotoWall *wall;
 @end
 
 @implementation QYProfileController
@@ -42,9 +42,9 @@
     self.tableView.tableHeaderView = self.wall;
 }
 
--(PhotoWall *)wall{
+-(QYPhotoWall *)wall{
     if (_wall == nil) {
-        _wall = [PhotoWall photoWall];
+        _wall = [QYPhotoWall photoWall];
     }
     return _wall;
 }
@@ -100,7 +100,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     //[tableView deselectRowAtIndexPath:indexPath animated:NO];
     //NSLog(@"%s~%@", __FUNCTION__, indexPath);
-    
+    NSLog(@"%@",self.wall.imagesOfWall);
     UIViewController *viewController = nil;
     
     if (indexPath.section == 0) {
