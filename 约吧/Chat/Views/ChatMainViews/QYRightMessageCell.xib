@@ -64,7 +64,7 @@
                             <constraint firstItem="zGr-ik-elW" firstAttribute="top" secondItem="wWl-BQ-KW7" secondAttribute="top" id="cSE-fg-RMW"/>
                         </constraints>
                     </view>
-                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="message_image_placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="FG0-ta-ADp">
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="message_image_placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="FG0-ta-ADp">
                         <rect key="frame" x="126" y="92" width="161.5" height="0.0"/>
                         <constraints>
                             <constraint firstAttribute="height" id="3H0-0l-uRV"/>

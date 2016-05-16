@@ -164,7 +164,6 @@
         return;
     }
     //录音
-//    [[QYAudioRecorder sharedInstance] record];
     self.isCancelled = self.isRecording = NO;
     if ([self.delegate respondsToSelector:@selector(prepareToRecordVoiceWithCompletion:)]) {
         WEAKSELF

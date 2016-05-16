@@ -76,7 +76,7 @@
 -(void)setCurrentIndex:(NSInteger)currentIndex{
     _currentIndex = currentIndex;
     
-    [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:_currentIndex inSection:0] atScrollPosition:UICollectionViewScrollPositionNone animated:NO];
+    [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:currentIndex inSection:0] atScrollPosition:UICollectionViewScrollPositionNone animated:NO];
 }
 
 #pragma mark - UICollectionView Delegate & Datasource

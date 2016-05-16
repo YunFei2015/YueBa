@@ -9,6 +9,7 @@
 #import "QYPhotoBrowserTransition.h"
 #import "QYChatVC.h"
 #import "QYPhotoBrowser.h"
+#import "UIView+Extension.h"
 
 
 @implementation QYPhotoBrowserTransition
@@ -25,6 +26,7 @@
         UIView *snapShotView = [fromVC.selectedCell.photoImageView snapshotViewAfterScreenUpdates:NO];
         snapShotView.frame = [container convertRect:fromVC.selectedCell.photoImageView.frame fromView:fromVC.selectedCell];
         toVC.finalFrame = snapShotView.frame;
+
         toVC.view.alpha = 0;
         
         [container addSubview:toVC.view];

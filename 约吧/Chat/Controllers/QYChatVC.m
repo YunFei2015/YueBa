@@ -348,6 +348,11 @@
     [self pushMessage:[NSString stringWithFormat:@"%@发来一张图片", [QYAccount currentAccount].myInfo.name]];
 }
 
+-(void)sendImageMessageWithURL:(NSURL *)url{
+    [[QYChatManager sharedManager] sendImageMessageWithURL:url withConversation:_conversation];
+    [self pushMessage:[NSString stringWithFormat:@"%@发来一张图片", [QYAccount currentAccount].myInfo.name]];
+}
+
 -(void)sendVoiceMessageWithDuration:(NSTimeInterval)duration{
     [[QYChatManager sharedManager] sendVoiceMessageWithDuration:(NSInteger)duration withConversation:_conversation];
     [self pushMessage:[NSString stringWithFormat:@"%@发来一段语音", [QYAccount currentAccount].myInfo.name]];
@@ -656,6 +661,7 @@
     UIImage *image = info[UIImagePickerControllerOriginalImage];
     NSData *data = UIImageJPEGRepresentation(image, 0);
     [self sendImageMessageWithData:data];
+//    [self sendImageMessageWithURL:info[UIImagePickerControllerReferenceURL]];
 }
 
 
@@ -676,7 +682,8 @@
 -(void)willSendMessage:(AVIMTypedMessage *)message{
     //将文件上传至云端
     if (message.file) {
-        [message.file saveInBackground];
+//        [message.file saveInBackground];
+        [message.file save];
     }
     
     [self insertRowWithMessage:message];

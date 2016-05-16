@@ -71,7 +71,7 @@
                             <constraint firstItem="Q2K-Az-Qka" firstAttribute="leading" secondItem="B6u-82-cRF" secondAttribute="leading" constant="20" id="xYd-XD-QRX"/>
                         </constraints>
                     </view>
-                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="message_image_placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="n3G-n6-fXm">
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="message_image_placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="n3G-n6-fXm">
                         <rect key="frame" x="55" y="70" width="172" height="0.0"/>
                         <constraints>
                             <constraint firstAttribute="height" id="ggF-Jf-S7w"/>

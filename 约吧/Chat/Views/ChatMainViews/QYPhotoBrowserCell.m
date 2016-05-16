@@ -9,6 +9,7 @@
 #import "QYPhotoBrowserCell.h"
 
 @interface QYPhotoBrowserCell ()
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *heightConstraint;
 
 @end
 

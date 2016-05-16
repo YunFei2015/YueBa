@@ -15,6 +15,7 @@
 #import "QYAgeRangeCell.h"
 #import <Masonry.h>
 #import <AVFile.h>
+#import <AVInstallation.h>
 
 @interface QYSettingsTableVC ()
 @property (strong, nonatomic) QYUserInfo *myInfo;
@@ -98,6 +99,18 @@
     
     //清除数据库信息
     [[QYUserStorage sharedInstance] removeDatabase];
+    
+    //清除推送设置
+    AVInstallation *installation = [AVInstallation currentInstallation];
+    [installation removeObjectForKey:@"userId"];
+    [installation saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (succeeded) {
+            NSLog(@"清除推送设置成功");
+        }else{
+            NSLog(@"清除推送设置失败：%@", error);
+        }
+        
+    }];
     
     //切换到入口页
     AppDelegate *app = [UIApplication sharedApplication].delegate;

@@ -140,11 +140,30 @@
 -(void)configPhotoMessage{
     self.messageType = kMessageTypePhoto;
     _photoViewHeightConstraint.constant = kPhotoHeight;
+    WEAKSELF
     [_message.file getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
-        _photoImageView.image = [UIImage imageWithData:data];
+        UIImage *image = [UIImage imageWithData:data];
+        if (image) {
+//            CGSize size = image.size;
+//            CGFloat height = kPhotoWidth / size.width * kPhotoHeight;
+//            weakSelf.photoViewHeightConstraint.constant = height;
+        }
+        weakSelf.photoImageView.image = image;
     }];
     
-//    [_photoImageView sd_setImageWithURL:[NSURL fileURLWithPath:_message.file.localPath]];
+//    NSURL *url;
+//    if (_message.file.url) {
+//        url = [NSURL URLWithString:_message.file.url];
+//    }else{
+//        url = [NSURL URLWithString:_message.file.localPath];
+//    }
+//
+//    WEAKSELF
+//    [_photoImageView sd_setImageWithURL:url completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+//        if (error) {
+//            NSLog(@"%@", error);
+//        }
+//    }];
 }
 
 //填充位置内容
@@ -257,10 +276,18 @@
 }
 
 -(void)configPhotoMessage{
+    [super configPhotoMessage];
     UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"chat_bubble_gray"]];
     //将图片裁剪成气泡样式
-    [self.photoImageView maskLayerToView:imageView withFrame:CGRectMake(0, 0, kPhotoWidth, kPhotoHeight)];
-    [super configPhotoMessage];
+//    CGSize size = self.photoImageView.image.size;
+//    CGFloat height = kPhotoWidth / size.width * size.height;
+//    CGFloat y = (kPhotoHeight - height) / 2.f;
+    CGFloat height = kPhotoHeight;
+    CGFloat y = 0;
+    CGRect frame = CGRectMake(0, y, kPhotoWidth, height);
+    
+    [self.photoImageView maskLayerToView:imageView withFrame:frame];
+    
 }
 
 -(void)configLocationMessage{
@@ -300,10 +327,18 @@
 }
 
 -(void)configPhotoMessage{
-    UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"chat_bubble_red"]];
-    //将图片裁剪成气泡样式
-    [self.photoImageView maskLayerToView:imageView withFrame:CGRectMake(0, 0, kPhotoWidth, kPhotoHeight)];
     [super configPhotoMessage];
+    
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"chat_bubble_red"]];
+//    //将图片裁剪成气泡样式
+//    CGSize size = self.photoImageView.image.size;
+//    CGFloat height = kPhotoWidth / size.width * size.height;
+//    CGFloat y = (kPhotoHeight - height) / 2.f;
+    CGFloat height = kPhotoHeight;
+    CGFloat y = 0;
+    CGRect frame = CGRectMake(0, y, kPhotoWidth, height);
+    
+    [self.photoImageView maskLayerToView:imageView withFrame:frame];
 }
 
 -(void)configLocationMessage{
