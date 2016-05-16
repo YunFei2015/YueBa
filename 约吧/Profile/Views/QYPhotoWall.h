@@ -8,7 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-@interface PhotoWall : UIView
+@interface QYPhotoWall : UIView
+
+//照片墙中可用的图片
+@property (nonatomic, strong) NSArray *imagesOfWall;
+
 //声明类方法 初始化
 +(instancetype)photoWall;
 @end
