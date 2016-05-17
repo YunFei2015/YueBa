@@ -134,8 +134,9 @@
             }
         }else{
             NSLog(@"send message failed : %@", error);
+            message.sendTimestamp = [[NSDate date] timeIntervalSince1970];
             if ([self.delegate respondsToSelector:@selector(didSendMessage:succeeded:)]) {
-                [self.delegate didSendMessage:nil succeeded:NO];
+                [self.delegate didSendMessage:message succeeded:NO];
             }
         }
     }];

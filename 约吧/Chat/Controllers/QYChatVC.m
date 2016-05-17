@@ -34,6 +34,7 @@
 
 //Others
 #import "UIView+Extension.h"
+#import "NSDate+Extension.h"
 #import <AVOSCloudIM.h>
 #import <AVFile.h>
 #import <AVPush.h>
@@ -684,15 +685,24 @@
     //将文件上传至云端
     if (message.file) {
         [message.file saveInBackground];
-//        [message.file save];
     }
+    
     
     [self insertRowWithMessage:message];
     //TODO: 风火轮，正在发送
+    
+//    NSDate *now = [NSDate date];
+//    NSString *date = [now stringFromDateWithFormatter:@"yyyy-MM-dd HH:mm:ss"];
+//    NSLog(@"当前时间：%f", [[NSDate date] timeIntervalSince1970]);
 }
 
 -(void)didSendMessage:(AVIMTypedMessage *)message succeeded:(BOOL)succeeded{
     //TODO: 发送成功，风火轮停止；发送失败，提示发送失败
+    if (succeeded) {
+        
+    }else{
+        message.sendTimestamp = [[NSDate date] timeIntervalSince1970];
+    }
 
 }
 
