@@ -74,6 +74,7 @@
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="message_image_placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="n3G-n6-fXm">
                         <rect key="frame" x="55" y="70" width="172" height="0.0"/>
                         <constraints>
+                            <constraint firstAttribute="width" constant="172" id="JfC-9v-qzU"/>
                             <constraint firstAttribute="height" id="ggF-Jf-S7w"/>
                         </constraints>
                     </imageView>
@@ -133,6 +134,11 @@
                     <constraint firstItem="pHW-M0-UmN" firstAttribute="top" secondItem="n3G-n6-fXm" secondAttribute="bottom" id="sHq-cZ-FoX"/>
                     <constraint firstItem="B6u-82-cRF" firstAttribute="leading" secondItem="Fio-Gc-O7P" secondAttribute="trailing" constant="5" id="wwL-Ic-4Rv"/>
                 </constraints>
+                <variation key="default">
+                    <mask key="constraints">
+                        <exclude reference="SGh-pB-5dj"/>
+                    </mask>
+                </variation>
             </tableViewCellContentView>
             <connections>
                 <outlet property="iconImgView" destination="Fio-Gc-O7P" id="ERt-6q-un3"/>
@@ -146,6 +152,7 @@
                 <outlet property="microMapImageView" destination="LQ3-mY-oCf" id="RFx-3M-PxI"/>
                 <outlet property="photoImageView" destination="n3G-n6-fXm" id="aDK-WS-c0S"/>
                 <outlet property="photoViewHeightConstraint" destination="ggF-Jf-S7w" id="OnS-gf-F4n"/>
+                <outlet property="photoViewWidthConstraint" destination="JfC-9v-qzU" id="MBn-5B-lWh"/>
                 <outlet property="voiceAnimatingImageView" destination="Q2K-Az-Qka" id="2GH-vr-OoS"/>
                 <outlet property="voiceAnimatingViewWidthConstraint" destination="ceS-hH-HjD" id="e95-JE-UeP"/>
             </connections>

@@ -32,6 +32,7 @@
 		58CBFAB11CD8818E001BBA84 /* QYNormalHeightCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 58CBFA9E1CD8818E001BBA84 /* QYNormalHeightCell.m */; };
 		58CBFAB21CD8818E001BBA84 /* QYNormalHeightCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 58CBFA9F1CD8818E001BBA84 /* QYNormalHeightCell.xib */; };
 		58CBFAB31CD8818E001BBA84 /* QYProfile.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 58CBFAA01CD8818E001BBA84 /* QYProfile.storyboard */; };
+		7C0E42591CE96A1200CB07E2 /* QYMessageBarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C0E42581CE96A1200CB07E2 /* QYMessageBarButton.m */; };
 		7C30B14E1C995E2A001EF237 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C30B14D1C995E2A001EF237 /* main.m */; };
 		7C30B1511C995E2A001EF237 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7C30B1501C995E2A001EF237 /* AppDelegate.mm */; };
 		7C30B1591C995E2A001EF237 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7C30B1581C995E2A001EF237 /* Assets.xcassets */; };
@@ -170,6 +171,8 @@
 		58CBFA9E1CD8818E001BBA84 /* QYNormalHeightCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYNormalHeightCell.m; sourceTree = "<group>"; };
 		58CBFA9F1CD8818E001BBA84 /* QYNormalHeightCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = QYNormalHeightCell.xib; sourceTree = "<group>"; };
 		58CBFAA01CD8818E001BBA84 /* QYProfile.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = QYProfile.storyboard; sourceTree = "<group>"; };
+		7C0E42571CE96A1200CB07E2 /* QYMessageBarButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYMessageBarButton.h; sourceTree = "<group>"; };
+		7C0E42581CE96A1200CB07E2 /* QYMessageBarButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYMessageBarButton.m; sourceTree = "<group>"; };
 		7C30B1491C995E2A001EF237 /* 约吧.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "约吧.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C30B14D1C995E2A001EF237 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		7C30B14F1C995E2A001EF237 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -550,6 +553,8 @@
 				7C30B17F1C996137001EF237 /* MessageBar.h */,
 				7C30B1801C996137001EF237 /* MessageBar.m */,
 				7C30B1811C996137001EF237 /* MessageBar.xib */,
+				7C0E42571CE96A1200CB07E2 /* QYMessageBarButton.h */,
+				7C0E42581CE96A1200CB07E2 /* QYMessageBarButton.m */,
 			);
 			path = ToolView;
 			sourceTree = "<group>";
@@ -1099,6 +1104,7 @@
 				58CBFAA91CD8818E001BBA84 /* QYAutoHeightFrameModel.m in Sources */,
 				7C4CFE711CBF40AF00562786 /* QYChatCell.m in Sources */,
 				58CBFAA11CD8818E001BBA84 /* QYAccountInfoController.m in Sources */,
+				7C0E42591CE96A1200CB07E2 /* QYMessageBarButton.m in Sources */,
 				7C30B18C1C996137001EF237 /* QYChatVC.m in Sources */,
 				7CF8139B1CB1435F00CC79E8 /* QYPaopaoView.m in Sources */,
 				7C74ABDD1CD30BA4003B0A44 /* QYUserStorage.m in Sources */,

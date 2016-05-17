@@ -100,7 +100,11 @@
 
 //发送图片消息
 -(void)sendImageMessageWithData:(NSData *)data withConversation:(AVIMConversation *)conversation{
+    UIImage *image = [UIImage imageWithData:data];
     AVFile *file = [AVFile fileWithData:data];
+    [file.metaData setValue:@(image.size.width) forKey:@"width"];
+    [file.metaData setValue:@(image.size.height) forKey:@"height"];
+    
     AVIMImageMessage *message = [AVIMImageMessage messageWithText:nil file:file attributes:nil];
     [self sendTypedMessage:message withConversation:(AVIMConversation *)conversation];
 }

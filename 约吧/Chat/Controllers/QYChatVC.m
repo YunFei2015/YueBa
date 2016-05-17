@@ -102,6 +102,7 @@
         _voiceRecordingView = [[NSBundle mainBundle] loadNibNamed:@"QYVoiceRecordingView" owner:nil options:nil][0];
         _voiceRecordingView.center = self.view.center;
         _voiceRecordingView.bounds = CGRectMake(0, 0, kScreenW / 2.f, kScreenH / 4.f);
+        _voiceRecordingView.layer.cornerRadius = 10;
     }
     return _voiceRecordingView;
 }
@@ -682,8 +683,8 @@
 -(void)willSendMessage:(AVIMTypedMessage *)message{
     //将文件上传至云端
     if (message.file) {
-//        [message.file saveInBackground];
-        [message.file save];
+        [message.file saveInBackground];
+//        [message.file save];
     }
     
     [self insertRowWithMessage:message];

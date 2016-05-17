@@ -24,7 +24,7 @@ typedef void(^QYPeakPowerForChannel)(float peakPowerForChannel);
 @property (nonatomic, readonly) NSTimeInterval currentTimeInterval;
 
 @property (nonatomic, copy) QYPeakPowerForChannel peakPowerForChannel;
-@property (nonatomic, copy) QYStopRecorderCompletion maxTimeStopRecorderCompletion;
+//@property (nonatomic, copy) QYStopRecorderCompletion maxTimeStopRecorderCompletion;
 
 -(void)prepareToRecordWithPath:(NSString *)path completion:(QYPrepareRecorderCompletion)prepareRecorderCompletion;
 -(void)startToRecordWithStartRecorderCompletion:(QYStartRecorderCompletion)startRecorderCompletion;

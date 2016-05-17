@@ -100,7 +100,7 @@
                 strongSelf.recorder.delegate = strongSelf;
                 [strongSelf.recorder prepareToRecord];
                 strongSelf.recorder.meteringEnabled = YES;
-                [strongSelf.recorder recordForDuration:kVoiceRecorderMaxTime];
+                [strongSelf.recorder record];
 
                 if (error) {
                     NSLog(@"%@ %ld %@", [error domain], [error code], [[error userInfo] description]);
@@ -157,9 +157,7 @@
     NSTimeInterval duration = _recorder.currentTime < 1 ? 1 : _recorder.currentTime;
     
     [self stopRecording];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        stopRecorderCompletion(duration);
-    });
+    stopRecorderCompletion(duration);
 }
 
 -(void)cancelRecordingWithCancelRecorderCompletion:(QYCancelRecorderCompletion)cancelRecorderCompletion{

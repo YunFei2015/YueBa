@@ -93,7 +93,7 @@ typedef enum{
 
 //message bar bounds
 #define kMessageMaxWidth kScreenW * 2 / 3.f - 40//消息最大宽度
-#define kMessageBarHeight 40//底部工具栏高度
+#define kMessageBarHeight 50//底部工具栏高度
 #define kFunctionViewHeight 200//自定义键盘高度
 
 //face
@@ -113,7 +113,7 @@ typedef enum{
 
 //message cell bounds
 #define kPhotoWidth kScreenW / 2.f //图片宽度
-#define kPhotoHeight kScreenH / 3.f //图片高度
+#define kPhotoHeight kScreenH / 4.f //图片高度
 
 //recorder
 #define kVoiceRecorderMaxTime 60.0 

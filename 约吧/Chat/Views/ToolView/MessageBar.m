@@ -7,24 +7,25 @@
 //
 
 #import "MessageBar.h"
-//#import "FunctionView.h"
+#import "QYMessageBarButton.h"
 #import "FacesView.h"
+
 #import "FaceModel.h"
+
 #import "QYChatManager.h"
 #import "QYAudioRecorder.h"
+
 #import "UIView+Extension.h"
-
-
 
 @interface MessageBar () <UITextViewDelegate>
 @property (strong, nonatomic) __block MessageBar *blockSelf;
 
-@property (weak, nonatomic) IBOutlet UIButton *addBtn;
-@property (weak, nonatomic) IBOutlet UIButton *faceBtn;
-@property (weak, nonatomic) IBOutlet UIButton *voiceBtn;
+@property (weak, nonatomic) IBOutlet QYMessageBarButton *addBtn;
+@property (weak, nonatomic) IBOutlet QYMessageBarButton *faceBtn;
+@property (weak, nonatomic) IBOutlet QYMessageBarButton *voiceBtn;
 @property (weak, nonatomic) IBOutlet UILabel *tipLabel;
 @property (weak, nonatomic) IBOutlet UIButton *talkBtn;
-@property (strong, nonatomic) UIButton *selectedBtn;
+@property (strong, nonatomic) QYMessageBarButton *selectedBtn;
 
 @property (strong, nonatomic) FunctionView *functionView;
 @property (strong, nonatomic) FacesView *facesView;
@@ -63,7 +64,6 @@
     [UIView animateWithDuration:duration.floatValue animations:^{
         [self updateOriginY: kScreenH - kMessageBarHeight - keyboardBoundsValue.CGRectValue.size.height];
         [self.delegate updateTableViewHeight];
-//        [NSString stringWithFormat:@""];
     }];
 }
 
@@ -75,74 +75,65 @@
     }];
 }
 
-- (IBAction)buttonClickAction:(UIButton *)sender {
+- (IBAction)btnClickAction:(QYMessageBarButton *)sender {
+    //如果本次点击的button和上次点击的button不是同一个，则将上一个恢复原状
+    if (_selectedBtn.tag != sender.tag) {
+        _selectedBtn.showType = _selectedBtn.tag;//
+        _selectedBtn = sender;
+    }
     
-    switch (sender.tag) {
-        case MessageBarButtonTypeAdd://按钮为“添加”
+    switch (sender.showType) {
+        case kMessageBarButtonTypeAdd://添加
+            //如果按钮当前外观是“添加”，则1）点击后变成“键盘”外观；2）弹出自定义功能键盘
         {
-            if (!sender.selected) {
-                [self showFunctionView];
-            }else{
-                [self showSystemStandardView];
-            }
-            
+            sender.showType = kMessageBarButtonTypeKeyboard;
+            [self showFunctionView];
             [self switchKeyboardView];
         }
             break;
             
-        case MessageBarButtonTypeFace://按钮为“表情”
+        case kMessageBarButtonTypeFace://表情
+            //如果按钮当前外观是“表情”，则1）点击后变成“键盘”外观；2）弹出自定义标签键盘
         {
-            if (!sender.selected) {
-                [self showFacesView];
-            }else{
-                [self showSystemStandardView];
-            }
-            
+            sender.showType = kMessageBarButtonTypeKeyboard;
+            [self showFacesView];
             [self switchKeyboardView];
         }
+            
             break;
             
-            //正常状态下为“语音”，selected状态下为“键盘”或“发送”
-        case MessageBarButtonTypeVoice://按钮为“语音”
+        case kMessageBarButtonTypeVoice://语音
+            //如果按钮当前外观是“语音”，则1）点击后变成“键盘”外观；2）隐藏文本输入框，显示“按住说话”按钮；3）取消文本输入框的第一响应
         {
-            if (!sender.selected) {//按钮为“语音”
-                _messageTextView.hidden = YES;
-                _talkBtn.hidden = NO;
-                [_messageTextView resignFirstResponder];
-                [_voiceBtn setTitle:nil forState:UIControlStateSelected];
-                [_voiceBtn setImage:[UIImage imageNamed:@"messageBar_Keyboard"] forState:UIControlStateSelected];
-            }else{//按钮为“键盘”
-                _messageTextView.text = @"";
-                [self showSystemStandardView];
-                [self switchKeyboardView];
-            }
+            _messageTextView.hidden = YES;
+            _talkBtn.hidden = NO;
+            [_messageTextView resignFirstResponder];
+            sender.showType =  kMessageBarButtonTypeKeyboard;
         }
+            
             break;
             
-        case MessageBarButtonTypeSend:{//按钮为“发送”
-            //设置按钮属性
-            [_voiceBtn setTitle:nil forState:UIControlStateSelected];
-            [_voiceBtn setImage:[UIImage imageNamed:@"messageBar_Keyboard"] forState:UIControlStateSelected];
-            sender.selected = NO;
-            sender.tag = MessageBarButtonTypeVoice;
-            //发送表情
+        case kMessageBarButtonTypeSend://发送
+            //如果按钮当前外观是“发送”，则1）点击后变成“语音”外观；2）发送文本消息
+        {
+            sender.showType = kMessageBarButtonTypeVoice;
             [self sendMessage:_messageTextView.text];
-            return;
         }
+            
             break;
+            
+        case kMessageBarButtonTypeKeyboard://键盘
+            //如果按钮当前外观是“键盘”，则1）点击后恢复原状；2）弹出系统键盘
+        {
+            sender.showType = sender.tag;
+            [self showSystemStandardView];
+            [self switchKeyboardView];
+        }
+            
         default:
             break;
     }
-    //之前选中的按钮取消选中
-    if (sender.tag != _selectedBtn.tag) {
-        _selectedBtn.selected = NO;
-    }
     
-    //将被选中按钮的选中状态取反
-    sender.selected = !sender.selected;
-    
-    //存储被选中按钮
-    _selectedBtn = sender;
 }
 
 #pragma mark - microphone related events
@@ -164,7 +155,7 @@
         return;
     }
     //录音
-    self.isCancelled = self.isRecording = NO;
+//    self.isCancelled = self.isRecording = NO;
     if ([self.delegate respondsToSelector:@selector(prepareToRecordVoiceWithCompletion:)]) {
         WEAKSELF
         [self.delegate prepareToRecordVoiceWithCompletion:^BOOL{
@@ -211,7 +202,6 @@
     }
 }
 
-
 //取消录音
 - (IBAction)touchUpOutsideAction:(UIButton *)sender {
     //结束录音
@@ -226,36 +216,31 @@
 
 
 #pragma mark - custom methods
--(void)tipWillShow{
-//    _tipLabel.hidden = NO;
-//    _messageTextView.backgroundColor = [UIColor clearColor];
-}
-
--(void)tipWillHide{
-    _tipLabel.hidden = YES;
-    _messageTextView.backgroundColor = [UIColor whiteColor];
-}
-
 -(void)showSystemStandardView{
+    //inputView为空时，默认为系统键盘
     _messageTextView.inputView = nil;
 }
 
 -(void)showFunctionView{
+    //自定义功能键盘
     _messageTextView.inputView = self.functionView;
 }
 
 -(void)showFacesView{
+    //自定义表情键盘
     _messageTextView.inputView = self.facesView;
 }
 
 -(void)switchKeyboardView{
+    //弹出键盘时，需要显示文本输入框，隐藏_talkBtn
     _messageTextView.hidden = NO;
     _talkBtn.hidden = YES;
+    
     if (_messageTextView.isFirstResponder) {
-        [UIView animateWithDuration:0 animations:^{
+        //如果文本输入框已经是第一响应者，则reload键盘视图
         [_messageTextView reloadInputViews];
-        }];
     }else{
+        //如果文本输入框不是第一响应者，则将其设为第一响应者
         [_messageTextView becomeFirstResponder];
     }
 }
@@ -265,7 +250,7 @@
     if (_blockSelf.messageTextView.selectedTextRange.empty) {//如果用户没有选择文本
         __block NSString *text = _blockSelf.messageTextView.text;
         FaceModel *face = self.blockSelf.selectedFaces.lastObject;
-        if ([text hasSuffix:face.text]) {//如果文本框最后一个是表情文本，则删除表情
+        if (face != nil && [text hasSuffix:face.text]) {//如果文本框最后一个是表情文本，则删除表情
             NSRange range = [face.text rangeOfString:face.text];
             NSInteger length = range.length;
             UITextPosition *startPosition = [_blockSelf.messageTextView positionFromPosition:_blockSelf.messageTextView.selectedTextRange.start offset:-length];
@@ -280,6 +265,10 @@
     }else{//如果用户选择了文本，则删除被选择文本
         [_blockSelf.messageTextView replaceRange:(UITextRange *)_blockSelf.messageTextView.selectedTextRange withText:@""];
     }
+    
+    if ([_blockSelf.messageTextView.text isEqualToString:@""]) {
+        _voiceBtn.showType = kMessageBarButtonTypeVoice;
+    }
 }
 
 -(void)addFace:(FaceModel *)face{
@@ -289,10 +278,7 @@
     _blockSelf.messageTextView.text = [_blockSelf.messageTextView.text stringByAppendingFormat:@"%@", face.text];
     
     //选择表情后，将按钮属性设置为“发送”
-    [_blockSelf.voiceBtn setTitle:@"发送" forState:UIControlStateSelected];
-    [_blockSelf.voiceBtn setImage:_nilImage forState:UIControlStateSelected];
-    _blockSelf.voiceBtn.selected = YES;
-    _blockSelf.voiceBtn.tag = MessageBarButtonTypeSend;
+    _blockSelf.voiceBtn.showType = kMessageBarButtonTypeSend;
 }
 
 -(void)sendMessage:(NSString *)message{
@@ -312,8 +298,6 @@
         return;
     }
     
-    _voiceBtn.selected = NO;
-    _voiceBtn.tag = MessageBarButtonTypeVoice;
     if ([self.delegate respondsToSelector:@selector(sendMessage:)]) {
         [self.delegate sendMessage:message];
     }
@@ -325,15 +309,9 @@
     return YES;
 }
 
--(void)textViewDidBeginEditing:(UITextView *)textView{
-    
-//    [self tipWillHide];
-}
-
 -(void)textViewDidEndEditing:(UITextView *)textView{
-//    [self tipWillShow];
-    if (_selectedBtn.tag != MessageBarButtonTypeSend) {
-        _selectedBtn.selected = NO;
+    if (_selectedBtn.tag != 3) {
+        _selectedBtn.showType = _selectedBtn.tag;
     }
     
     [self showSystemStandardView];
@@ -342,21 +320,14 @@
 -(void)textViewDidChange:(UITextView *)textView{
     if ([textView hasText]) {
         //如果存在文本，将按钮属性设置为“发送”
-        [_voiceBtn setTitle:@"发送" forState:UIControlStateSelected];
-        [_voiceBtn setImage:_nilImage forState:UIControlStateSelected];
-        _voiceBtn.selected = YES;
-        _voiceBtn.tag = MessageBarButtonTypeSend;
+        _voiceBtn.showType = kMessageBarButtonTypeSend;
     }else{
-        [_voiceBtn setTitle:nil forState:UIControlStateSelected];
-        [_voiceBtn setImage:[UIImage imageNamed:@"messageBar_Keyboard"] forState:UIControlStateSelected];
-        _voiceBtn.selected = NO;
-        _voiceBtn.tag = MessageBarButtonTypeVoice;
+        _voiceBtn.showType = kMessageBarButtonTypeVoice;
     }
 }
 
 -(BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
     if ([text isEqualToString:@"\n"]) {//如果点击的回车键，实现发送功能
-        //TODO: 检查文本是否为空白消息，空白消息不允许发送
         [self sendMessage:textView.text];
         [self updateMessageBarHeightWithTextView:textView];
         return NO;
@@ -376,13 +347,6 @@
         [self.delegate updateTableViewHeight];
         
         _textHeight = lastH;
-    }
-    
-    //检查文本是否为空
-    if ([textView.text isEqualToString: @""]) {
-        [self tipWillShow];
-    }else{
-        [self tipWillHide];
     }
 }
 

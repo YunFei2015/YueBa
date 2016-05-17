@@ -17,20 +17,29 @@
 -(void)animateTransition:(id<UIViewControllerContextTransitioning>)transitionContext{
     
     if ([[transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey] isKindOfClass:[SWRevealViewController class]]) {
+        
+        //from控制器
         SWRevealViewController *revealVC = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
         UINavigationController *nav = (UINavigationController *)revealVC.rightViewController;
         QYChatVC *fromVC = (QYChatVC *)nav.viewControllers[1];
+        
+        //to控制器
         QYPhotoBrowser *toVC = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
         UIView *container = [transitionContext containerView];
         
-        UIView *snapShotView = [fromVC.selectedCell.photoImageView snapshotViewAfterScreenUpdates:NO];
-        snapShotView.frame = [container convertRect:fromVC.selectedCell.photoImageView.frame fromView:fromVC.selectedCell];
-        toVC.finalFrame = snapShotView.frame;
+        //转场动画初始视图
+        UIImageView *photoImageView = fromVC.selectedCell.photoImageView;
+        UIImageView *snapShotView = [[UIImageView alloc] initWithImage:photoImageView.image];
+        snapShotView.contentMode = UIViewContentModeScaleAspectFit;
+        snapShotView.frame = [container convertRect:photoImageView.frame fromView:fromVC.selectedCell];
+        snapShotView.backgroundColor = [UIColor blackColor];
 
         toVC.view.alpha = 0;
-        
         [container addSubview:toVC.view];
         [container addSubview:snapShotView];
+        
+        //在transition结束后toVC的frame大小
+        toVC.finalFrame = snapShotView.frame;
         
         [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
             snapShotView.frame = toVC.view.frame;
@@ -45,7 +54,13 @@
         UIViewController *toVC = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
         UIView *container = [transitionContext containerView];
         
-        UIView *snapShotView = [fromVC.selectedCell.photoView snapshotViewAfterScreenUpdates:NO];
+        //转场动画初始视图
+        UIImageView *photoImageView = fromVC.selectedCell.photoView;
+        UIImageView *snapShotView = [[UIImageView alloc] initWithImage:photoImageView.image];
+        snapShotView.contentMode = UIViewContentModeScaleAspectFit;
+        snapShotView.frame = [container convertRect:photoImageView.frame fromView:fromVC.selectedCell];
+        
+        
         [container addSubview:toVC.view];
         [container addSubview:snapShotView];
       
@@ -59,7 +74,7 @@
 }
 
 -(NSTimeInterval)transitionDuration:(id<UIViewControllerContextTransitioning>)transitionContext{
-    return 0.75;
+    return 0.25;
 }
 
 @end

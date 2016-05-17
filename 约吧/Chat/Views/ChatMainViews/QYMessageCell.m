@@ -50,6 +50,7 @@
  *  图片消息控件
  */
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *photoViewHeightConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *photoViewWidthConstraint;
 
 /**
  *  位置消息控件
@@ -71,8 +72,13 @@
 //当cell即将被复用时，要把之前的约束恢复初始值
 -(void)prepareForReuse{
     _voiceAnimatingViewWidthConstraint.constant = 0;
+    
+    _messageViewWidthConstraint.constant = 0;
     _messageViewHeightConstraint.constant = 0;
+    
     _photoViewHeightConstraint.constant = 0;
+    _photoViewWidthConstraint.constant = 0;
+    
     _locationViewHeightConstraint.constant = 0;
     self.messageLab.textAlignment = NSTextAlignmentRight;
     
@@ -139,31 +145,31 @@
 //填充照片内容
 -(void)configPhotoMessage{
     self.messageType = kMessageTypePhoto;
-    _photoViewHeightConstraint.constant = kPhotoHeight;
-    WEAKSELF
-    [_message.file getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
+    CGFloat width = [self.message.file.metaData[@"width"] floatValue];
+    CGFloat height = [self.message.file.metaData[@"height"] floatValue];
+    
+    if (width == 0 || height == 0) {
+        self.photoViewWidthConstraint.constant = kPhotoWidth;
+        self.photoViewHeightConstraint.constant = kPhotoHeight;
+    }else{
+        CGFloat ratio = width / height;
+        if (width > height) {
+            width = kPhotoWidth;
+            height = width / ratio;
+        }else{
+            height = kPhotoHeight;
+            width = height * ratio;
+        }
+        self.photoViewHeightConstraint.constant = height;
+        self.photoViewWidthConstraint.constant = width;
+    }
+    
+    [self.message.file getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
         UIImage *image = [UIImage imageWithData:data];
         if (image) {
-//            CGSize size = image.size;
-//            CGFloat height = kPhotoWidth / size.width * kPhotoHeight;
-//            weakSelf.photoViewHeightConstraint.constant = height;
+            self.photoImageView.image = image;
         }
-        weakSelf.photoImageView.image = image;
     }];
-    
-//    NSURL *url;
-//    if (_message.file.url) {
-//        url = [NSURL URLWithString:_message.file.url];
-//    }else{
-//        url = [NSURL URLWithString:_message.file.localPath];
-//    }
-//
-//    WEAKSELF
-//    [_photoImageView sd_setImageWithURL:url completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-//        if (error) {
-//            NSLog(@"%@", error);
-//        }
-//    }];
 }
 
 //填充位置内容
@@ -192,7 +198,6 @@
             _messageViewWidthConstraint.constant = audioMinWidth + widthPerSec * duration + _voiceAnimatingViewWidthConstraint.constant + 10 + 20;
         }
     }
-    
 }
 
 
@@ -279,12 +284,10 @@
     [super configPhotoMessage];
     UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"chat_bubble_gray"]];
     //将图片裁剪成气泡样式
-//    CGSize size = self.photoImageView.image.size;
-//    CGFloat height = kPhotoWidth / size.width * size.height;
-//    CGFloat y = (kPhotoHeight - height) / 2.f;
-    CGFloat height = kPhotoHeight;
-    CGFloat y = 0;
-    CGRect frame = CGRectMake(0, y, kPhotoWidth, height);
+    CGFloat height = self.photoViewHeightConstraint.constant;
+    CGFloat width = self.photoViewWidthConstraint.constant;
+    NSLog(@"width = %f, height = %f", width,height);
+    CGRect frame = CGRectMake(0, 0, width, height);
     
     [self.photoImageView maskLayerToView:imageView withFrame:frame];
     
@@ -327,16 +330,15 @@
 }
 
 -(void)configPhotoMessage{
+    
     [super configPhotoMessage];
     
     UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"chat_bubble_red"]];
 //    //将图片裁剪成气泡样式
-//    CGSize size = self.photoImageView.image.size;
-//    CGFloat height = kPhotoWidth / size.width * size.height;
-//    CGFloat y = (kPhotoHeight - height) / 2.f;
-    CGFloat height = kPhotoHeight;
-    CGFloat y = 0;
-    CGRect frame = CGRectMake(0, y, kPhotoWidth, height);
+    CGFloat height = self.photoViewHeightConstraint.constant;
+    CGFloat width = self.photoViewWidthConstraint.constant;
+    NSLog(@"width = %f, height = %f", width,height);
+    CGRect frame = CGRectMake(0, 0, width, height);
     
     [self.photoImageView maskLayerToView:imageView withFrame:frame];
 }

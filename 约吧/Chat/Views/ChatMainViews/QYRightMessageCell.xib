@@ -68,6 +68,7 @@
                         <rect key="frame" x="126" y="92" width="161.5" height="0.0"/>
                         <constraints>
                             <constraint firstAttribute="height" id="3H0-0l-uRV"/>
+                            <constraint firstAttribute="width" constant="161.5" id="GJ8-3w-g6j"/>
                         </constraints>
                     </imageView>
                     <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8UM-ck-9YW">
@@ -126,6 +127,11 @@
                     <constraint firstAttribute="trailing" secondItem="qXj-3w-knB" secondAttribute="trailing" constant="10" id="ttd-9s-tYi"/>
                     <constraint firstAttribute="bottom" secondItem="qXj-3w-knB" secondAttribute="bottom" constant="10" id="vkt-v3-3la"/>
                 </constraints>
+                <variation key="default">
+                    <mask key="constraints">
+                        <exclude reference="Y1W-Jh-AwB"/>
+                    </mask>
+                </variation>
             </tableViewCellContentView>
             <connections>
                 <outlet property="iconImgView" destination="qXj-3w-knB" id="2oe-tk-dmR"/>
@@ -139,6 +145,7 @@
                 <outlet property="microMapImageView" destination="rYc-Gy-8Hh" id="ujB-zD-c1v"/>
                 <outlet property="photoImageView" destination="FG0-ta-ADp" id="p5S-OI-Bjz"/>
                 <outlet property="photoViewHeightConstraint" destination="3H0-0l-uRV" id="xHH-pY-0La"/>
+                <outlet property="photoViewWidthConstraint" destination="GJ8-3w-g6j" id="7hy-T7-EV7"/>
                 <outlet property="voiceAnimatingImageView" destination="s0u-Oq-Dib" id="IHV-60-efY"/>
                 <outlet property="voiceAnimatingViewWidthConstraint" destination="BGL-6e-bp7" id="3i9-Ub-UuT"/>
             </connections>

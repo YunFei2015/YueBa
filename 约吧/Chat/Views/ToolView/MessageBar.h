@@ -9,13 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "FunctionView.h"
 
-typedef enum{
-    MessageBarButtonTypeAdd=1,//+
-    MessageBarButtonTypeFace,//表情
-    MessageBarButtonTypeVoice,//语音
-    MessageBarButtonTypeSend//发送
-}MessageBarButtonType;
-
 @protocol MessageBarDelegate <NSObject>
 @optional
 -(void)updateTableViewHeight;
