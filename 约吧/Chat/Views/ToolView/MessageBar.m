@@ -77,7 +77,7 @@
 
 - (IBAction)btnClickAction:(QYMessageBarButton *)sender {
     //如果本次点击的button和上次点击的button不是同一个，则将上一个恢复原状
-    if (_selectedBtn.tag != sender.tag) {
+    if (sender.showType != kMessageBarButtonTypeSend && _selectedBtn.tag != sender.tag) {
         _selectedBtn.showType = _selectedBtn.tag;//
         _selectedBtn = sender;
     }

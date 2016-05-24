@@ -30,27 +30,40 @@
 
 #pragma mark - MessageTableViewCell
 @interface QYMessageCell ()
-
+/**
+ *  用户头像
+ */
 @property (weak, nonatomic) IBOutlet UIImageView *iconImgView;//用户头像
+
+/**
+ *  消息视图，所有类型的消息都放在该视图中
+ */
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *viewWidthConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *viewHeightConstraint;
+
+/**
+ *  消息状态提示控件
+ */
+@property (weak, nonatomic) IBOutlet UIImageView *messageStatusView;
+
 
 /**
  *  文本消息控件
  */
-@property (weak, nonatomic) IBOutlet UIView *messageView;//文本、语音消息共用一个父视图
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *messageViewWidthConstraint;
+@property (weak, nonatomic) IBOutlet UIView *messageView;//文本、语音消息共用一个视图
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *messageViewHeightConstraint;
 @property (weak, nonatomic) IBOutlet UILabel *messageLab;//文本、语音消息共用一个label
 
 /**
  *  语音消息控件
  */
+@property (weak, nonatomic) IBOutlet UIImageView *voiceAnimatingImageView;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *voiceAnimatingViewWidthConstraint;
 
 /**
  *  图片消息控件
  */
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *photoViewHeightConstraint;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *photoViewWidthConstraint;
 
 /**
  *  位置消息控件
@@ -72,16 +85,15 @@
 //当cell即将被复用时，要把之前的约束恢复初始值
 -(void)prepareForReuse{
     _voiceAnimatingViewWidthConstraint.constant = 0;
+    _viewWidthConstraint.constant = 0;
+    _viewHeightConstraint.constant = 0;
     
-    _messageViewWidthConstraint.constant = 0;
     _messageViewHeightConstraint.constant = 0;
-    
     _photoViewHeightConstraint.constant = 0;
-    _photoViewWidthConstraint.constant = 0;
-    
     _locationViewHeightConstraint.constant = 0;
-    self.messageLab.textAlignment = NSTextAlignmentRight;
     
+    _messageLab.textAlignment = NSTextAlignmentRight;
+    _messageStatusView.hidden = YES;
     [super prepareForReuse];
 }
 
@@ -115,25 +127,32 @@
         default:
             break;
     }
+    
+    _viewHeightConstraint.constant = _messageViewHeightConstraint.constant + _photoViewHeightConstraint.constant + _locationViewHeightConstraint.constant;
+    
+    //如果消息发送失败
+    if (message.status == AVIMMessageStatusFailed) {
+        _messageStatusView.image = [UIImage imageNamed:@"chat_error_icon"];
+        _messageStatusView.hidden = NO;
+    }
 }
 
 #pragma mark - Custom methods
-////计算cell的高度
-//-(CGFloat)heightWithMessage:(AVIMMessage *)message{
-//    return _messageViewHeightConstraint.constant + _photoViewHeightConstraint.constant + _locationViewHeightConstraint.constant + 10 + 10 + 1;
-//}
+//计算cell的高度
+-(CGFloat)heightWithMessage:(AVIMMessage *)message{
+    NSLog(@"%f, %f, %f, %f", _viewHeightConstraint.constant, _messageViewHeightConstraint.constant, _photoViewHeightConstraint.constant, _locationViewHeightConstraint.constant);
+    return _viewHeightConstraint.constant + 10 + 10;
+}
 
 
 //填充文本内容
 -(void)configTextMessage{
-    self.messageType = kMessageTypeText;
     _messageLab.attributedText = [NSString faceAttributeTextWithMessage:_message.text withAttributes:@{NSFontAttributeName : [UIFont systemFontOfSize:17]} faceSize:20];
     [self calculateLayoutWith:_messageLab.attributedText];
 }
 
 //填充语音内容
 -(void)configAudioMessage{
-    self.messageType = kMessageTypeVoice;
     [self calculateLayoutWith:_messageLab.attributedText];
     
     AVIMAudioMessage *audioMessage = (AVIMAudioMessage *)_message;
@@ -144,12 +163,11 @@
 
 //填充照片内容
 -(void)configPhotoMessage{
-    self.messageType = kMessageTypePhoto;
     CGFloat width = [self.message.file.metaData[@"width"] floatValue];
     CGFloat height = [self.message.file.metaData[@"height"] floatValue];
     
     if (width == 0 || height == 0) {
-        self.photoViewWidthConstraint.constant = kPhotoWidth;
+        self.viewWidthConstraint.constant = kPhotoWidth;
         self.photoViewHeightConstraint.constant = kPhotoHeight;
     }else{
         CGFloat ratio = width / height;
@@ -161,7 +179,7 @@
             width = height * ratio;
         }
         self.photoViewHeightConstraint.constant = height;
-        self.photoViewWidthConstraint.constant = width;
+        self.viewWidthConstraint.constant = width;
     }
     
     [self.message.file getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
@@ -174,8 +192,8 @@
 
 //填充位置内容
 -(void)configLocationMessage{
-    self.messageType = kMessageTypeLocation;
     _locationViewHeightConstraint.constant = kLocationViewHeight;
+    _viewWidthConstraint.constant = kLocationViewWidth;
     
     _locationNameLabel.text = _message.text;
 }
@@ -186,48 +204,25 @@
     
     //根据文本内容调整文本消息布局
     if (_message.mediaType == kAVIMMessageMediaTypeText) {
-        _messageViewWidthConstraint.constant = ceilf(rect.size.width) + _voiceAnimatingViewWidthConstraint.constant + 10 + 20;
+        _viewWidthConstraint.constant = ceilf(rect.size.width) + _voiceAnimatingViewWidthConstraint.constant + 10 + 20;
     }
     
     //根据时长调整语音消息布局
     if (_message.mediaType == kAVIMMessageMediaTypeAudio) {
         NSInteger duration = [text.string integerValue];
         if (duration >= 30) {
-            _messageViewWidthConstraint.constant = kScreenW / 2.f + _voiceAnimatingViewWidthConstraint.constant + 10 + 20;
+            _viewWidthConstraint.constant = kScreenW / 2.f + _voiceAnimatingViewWidthConstraint.constant + 10 + 20;
         }else{
-            _messageViewWidthConstraint.constant = audioMinWidth + widthPerSec * duration + _voiceAnimatingViewWidthConstraint.constant + 10 + 20;
+            _viewWidthConstraint.constant = audioMinWidth + widthPerSec * duration + _voiceAnimatingViewWidthConstraint.constant + 10 + 20;
         }
     }
+    
 }
-
 
 //判断手指是否触摸在有效区域
 -(BOOL)isTapedInContent:(UITapGestureRecognizer *)tap{
     CGPoint point = [tap locationInView:self.contentView];
-    NSLog(@"%f,%f", point.x, point.y);
-    
-    UIView *view;
-    switch (_message.mediaType) {
-        case kAVIMMessageMediaTypeText:
-            view = _messageView;
-            break;
-            
-        case kAVIMMessageMediaTypeAudio:
-            view = _messageView;
-            break;
-            
-        case kAVIMMessageMediaTypeImage:
-            view = _photoImageView;
-            break;
-            
-        case kAVIMMessageMediaTypeLocation:
-            view = _locationView;
-            break;
-            
-        default:
-            break;
-    }
-    if (CGRectContainsPoint(view.frame, point)) {
+    if (CGRectContainsPoint(_messageView.superview.frame, point)) {
         return YES;
     }
     
@@ -242,6 +237,21 @@
     
     return NO;
 }
+
+-(BOOL)isTapedInStatusView:(UITapGestureRecognizer *)tap{
+    //如果消息状态按钮是隐藏的，返回NO
+    if (_messageStatusView.hidden) {
+        return NO;
+    }
+    
+    CGPoint point = [tap locationInView:self.contentView];
+    if (CGRectContainsPoint(_messageStatusView.frame, point)) {
+        return YES;
+    }
+    
+    return NO;
+}
+
 
 -(void)startVoiceAnimating{
     [_voiceAnimatingImageView startAnimating];
@@ -285,7 +295,7 @@
     UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"chat_bubble_gray"]];
     //将图片裁剪成气泡样式
     CGFloat height = self.photoViewHeightConstraint.constant;
-    CGFloat width = self.photoViewWidthConstraint.constant;
+    CGFloat width = self.viewWidthConstraint.constant;
     NSLog(@"width = %f, height = %f", width,height);
     CGRect frame = CGRectMake(0, 0, width, height);
     
@@ -334,9 +344,9 @@
     [super configPhotoMessage];
     
     UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"chat_bubble_red"]];
-//    //将图片裁剪成气泡样式
+    //将图片裁剪成气泡样式
     CGFloat height = self.photoViewHeightConstraint.constant;
-    CGFloat width = self.photoViewWidthConstraint.constant;
+    CGFloat width = self.viewWidthConstraint.constant;
     NSLog(@"width = %f, height = %f", width,height);
     CGRect frame = CGRectMake(0, 0, width, height);
     

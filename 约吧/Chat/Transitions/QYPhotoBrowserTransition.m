@@ -31,7 +31,7 @@
         UIImageView *photoImageView = fromVC.selectedCell.photoImageView;
         UIImageView *snapShotView = [[UIImageView alloc] initWithImage:photoImageView.image];
         snapShotView.contentMode = UIViewContentModeScaleAspectFit;
-        snapShotView.frame = [container convertRect:photoImageView.frame fromView:fromVC.selectedCell];
+        snapShotView.frame = [container convertRect:photoImageView.frame fromView:photoImageView.superview];
         snapShotView.backgroundColor = [UIColor blackColor];
 
         toVC.view.alpha = 0;
@@ -58,7 +58,7 @@
         UIImageView *photoImageView = fromVC.selectedCell.photoView;
         UIImageView *snapShotView = [[UIImageView alloc] initWithImage:photoImageView.image];
         snapShotView.contentMode = UIViewContentModeScaleAspectFit;
-        snapShotView.frame = [container convertRect:photoImageView.frame fromView:fromVC.selectedCell];
+        snapShotView.frame = [container convertRect:photoImageView.frame fromView:photoImageView.superview];
         
         
         [container addSubview:toVC.view];

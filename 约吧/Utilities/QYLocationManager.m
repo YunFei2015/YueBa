@@ -148,8 +148,10 @@
         }
     }else if (error == BMK_RADAR_PERMISSION_UNFINISHED){
         NSLog(@"雷达尚未完成鉴权，继续检索");
-        sleep(5);
-        [self searchNearByUsersWithLocation:_location];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self searchNearByUsersWithLocation:_location];
+        });
+        
     }else{
         if ([self.radarDelegate respondsToSelector:@selector(didFinishSearchNearbyUsers:success:)]) {
             NSLog(@"雷达检索失败：%u", error);

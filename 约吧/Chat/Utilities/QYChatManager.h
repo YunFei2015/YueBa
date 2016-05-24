@@ -48,6 +48,7 @@ typedef void(^QYFindConversationsCompletion)(NSArray *conversations);
 -(void)sendVoiceMessageWithDuration:(NSTimeInterval)duration withConversation:(AVIMConversation *)conversation;
 -(void)sendImageMessageWithData:(NSData *)data withConversation:(AVIMConversation *)conversation;
 -(void)sendLocationMessageWithAnnotation:(QYPinAnnotation *)annotation withConversation:(AVIMConversation *)conversation;
+-(void)sendTypedMessage:(AVIMTypedMessage *)message withConversation:(AVIMConversation *)conversation;
 //-(void)queryMessagesFromServerWithConversation:(AVIMConversation *)conversation beforeId:(NSString *)messageId limit:(NSInteger)limit;
 
 -(void)sendImageMessageWithURL:(NSURL *)url withConversation:(AVIMConversation *)conversation;

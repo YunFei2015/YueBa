@@ -13,7 +13,7 @@
 
 - (void)awakeFromNib {
     // Initialization code
-    NSString *path = [NSString pathInLibraryWithFileName:@"Caches/AVPaasFiles"];
+    NSString *path = [kLibraryDirectory stringByAppendingPathComponent:@"Caches/AVPaasFiles"];
     float size = [self fileSizeForDir:path];
     
     if (size == 0) {

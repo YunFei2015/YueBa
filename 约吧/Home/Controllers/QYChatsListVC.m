@@ -47,9 +47,13 @@
     _datas = [NSMutableArray array];
     
     [_tableView registerNib:[UINib nibWithNibName:@"QYChatCell" bundle:nil] forCellReuseIdentifier:kFriendCellIdentifier];
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    self.navigationController.navigationBar.barTintColor = [UIColor darkGrayColor];
     
+    [QYChatManager sharedManager].delegate = self;
     [QYNetworkManager sharedInstance].delegate = self;
-    
     //先获取会话列表，如果会话列表不为空，则显示会话界面；反之，获取好友列表，并显示好友界面
     _datas = [self getChatsList];
     if (_datas.count > 0) {
@@ -61,12 +65,6 @@
     }
     
     [self getFriendsListFromNetwork];
-}
-
--(void)viewWillAppear:(BOOL)animated{
-    self.navigationController.navigationBar.barTintColor = [UIColor darkGrayColor];
-    
-    [QYChatManager sharedManager].delegate = self;
     
     [super viewWillAppear:animated];
 }
@@ -181,7 +179,6 @@
                     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.userId == %ld", user.userId];
                     NSArray *results = [_datas filteredArrayUsingPredicate:predicate];
                     if (results.count <= 0) {
-//                        [_datas insertObject:user atIndex:idx];
                         [[QYUserStorage sharedInstance] addUser:obj];
                     }
                     
@@ -191,12 +188,10 @@
                 [_datas enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                     //如果本地有，网络没有，则删除本地
                     QYUserInfo *user = (QYUserInfo *)obj;
-//                    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.userId MATCHES %@" argumentArray:@[@(user.userId)]];
                     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.userId == %ld", user.userId];
                     NSArray *results = [datasFromNet filteredArrayUsingPredicate:predicate];
                     if (results.count <= 0) {
                         [[QYUserStorage sharedInstance] deleteUser:user.userId];
-//                        [_datas removeObject:user];
                     }
                 }];
             }
@@ -215,7 +210,6 @@
 
 #pragma mark - QYChatManager Delegate
 -(void)didReceiveMessage:(AVIMTypedMessage *)message inConversation:(AVIMConversation *)conversation{
-    //TODO: 新添加的好友，第一次发消息给我的情况
     [conversation.members enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         NSString *userId = (NSString *)obj;
         if (userId.integerValue != [QYAccount currentAccount].userId) {
@@ -240,7 +234,6 @@
     QYUserInfo *user = _datas[indexPath.row];
     cell.user = user;
     if (_segmentControl.selectedSegmentIndex == 0) {
-//        cell.conversation = nil;
         cell.message = nil;
     }else{
         AVIMConversation *conversation = [[QYChatManager sharedManager] conversationFromKeyedConversation:user.keyedConversation];
@@ -283,6 +276,7 @@
             [_datas removeObject: user];
             [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
             
+            
             //数据库删除数据
             [[QYUserStorage sharedInstance] deleteUser:user.userId];
             
@@ -298,32 +292,32 @@
     }];
     
     
-    UITableViewRowAction *clearAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:@"清空聊天记录" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
-        
-        QYUserInfo *user = _datas[indexPath.row];
-        UIAlertController *controller = [UIAlertController alertControllerWithTitle:@"清空聊天记录" message:[NSString stringWithFormat:@"确定要清空与%@的聊天记录吗？", user.name] preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"还没实现" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-            //TODO: 清空聊天记录
-            
-            
-            //数据源删除数据
-            
-            //界面删除
-            
-            //数据库删除
-            
-            //服务器删除
-        }];
-        [controller addAction:action1];
-        UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            QYChatCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-            [cell setEditing:NO animated:YES];
-        }];
-        [controller addAction:action2];
-        [self presentViewController:controller animated:YES completion:nil];
-    }];
-     
+//    UITableViewRowAction *clearAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:@"清空聊天记录" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
+//        
+//        QYUserInfo *user = _datas[indexPath.row];
+//        UIAlertController *controller = [UIAlertController alertControllerWithTitle:@"清空聊天记录" message:[NSString stringWithFormat:@"确定要清空与%@的聊天记录吗？", user.name] preferredStyle:UIAlertControllerStyleAlert];
+//        UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"还没实现" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+//            //TODO: 清空聊天记录
+//            
+//            
+//            //数据源删除数据
+//            
+//            //界面删除
+//            
+//            //数据库删除
+//            
+//            //服务器删除
+//        }];
+//        [controller addAction:action1];
+//        UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+//            QYChatCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+//            [cell setEditing:NO animated:YES];
+//        }];
+//        [controller addAction:action2];
+//        [self presentViewController:controller animated:YES completion:nil];
+//    }];
     
-    return @[deleteAction, clearAction];
+    
+    return @[deleteAction];
 }
 @end

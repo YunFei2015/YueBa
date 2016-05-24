@@ -11,12 +11,6 @@
 
 @implementation NSString (Extension)
 
--(CGSize)sizeWithFont:(UIFont *)font forSize:(CGSize)scheduleSize attributes:(NSDictionary *)attributes{
-    CGRect rect = [self boundingRectWithSize:scheduleSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attributes context:nil];
-    
-    return rect.size;
-}
-
 +(BOOL)isTelephoneNumber:(NSString *)telephone{
     //检查是否为手机号
     //    电信号段:133/153/180/181/189/177
@@ -27,16 +21,6 @@
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", telFormat];
     BOOL isTel = [predicate evaluateWithObject:telephone];
     return isTel;
-}
-
-+(NSString *)pathInDocumentWithFileName:(NSString *)fileName{
-    NSString *filePath = [kDocumentDirectory stringByAppendingPathComponent:fileName];
-    return filePath;
-}
-
-+(NSString *)pathInLibraryWithFileName:(NSString *)fileName{
-    NSString *filePath = [kLibraryDirectory stringByAppendingPathComponent:fileName];
-    return filePath;
 }
 
 +(NSAttributedString *)faceAttributeTextWithMessage:(NSString *)message withAttributes:(NSDictionary *)attributes faceSize:(CGFloat)faceSize{

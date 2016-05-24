@@ -13,7 +13,6 @@
 @property (nonatomic) NSInteger userId;
 @property (strong, nonatomic) NSString *sex;
 @property (nonatomic) NSInteger age;
-//@property (strong, nonatomic) NSString *iconUrl;
 @property (strong, nonatomic) NSArray *userPhotos;
 
 @property (strong, nonatomic) NSString *name;
@@ -22,8 +21,6 @@
 @property (strong, nonatomic) AVIMKeyedConversation *keyedConversation;
 @property (strong, nonatomic) NSDate *lastMessageAt;
 @property (nonatomic) QYMessageStatus messageStatus;
-
-
 
 
 -(instancetype)initWithDictionary:(NSDictionary *)dict;

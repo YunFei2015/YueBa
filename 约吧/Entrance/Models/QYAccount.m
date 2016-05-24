@@ -8,7 +8,6 @@
 
 #import "QYAccount.h"
 #import "QYUserInfo.h"
-#import "NSString+Extension.h"
 
 @interface QYAccount () <NSCoding>
 @property (strong, nonatomic) NSString *token;
@@ -22,7 +21,7 @@
     static id currentAccount = nil;
     static dispatch_once_t once;
     dispatch_once(&once, ^{
-        NSString *filePath = [NSString pathInDocumentWithFileName:kAccountFileName];
+        NSString *filePath = [kDocumentDirectory stringByAppendingPathComponent:kAccountFileName];
         currentAccount = [NSKeyedUnarchiver unarchiveObjectWithFile:filePath];
         if (!currentAccount) {
             currentAccount = [[self alloc] init];
@@ -36,7 +35,7 @@
 //    self.token = info[kAccountKeyToken];
     self.token = @"111111";
     self.userInfo = info;
-    NSString *filePath = [NSString pathInDocumentWithFileName:kAccountFileName];
+    NSString *filePath = [kDocumentDirectory stringByAppendingPathComponent:kAccountFileName];
     [NSKeyedArchiver archiveRootObject:self toFile:filePath];
 }
 
@@ -44,7 +43,7 @@
     self.userId = -1;
     self.token = nil;
     self.userInfo = nil;
-    NSString *filePath = [NSString pathInDocumentWithFileName:kAccountFileName];
+    NSString *filePath = [kDocumentDirectory stringByAppendingPathComponent:kAccountFileName];
     NSError *error;
     [[NSFileManager defaultManager] removeItemAtPath:filePath error:&error];
     if (error) {

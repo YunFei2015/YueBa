@@ -10,31 +10,23 @@
 @class AVIMTypedMessage;
 @class QYUserInfo;
 
-typedef enum {
-    kMessageTypeText,
-    kMessageTypeVoice,
-    kMessageTypePhoto,
-    kMessageTypeLocation
-}kMessageType;
-
 @interface QYMessageCell : UITableViewCell
 @property (strong, nonatomic) QYUserInfo *user;
 
-
-@property (nonatomic) kMessageType messageType;
 @property (strong, nonatomic) AVIMTypedMessage *message;
-@property (weak, nonatomic) IBOutlet UIImageView *voiceAnimatingImageView;
-
 @property (weak, nonatomic) IBOutlet UIImageView *photoImageView;
 
 
-//-(CGFloat)heightWithMessage:(AVIMTypedMessage *)message;
+-(CGFloat)heightWithMessage:(AVIMTypedMessage *)message;
 
 //判断手指是否触摸在有效区域
 -(BOOL)isTapedInContent:(UITapGestureRecognizer *)tap;
 
 //判断手指是否触摸在用户头像上
 -(BOOL)isTapedInIcon:(UITapGestureRecognizer *)tap;
+
+//判断手指是否触摸在消息状态提示按钮上
+-(BOOL)isTapedInStatusView:(UITapGestureRecognizer *)tap;
 
 /**
  *  语音播放和停止
