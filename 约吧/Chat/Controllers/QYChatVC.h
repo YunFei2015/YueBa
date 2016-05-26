@@ -11,12 +11,8 @@
 @class QYUserInfo;
 @class AVIMConversation;
 
-
-typedef void(^QYLastMessageDidChanged)(AVIMConversation *);
-
 @interface QYChatVC : UIViewController
 @property (strong, nonatomic) QYUserInfo *user;
-@property (strong, nonatomic) QYLastMessageDidChanged lastMessageDidChanged;
 @property (strong, nonatomic) QYMessageCell *selectedCell;//点击的cell
 
 @property (nonatomic, getter=isPresented) BOOL presented;//标注该控制器是否模态出来的，默认为否（即压栈）

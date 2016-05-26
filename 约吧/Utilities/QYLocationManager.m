@@ -83,7 +83,6 @@
 }
 
 -(void)uploadUserInfoWithLocation:(CLLocationCoordinate2D)location{
-    
 //    [self.radarManager clearMyInfoRequest];
     _location = location;
     [self.radarManager startAutoUpload:5];

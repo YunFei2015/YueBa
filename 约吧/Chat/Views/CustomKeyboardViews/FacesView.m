@@ -11,7 +11,7 @@
 #import "FaceCell.h"
 
 
-#define kFaceWidth 50
+#define kFaceWidth 60
 #define kFaceHeight 40
 
 @interface FacesView () <UICollectionViewDelegate, UICollectionViewDataSource>

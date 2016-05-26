@@ -49,6 +49,8 @@
 
 @property (strong, nonatomic) NSMutableDictionary *groups;//消息按时间分组
 @property (strong, atomic) NSMutableArray *messages;//消息列表
+@property (strong, nonatomic) NSMutableArray *messagesByGroups;//按日期分组后的消息字典
+
 @property (strong, nonatomic) NSMutableArray *imageUrls;//图片列表，用于图片轮播
 @property (strong, nonatomic) QYPhotoBrowser *photoBrowser;
 
@@ -59,7 +61,6 @@
 @property (strong, nonatomic) QYMessageCell *currentSelectedVoiceCell;//当前选中的语音消息
 @property (strong, nonatomic) QYMessageCell *lastSelectedVoiceCell;//上一个选中的语音消息
 
-@property (nonatomic) BOOL lastMessageChanged;//最后一条消息是否变化了
 @end
 
 @implementation QYChatVC
@@ -70,7 +71,6 @@
         _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         _tableView.delegate = self;
         _tableView.dataSource = self;
-//        _tableView.estimatedRowHeight = 60;
         
         [_tableView registerNib:[UINib nibWithNibName:kRightMessageCellNib bundle:nil] forCellReuseIdentifier:kRightCellIdentifier];
         [_tableView registerNib:[UINib nibWithNibName:kLeftMessageCellNib bundle:nil] forCellReuseIdentifier:kLeftCellIdentifier];
@@ -85,10 +85,6 @@
     if (_voiceRecorder == nil) {
         WEAKSELF
         _voiceRecorder = [[QYAudioRecorder alloc] init];
-//        _voiceRecorder.maxTimeStopRecorderCompletion = ^{
-//            NSLog(@"已经达到最大限制时间了，进入下一步的提示");
-//            [weakSelf finishRecord];
-//        };
         _voiceRecorder.peakPowerForChannel = ^(float peakPowerForChannel){
             weakSelf.voiceRecordingView.peakPower = peakPowerForChannel;
         };
@@ -125,6 +121,7 @@
     [self.view addSubview:self.tableView];
     
     _messages = [NSMutableArray array];
+    _messagesByGroups = [NSMutableArray array];
     _imageUrls = [NSMutableArray array];
     
     
@@ -153,28 +150,21 @@
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:YES];
     [[QYUserStorage sharedInstance] updateUserLastMessageAt:_user.lastMessageAt forUserId:_user.userId];
     
     [QYChatManager sharedManager].delegate = nil;
-    [QYAudioPlayer sharedInstance].delegate = nil;
-    [QYImagesPicker sharedInstance].delegate = nil;
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
     
-    [[QYUserStorage sharedInstance] updateUserLastMessageAt:_user.lastMessageAt forUserId:_user.userId];
-    //反向传值
-    if (_lastMessageChanged & !_presented) {
-        _lastMessageDidChanged(_conversation);
-    }
-    
     [super viewWillDisappear:animated];
-    
 }
 
 
 #pragma mark - Custom Methods
 -(void)configNavigationBar{
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
     self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
     self.navigationController.navigationBar.tintColor = [UIColor redColor];
     
@@ -204,7 +194,7 @@
     [UIView drawRoundCornerOnImageView:iconView];
     [titleView addSubview:iconView];
     
-    CGFloat nameW = 40;
+    CGFloat nameW = 100;
     CGFloat nameH = 20;
     CGFloat nameX = iconX + iconW + 5;
     CGFloat nameY = (44 - nameH) / 2.f;
@@ -250,6 +240,7 @@
 
 -(NSArray *)getMessagesIndexPathsWithCount:(NSInteger)count{
     NSArray *array = [_conversation queryMessagesFromCacheWithLimit:self.messages.count + count];
+    
     if (array.count > self.messages.count) {
         NSArray *messages = [array subarrayWithRange:NSMakeRange(0, array.count - _messages.count)];
         NSMutableArray *indexPaths = [[NSMutableArray alloc] initWithCapacity:messages.count];
@@ -261,36 +252,132 @@
         }];
         
         [self.messages insertObjects:messages atIndexes:indexSet];
+        [self divideMessagesIntoGroupsByDate];
         return indexPaths;
     }
     return nil;
 }
 
 -(void)divideMessagesIntoGroupsByDate{
+    NSMutableArray *messages = [NSMutableArray array];
+    NSMutableIndexSet *indexSet = [[NSMutableIndexSet alloc] init];
+    NSMutableArray *group = [NSMutableArray array];
     [_messages enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        //TODO: 将消息按日期分组
+        //将消息按日期分组
+        AVIMTypedMessage *message = (AVIMTypedMessage *)obj;
+        
+        if (idx == 0) {
+            [group addObject:message];
+        }else{
+            AVIMTypedMessage *lastMessage = _messages[idx - 1];
+            NSDate *lastDate = [NSDate dateWithTimeIntervalSince1970:lastMessage.sendTimestamp / 1000];
+            NSDate *date = [NSDate dateWithTimeIntervalSince1970:message.sendTimestamp / 1000];
+            
+            NSCalendar *calendar = [NSCalendar currentCalendar];
+            if ([calendar isDate:date inSameDayAsDate:lastDate]) {//如果两条消息是同一天的
+                if (message.sendTimestamp / 1000 - lastMessage.sendTimestamp / 1000 < 60 * 2) {//如果与上次时间间隔在2分钟之内，则将消息存入group中
+                    [group addObject:message];
+                }else{//如果与上次消息间隔超过2分钟，则将上一组存储到消息列表中，然后清空group，重新添加消息
+                    NSMutableArray *array = [group copy];
+                    [messages addObject:array];
+                    [group removeAllObjects];
+                    
+                    [indexSet addIndex:messages.count - 1];
+                    NSLog(@"new group");
+                    [group addObject:message];
+                }
+            }else{//如果两条消息不是同一天的，则将上一组存储到消息列表中，然后清空group，重新添加消息
+                NSMutableArray *array = [group copy];
+                [messages addObject:array];
+                [group removeAllObjects];
+                [group addObject:message];
+            }
+            NSString *string = [date stringFromDateWithFormatter:@"yyyy-MM-dd hh:mm:ss"];
+            NSLog(@"%@", string);
+        }
     }];
+    
+    [_messagesByGroups insertObjects:messages atIndexes:indexSet];
+    
+    [_tableView reloadData];
+}
+
+-(void)putMessageForIndex:(NSInteger)index inSameGroup:(NSMutableArray *)group{
+    AVIMTypedMessage *message = _messages[index];
+    if (index == 0) {
+        [group addObject:message];
+    }else{
+        AVIMTypedMessage *lastMessage = _messages[index - 1];
+        NSDate *lastDate = [NSDate dateWithTimeIntervalSince1970:lastMessage.sendTimestamp];
+        NSDate *date = [NSDate dateWithTimeIntervalSince1970:message.sendTimestamp];
+        NSCalendar *calendar = [NSCalendar currentCalendar];
+        if ([calendar isDate:date inSameDayAsDate:lastDate]) {//如果两条消息是同一天的
+            if (message.sendTimestamp - lastMessage.sendTimestamp < 60 * 2) {//如果与上次时间间隔在2分钟之内，则将消息存入group中
+                [group addObject:message];
+            }else{//如果与上次消息间隔超过2分钟，则将上一组存储到消息列表中，然后清空group，重新添加消息
+                NSMutableArray *array = [group copy];
+                [_messagesByGroups addObject:array];
+                [group removeAllObjects];
+                [group addObject:message];
+            }
+        }else{//如果两条消息不是同一天的，则将上一组存储到消息列表中，然后清空group，重新添加消息
+            NSMutableArray *array = [group copy];
+            [_messagesByGroups addObject:array];
+            [group removeAllObjects];
+            [group addObject:message];
+        }
+        
+    }
+}
+
+
+-(NSString *)stringTimeByTimeInterval:(NSTimeInterval)timeInterval{
+    NSDate *date = [NSDate dateWithTimeIntervalSince1970:timeInterval];
+    
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    //如果是当天的消息
+    if ([calendar isDateInToday:date]) {
+        return @"";
+    }
+    
+    //如果是昨天的消息
+    if ([calendar isDateInYesterday:date]) {
+        return @"昨天";
+    }
+    
+    //如果是今天与上周的今天之间的消息
+
+    
+    return nil;
 }
 
 -(void)insertRowWithMessage:(AVIMTypedMessage *)message{
-    _lastMessageChanged = YES;
-    WEAKSELF
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        STRONGSELF
-        _user.lastMessageAt = [NSDate date];
-        [weakSelf.messages addObject:message];
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:weakSelf.messages.count - 1 inSection:0];
-        NSArray *indexPaths = @[indexPath];
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [strongSelf.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
-            [strongSelf.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-            
-//            [self updateContentOffsetOfTableView];
-//            CGSize size = strongSelf.tableView.contentSize;
-//            [strongSelf.tableView setContentOffset:CGPointMake(1, size.height) animated:YES];
-        });
-    });
+    _user.lastMessageAt = [NSDate dateWithTimeIntervalSince1970:message.sendTimestamp];
+    [self.messages addObject:message];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.messages.count - 1 inSection:0];
+    NSArray *indexPaths = @[indexPath];
+    [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
+    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+
+    
+    
+//    WEAKSELF
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//        STRONGSELF
+//        _user.lastMessageAt = [NSDate date];
+//        [weakSelf.messages addObject:message];
+//        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:weakSelf.messages.count - 1 inSection:0];
+//        NSArray *indexPaths = @[indexPath];
+//        
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            [strongSelf.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
+//            [strongSelf.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+//            
+////            [self updateContentOffsetOfTableView];
+////            CGSize size = strongSelf.tableView.contentSize;
+////            [strongSelf.tableView setContentOffset:CGPointMake(1, size.height) animated:YES];
+//        });
+//    });
 }
 
 -(void)updateContentOffsetOfTableView{
@@ -352,11 +439,6 @@
 
 -(void)sendImageMessageWithData:(NSData *)data{
     [[QYChatManager sharedManager] sendImageMessageWithData:data withConversation:_conversation];
-    [self pushMessage:[NSString stringWithFormat:@"%@发来一张图片", [QYAccount currentAccount].myInfo.name]];
-}
-
--(void)sendImageMessageWithURL:(NSURL *)url{
-    [[QYChatManager sharedManager] sendImageMessageWithURL:url withConversation:_conversation];
     [self pushMessage:[NSString stringWithFormat:@"%@发来一张图片", [QYAccount currentAccount].myInfo.name]];
 }
 
@@ -426,7 +508,7 @@
 #pragma mark - Events
 -(void)backAction{
     [self.navigationController popViewControllerAnimated:YES];
-    self.revealViewController.frontViewPosition = FrontViewPositionLeftSide;
+    [self.revealViewController setFrontViewPosition:FrontViewPositionLeftSide animated:YES];
 }
 
 -(void)closeAction{
@@ -609,32 +691,26 @@
 
 
 -(void)prepareToRecordVoiceWithCompletion:(BOOL (^)(void))completion{
-    NSLog(@"prepareToRecordVoice");
     [self prepareRecordWithCompletion:completion];
 }
 
 -(void)didStartRecording{
-    NSLog(@"didStartRecording");
     [self startRecord];
 }
 
 -(void)didPauseRecording{
-    NSLog(@"didPauseRecording");
     [self pauseRecord];
 }
 
 -(void)didContinueRecording{
-    NSLog(@"didContinueRecording");
     [self continueRecord];
 }
 
 -(void)didCancelRecording{
-    NSLog(@"didCancelRecording");
     [self cancelRecord];
 }
 
 -(void)didFinishRecording{
-    NSLog(@"didFinishRecording");
     [self finishRecord];
 }
 
@@ -684,7 +760,6 @@
     UIImage *image = info[UIImagePickerControllerOriginalImage];
     NSData *data = UIImageJPEGRepresentation(image, 0);
     [self sendImageMessageWithData:data];
-//    [self sendImageMessageWithURL:info[UIImagePickerControllerReferenceURL]];
 }
 
 
@@ -707,24 +782,28 @@
     if (message.file) {
         [message.file saveInBackground];
     }
+
+    message.sendTimestamp = [[NSDate date] timeIntervalSince1970];
+    //如果不是重发的消息，则直接插入
+    if (_selectedCell.message != message) {
+        [self insertRowWithMessage:message];
+    }
 }
 
 -(void)didSendMessage:(AVIMTypedMessage *)message succeeded:(BOOL)succeeded{
-    if (_selectedCell.message == message) {
-        //如果发送的消息已经在聊天界面中（比如重发的消息），则reload一下即可。
-        NSIndexPath *indexPath = [_tableView indexPathForCell:_selectedCell];
-        [_tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
-    }else{
-        [self insertRowWithMessage:message];
+    if (_selectedCell.message == message) {//如果是重发的消息，发送成功需要把失败图片隐藏，reload一下即可
+        if (succeeded) {
+            NSIndexPath *indexPath = [_tableView indexPathForCell:_selectedCell];
+            [_tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+        }
+    }else{//不是重发的消息，发送失败需要刷新界面，显示失败
+        if (!succeeded) {
+            NSInteger row = [self.messages indexOfObject:message];
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
+            [_tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+            [_tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:_messages.count - 1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+        }
     }
-
-    //TODO: 发送失败，提示发送失败
-    if (succeeded) {
-        
-    }else{
-        message.sendTimestamp = [[NSDate date] timeIntervalSince1970];
-    }
-
 }
 
 -(void)didReceiveMessage:(AVIMTypedMessage *)message inConversation:(AVIMConversation *)conversation{
@@ -743,15 +822,56 @@
 }
 
 #pragma mark - Table View Delegate
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+    return _messagesByGroups.count;
+}
+
+-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+    UIView *titleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 20)];
+    UILabel *titleLab = [[UILabel alloc] init];
+    titleLab.textAlignment = NSTextAlignmentCenter;
+    titleLab.textColor = [UIColor whiteColor];
+    titleLab.font = [UIFont systemFontOfSize:12];
+    titleLab.backgroundColor = [UIColor lightGrayColor];
+    titleLab.alpha = 0.5;
+    titleLab.layer.cornerRadius = 5;
+    titleLab.layer.masksToBounds = YES;
+    titleLab.preferredMaxLayoutWidth = 100;
+    
+    AVIMTypedMessage *firstMessage = _messagesByGroups[section][0];
+    NSDate *date = [NSDate dateWithTimeIntervalSince1970:firstMessage.sendTimestamp / 1000];
+    NSString *time = [date stringFromDateWithFormatter:@"hh:mm"];
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    if ([calendar isDateInToday:date]) {
+        titleLab.text = time;
+    }else if ([calendar isDateInYesterday:date]){
+        titleLab.text = [NSString stringWithFormat:@"昨天 %@", time];
+    }else{
+        titleLab.text = [NSString stringWithFormat:@"前天 %@", time];
+    }
+    
+    [titleView addSubview:titleLab];
+    [titleLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.center.equalTo(titleView);
+        make.height.equalTo(titleView);
+    }];
+    return titleView;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+    return 20;
+}
+
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return _messages.count;
+    NSArray *messages = _messagesByGroups[section];
+    return messages.count;
+//    return _messages.count;
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     AVIMTypedMessage *message = _messages[indexPath.row];
     QYMessageCell *cell;
     
-    NSLog(@"message status : %d", message.status);
     switch (message.status) {
         case AVIMMessageStatusNone://无
             cell = [tableView dequeueReusableCellWithIdentifier:kRightCellIdentifier forIndexPath:indexPath];
@@ -777,7 +897,6 @@
             break;
     }
     
-    NSLog(@"cell : %@", cell);
     if ([cell.reuseIdentifier isEqualToString:kRightCellIdentifier]) {
         cell.user = self.user;
     }
@@ -789,21 +908,6 @@
     cell.message = message;
     return cell;
 }
-
-//-(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
-//    QYMessageCell *messageCell = (QYMessageCell *)cell;
-//    AVIMTypedMessage *message = _messages[indexPath.row];
-//    messageCell.message = message;
-//    
-//    
-//    if ([[message clientId] isEqualToString:_userName]) {
-//        [messageCell setMessageCellType:kMessageCellTypeSend];
-//    }else if ([[message clientId] isEqualToString:_targetUserName]){
-//        [messageCell setMessageCellType:kMessageCellTypeReceive];
-//    }else{
-//        NSLog(@"这不可能！");
-//    }
-//}
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     AVIMTypedMessage *message = _messages[indexPath.row];

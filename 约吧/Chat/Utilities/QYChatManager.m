@@ -109,12 +109,6 @@
     [self sendTypedMessage:message withConversation:(AVIMConversation *)conversation];
 }
 
--(void)sendImageMessageWithURL:(NSURL *)url withConversation:(AVIMConversation *)conversation{
-    AVFile *file = [AVFile fileWithURL:url.absoluteString];
-    AVIMImageMessage *message = [AVIMImageMessage messageWithText:nil file:file attributes:nil];
-    [self sendTypedMessage:message withConversation:(AVIMConversation *)conversation];
-}
-
 //发送位置消息
 -(void)sendLocationMessageWithAnnotation:(QYPinAnnotation *)annotation withConversation:(AVIMConversation *)conversation{
     AVIMLocationMessage *message = [AVIMLocationMessage messageWithText:annotation.title latitude:annotation.coordinate.latitude longitude:annotation.coordinate.longitude attributes:nil];

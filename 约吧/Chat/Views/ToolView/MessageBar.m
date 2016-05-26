@@ -23,7 +23,6 @@
 @property (weak, nonatomic) IBOutlet QYMessageBarButton *addBtn;
 @property (weak, nonatomic) IBOutlet QYMessageBarButton *faceBtn;
 @property (weak, nonatomic) IBOutlet QYMessageBarButton *voiceBtn;
-@property (weak, nonatomic) IBOutlet UILabel *tipLabel;
 @property (weak, nonatomic) IBOutlet UIButton *talkBtn;
 @property (strong, nonatomic) QYMessageBarButton *selectedBtn;
 
@@ -35,7 +34,6 @@
 @property (nonatomic) BOOL isRecording;
 
 @property (nonatomic) CGFloat textHeight;
-@property (strong, nonatomic) UIImage *nilImage;
 
 @end
 
@@ -54,7 +52,6 @@
     _textHeight = 33;
     _selectedFaces = [NSMutableArray array];
     _talkBtn.layer.borderColor = [UIColor lightGrayColor].CGColor;
-    _nilImage = [[UIImage alloc] init];
 }
 
 #pragma mark - events
@@ -204,7 +201,7 @@
 
 //取消录音
 - (IBAction)touchUpOutsideAction:(UIButton *)sender {
-    //结束录音
+    //取消录音
     if (self.isRecording) {
         if ([self.delegate respondsToSelector:@selector(didFinishRecording)]) {
             [self.delegate didCancelRecording];
@@ -328,6 +325,7 @@
 
 -(BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
     if ([text isEqualToString:@"\n"]) {//如果点击的回车键，实现发送功能
+        _voiceBtn.showType = kMessageBarButtonTypeVoice;
         [self sendMessage:textView.text];
         [self updateMessageBarHeightWithTextView:textView];
         return NO;

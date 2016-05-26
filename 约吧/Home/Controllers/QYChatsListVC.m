@@ -19,21 +19,20 @@
 #import "QYChatVC.h"
 
 //protocols
-#import "QYNetworkManager.h"
 #import "QYUserStorage.h"
 #import "QYChatManager.h"
 
 #import <AVIMConversation.h>
 #import <AVIMConversationQuery.h>
 #import <AVIMClient.h>
+#import <AFNetworking.h>
 
-@interface QYChatsListVC () <UITableViewDelegate, UITableViewDataSource, QYNetworkDelegate, QYChatManagerDelegate>
+@interface QYChatsListVC () <UITableViewDelegate, UITableViewDataSource, QYChatManagerDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *segmentControl;
 
 @property (strong, nonatomic) NSMutableArray *datas;//需要显示的数据列表
-@property (strong, nonatomic) QYChatCell *selectedCell;
 
 @end
 
@@ -50,10 +49,9 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
-    self.navigationController.navigationBar.barTintColor = [UIColor darkGrayColor];
+    self.navigationController.navigationBar.barTintColor = [UIColor blackColor];
     
     [QYChatManager sharedManager].delegate = self;
-    [QYNetworkManager sharedInstance].delegate = self;
     //先获取会话列表，如果会话列表不为空，则显示会话界面；反之，获取好友列表，并显示好友界面
     _datas = [self getChatsList];
     if (_datas.count > 0) {
@@ -79,7 +77,18 @@
 //从网络获取用户列表
 -(void)getFriendsListFromNetwork{
     NSDictionary *params = [[QYAccount currentAccount] accountParameters];
-    [[QYNetworkManager sharedInstance] getFriendsListWithParameters:params];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    NSString *url = [kBaseUrl stringByAppendingPathComponent:kGetFriendListApi];
+    [manager POST:url parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if ([responseObject[kResponseKeySuccess] boolValue]) {
+            [self didGetFriendsList:responseObject success:YES];
+        }else{
+            [self didGetFriendsList:responseObject success:NO];
+            
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        [self didGetFriendsList:nil success:NO];
+    }];
 }
 
 //获取会话列表
@@ -149,17 +158,6 @@
 }
 
 
-#pragma mark - Events
-- (IBAction)segmentControlAction:(UISegmentedControl *)sender {
-    if (sender.selectedSegmentIndex == 0) {
-        [self displayFriendsList];
-    }else{
-        [self displayChatsList];
-    }
-}
-
-
-#pragma mark - QYNetworkManager Delegate
 -(void)didGetFriendsList:(id)responseObject success:(BOOL)success{
     if (success) {
         if (responseObject[kResponseKeySuccess]) {
@@ -195,18 +193,30 @@
                     }
                 }];
             }
-        
+            
             if (_segmentControl.selectedSegmentIndex == 0) {
                 [self displayFriendsList];
             }
             
         }else{
-           
+            
         }
     }else{
         [SVProgressHUD showErrorWithStatus:kNetworkFail];
     }
 }
+
+
+#pragma mark - Events
+- (IBAction)segmentControlAction:(UISegmentedControl *)sender {
+    if (sender.selectedSegmentIndex == 0) {
+        [self displayFriendsList];
+    }else{
+        [self displayChatsList];
+    }
+}
+
+
 
 #pragma mark - QYChatManager Delegate
 -(void)didReceiveMessage:(AVIMTypedMessage *)message inConversation:(AVIMConversation *)conversation{
@@ -252,19 +262,10 @@
     
     QYChatVC *chatVC = [[QYChatVC alloc] init];
     chatVC.user = cell.user;
-    //当最后一条消息改变时，调用block块，刷新视图
-    chatVC.lastMessageDidChanged = ^(AVIMConversation *conversation){
-        if (_segmentControl.selectedSegmentIndex == 1) {
-            //找到需要更新UI的用户下标
-            _datas = [self getChatsList];
-            [tableView reloadData];
-        }
-    };
 
     [self.navigationController pushViewController:chatVC animated:YES];
     [self.revealViewController setFrontViewPosition:FrontViewPositionLeftSideMost animated:YES];
     
-    _selectedCell = cell;
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 

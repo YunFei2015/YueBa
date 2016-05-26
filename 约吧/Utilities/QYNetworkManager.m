@@ -124,7 +124,6 @@
 
 //获取好友列表
 -(void)getFriendsListWithParameters:(NSDictionary *)parameters{
-    //TODO: 等待网络接口
     NSString *url = [kBaseUrl stringByAppendingPathComponent:kGetFriendListApi];
     [self.manager POST:url parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject[kResponseKeySuccess] boolValue]) {

@@ -381,7 +381,7 @@
                                 </connections>
                             </tableView>
                         </subviews>
-                        <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.098039217289999994" green="0.098039217289999994" blue="0.098039217289999994" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="ELh-hW-pCW" firstAttribute="top" secondItem="u4W-vH-MLQ" secondAttribute="bottom" constant="5" id="GFa-ZA-oo6"/>
                             <constraint firstItem="uEb-pg-4IK" firstAttribute="leading" secondItem="ELh-hW-pCW" secondAttribute="leading" id="P3r-Wo-E2O"/>
@@ -450,7 +450,7 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="ZDv-X0-XNw">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <color key="barTintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="barTintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <textAttributes key="titleTextAttributes">
                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </textAttributes>

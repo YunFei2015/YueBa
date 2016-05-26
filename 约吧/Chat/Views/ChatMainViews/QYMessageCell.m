@@ -12,7 +12,7 @@
 
 #import <AVFile.h>
 #import <AVIMAudioMessage.h>
-#import <AVIMFileMessage.h>
+#import <AVIMTextMessage.h>
 #import <AVIMLocationMessage.h>
 #import <AVIMImageMessage.h>
 #import <UIImageView+WebCache.h>
@@ -139,8 +139,7 @@
 
 #pragma mark - Custom methods
 //计算cell的高度
--(CGFloat)heightWithMessage:(AVIMMessage *)message{
-    NSLog(@"%f, %f, %f, %f", _viewHeightConstraint.constant, _messageViewHeightConstraint.constant, _photoViewHeightConstraint.constant, _locationViewHeightConstraint.constant);
+-(CGFloat)heightWithMessage:(AVIMTypedMessage *)message{
     return _viewHeightConstraint.constant + 10 + 10;
 }
 
@@ -296,7 +295,6 @@
     //将图片裁剪成气泡样式
     CGFloat height = self.photoViewHeightConstraint.constant;
     CGFloat width = self.viewWidthConstraint.constant;
-    NSLog(@"width = %f, height = %f", width,height);
     CGRect frame = CGRectMake(0, 0, width, height);
     
     [self.photoImageView maskLayerToView:imageView withFrame:frame];
@@ -347,7 +345,6 @@
     //将图片裁剪成气泡样式
     CGFloat height = self.photoViewHeightConstraint.constant;
     CGFloat width = self.viewWidthConstraint.constant;
-    NSLog(@"width = %f, height = %f", width,height);
     CGRect frame = CGRectMake(0, 0, width, height);
     
     [self.photoImageView maskLayerToView:imageView withFrame:frame];
