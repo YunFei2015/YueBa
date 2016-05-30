@@ -102,7 +102,7 @@ typedef enum{
 #define kFaceCellIdentifier @"faceCell"
 
 //message
-#define kMessageLimit 10
+#define kMessageLimit 20
 #define kAudioPath [NSTemporaryDirectory() stringByAppendingPathComponent:@"temwwwp.aac"]
 
 //message cell

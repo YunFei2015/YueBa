@@ -47,9 +47,8 @@
 @property (strong, nonatomic) MessageBar *messageBar;
 @property (strong, nonatomic) UITableView *tableView;
 
-@property (strong, nonatomic) NSMutableDictionary *groups;//消息按时间分组
-@property (strong, atomic) NSMutableArray *messages;//消息列表
-@property (strong, nonatomic) NSMutableArray *messagesByGroups;//按日期分组后的消息字典
+@property (strong, nonatomic) NSMutableArray *messagesByGroups;//按日期分组后的消息数组
+@property (strong, nonatomic) NSIndexPath *indexPathToScroll;//需要滚动到的位置
 
 @property (strong, nonatomic) NSMutableArray *imageUrls;//图片列表，用于图片轮播
 @property (strong, nonatomic) QYPhotoBrowser *photoBrowser;
@@ -67,8 +66,9 @@
 #pragma mark - Getters
 -(UITableView *)tableView{
     if (_tableView == nil) {
-        _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, kScreenW, kScreenH - 64 - kMessageBarHeight) style:UITableViewStylePlain];
+        _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, kScreenW, kScreenH - 64 - kMessageBarHeight) style:UITableViewStyleGrouped];
         _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+        _tableView.backgroundColor = [UIColor whiteColor];
         _tableView.delegate = self;
         _tableView.dataSource = self;
         
@@ -120,7 +120,6 @@
     [self addMessageBar];
     [self.view addSubview:self.tableView];
     
-    _messages = [NSMutableArray array];
     _messagesByGroups = [NSMutableArray array];
     _imageUrls = [NSMutableArray array];
     
@@ -130,9 +129,7 @@
     
     if (_user.keyedConversation) {
         _conversation = [[QYChatManager sharedManager] conversationFromKeyedConversation:_user.keyedConversation];
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [self queryMessages];
-        });
+        [self queryMessages];
     }else{
         [[QYChatManager sharedManager] findConversationWithUser:_user.userId];
     }
@@ -217,148 +214,122 @@
 }
 
 -(void)queryMessages{
-    //开启静音，不再接收此对话的离线推送
-    [_conversation muteWithCallback:^(BOOL succeeded, NSError *error) {
-        if (error) {
-            NSLog(@"%@", error);
-        }
-    }];
-    
     //查询聊天记录
-    NSArray *indexPaths = [self getMessagesIndexPathsWithCount:20];
-    if (indexPaths) {
-        WEAKSELF
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [weakSelf.tableView reloadData];
-            [weakSelf.tableView scrollToRowAtIndexPath:indexPaths.lastObject atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-            
-            //将该会话标记为已读
-            [_conversation markAsReadInBackground];
-        });
+    NSArray *messages = [_conversation queryMessagesFromCacheWithLimit:kMessageLimit];
+    //将消息分组
+    [self divideMessagesIntoGroupsByDate:messages];
+    if (_messagesByGroups.count > 0) {
+        [self.tableView scrollToRowAtIndexPath:_indexPathToScroll atScrollPosition:UITableViewScrollPositionBottom animated:YES];
     }
 }
 
--(NSArray *)getMessagesIndexPathsWithCount:(NSInteger)count{
-    NSArray *array = [_conversation queryMessagesFromCacheWithLimit:self.messages.count + count];
+-(void)divideMessagesIntoGroupsByDate:(NSArray *)messages{
+    //是否为加载更多
+    BOOL isMore;
+    if (_messagesByGroups.count == 0) {
+        isMore = NO;
+    }else{
+        isMore = YES;
+    }
     
-    if (array.count > self.messages.count) {
-        NSArray *messages = [array subarrayWithRange:NSMakeRange(0, array.count - _messages.count)];
-        NSMutableArray *indexPaths = [[NSMutableArray alloc] initWithCapacity:messages.count];
-        NSMutableIndexSet *indexSet = [[NSMutableIndexSet alloc] init];
-        [messages enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:idx inSection:0];
-            [indexPaths addObject:indexPath];
-            [indexSet addIndex:idx];
-        }];
-        
-        [self.messages insertObjects:messages atIndexes:indexSet];
-        [self divideMessagesIntoGroupsByDate];
-        return indexPaths;
-    }
-    return nil;
-}
-
--(void)divideMessagesIntoGroupsByDate{
-    NSMutableArray *messages = [NSMutableArray array];
+    
+    //存储新创建的组
+    NSMutableArray *groups = [NSMutableArray array];
+    
+    //新组的索引集合
     NSMutableIndexSet *indexSet = [[NSMutableIndexSet alloc] init];
-    NSMutableArray *group = [NSMutableArray array];
-    [_messages enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    
+    //临时数组，用来存放同一组的消息数据
+    NSMutableArray *groupTemp = [NSMutableArray array];
+    
+    [messages enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         //将消息按日期分组
         AVIMTypedMessage *message = (AVIMTypedMessage *)obj;
         
         if (idx == 0) {
-            [group addObject:message];
+            [groupTemp addObject:message];
         }else{
-            AVIMTypedMessage *lastMessage = _messages[idx - 1];
-            NSDate *lastDate = [NSDate dateWithTimeIntervalSince1970:lastMessage.sendTimestamp / 1000];
-            NSDate *date = [NSDate dateWithTimeIntervalSince1970:message.sendTimestamp / 1000];
+            AVIMTypedMessage *lastMessage = messages[idx - 1];
             
-            NSCalendar *calendar = [NSCalendar currentCalendar];
-            if ([calendar isDate:date inSameDayAsDate:lastDate]) {//如果两条消息是同一天的
-                if (message.sendTimestamp / 1000 - lastMessage.sendTimestamp / 1000 < 60 * 2) {//如果与上次时间间隔在2分钟之内，则将消息存入group中
-                    [group addObject:message];
-                }else{//如果与上次消息间隔超过2分钟，则将上一组存储到消息列表中，然后清空group，重新添加消息
-                    NSMutableArray *array = [group copy];
-                    [messages addObject:array];
-                    [group removeAllObjects];
-                    
-                    [indexSet addIndex:messages.count - 1];
-                    NSLog(@"new group");
-                    [group addObject:message];
-                }
-            }else{//如果两条消息不是同一天的，则将上一组存储到消息列表中，然后清空group，重新添加消息
-                NSMutableArray *array = [group copy];
-                [messages addObject:array];
-                [group removeAllObjects];
-                [group addObject:message];
+            //判断两条消息是否为同一组
+            BOOL isSameGroup = [self isMessage:message inSameGroupAsMessage:lastMessage];
+            if (isSameGroup) {//如果两条消息属于同一组，则将该消息添加到组中
+                [groupTemp addObject:message];
+            }else{//如果两条消息不是同一组的，则将group存储到消息列表中，然后清空group，重新添加消息
+                NSMutableArray *group = [NSMutableArray arrayWithArray:groupTemp];
+                [groups addObject:group];
+                [indexSet addIndex:groups.count - 1];
+                
+                [groupTemp removeAllObjects];
+                [groupTemp addObject:message];
             }
-            NSString *string = [date stringFromDateWithFormatter:@"yyyy-MM-dd hh:mm:ss"];
-            NSLog(@"%@", string);
+        }
+        
+        if (idx == messages.count - 1) {
+            [groups addObject:[NSMutableArray arrayWithArray:groupTemp]];
+            [indexSet addIndex:groups.count - 1];
         }
     }];
     
-    [_messagesByGroups insertObjects:messages atIndexes:indexSet];
+    //将groups从_messagesByGroups[0]开始插入
+    [_messagesByGroups insertObjects:groups atIndexes:indexSet];
     
-    [_tableView reloadData];
-}
+    //视图需要滚动到的位置，即新数据的最后一条消息
+    _indexPathToScroll = [NSIndexPath indexPathForRow:[groups.lastObject count] - 1 inSection:groups.count - 1];
 
--(void)putMessageForIndex:(NSInteger)index inSameGroup:(NSMutableArray *)group{
-    AVIMTypedMessage *message = _messages[index];
-    if (index == 0) {
-        [group addObject:message];
+     //刷新UI
+    if (isMore) {
+        [self.tableView reloadData];
     }else{
-        AVIMTypedMessage *lastMessage = _messages[index - 1];
-        NSDate *lastDate = [NSDate dateWithTimeIntervalSince1970:lastMessage.sendTimestamp];
-        NSDate *date = [NSDate dateWithTimeIntervalSince1970:message.sendTimestamp];
-        NSCalendar *calendar = [NSCalendar currentCalendar];
-        if ([calendar isDate:date inSameDayAsDate:lastDate]) {//如果两条消息是同一天的
-            if (message.sendTimestamp - lastMessage.sendTimestamp < 60 * 2) {//如果与上次时间间隔在2分钟之内，则将消息存入group中
-                [group addObject:message];
-            }else{//如果与上次消息间隔超过2分钟，则将上一组存储到消息列表中，然后清空group，重新添加消息
-                NSMutableArray *array = [group copy];
-                [_messagesByGroups addObject:array];
-                [group removeAllObjects];
-                [group addObject:message];
-            }
-        }else{//如果两条消息不是同一天的，则将上一组存储到消息列表中，然后清空group，重新添加消息
-            NSMutableArray *array = [group copy];
-            [_messagesByGroups addObject:array];
-            [group removeAllObjects];
-            [group addObject:message];
-        }
-        
+        [self.tableView beginUpdates];
+        [self.tableView insertSections:indexSet withRowAnimation:UITableViewRowAnimationBottom];
+        [self.tableView endUpdates];
     }
 }
 
-
--(NSString *)stringTimeByTimeInterval:(NSTimeInterval)timeInterval{
-    NSDate *date = [NSDate dateWithTimeIntervalSince1970:timeInterval];
+//判断两个消息是否属于同一组（按照时间分组）
+-(BOOL)isMessage:(AVIMTypedMessage *)message inSameGroupAsMessage:(AVIMTypedMessage *)lastMessage{
+    NSDate *lastDate = [NSDate dateWithTimeIntervalSince1970:lastMessage.sendTimestamp / 1000];
+    NSDate *date = [NSDate dateWithTimeIntervalSince1970:message.sendTimestamp / 1000];
     
     NSCalendar *calendar = [NSCalendar currentCalendar];
-    //如果是当天的消息
-    if ([calendar isDateInToday:date]) {
-        return @"";
+    if ([calendar isDate:date inSameDayAsDate:lastDate]) {//如果两条消息是同一天的
+        if (message.sendTimestamp / 1000 - lastMessage.sendTimestamp / 1000 < 60 * 2) {//如果与上次时间间隔在2分钟之内，返回YES
+            return YES;
+        }else{//如果与上次消息间隔超过2分钟，返回NO
+            return NO;
+        }
+    }else{//如果两条消息不是同一天的，返回NO
+        return NO;
     }
-    
-    //如果是昨天的消息
-    if ([calendar isDateInYesterday:date]) {
-        return @"昨天";
-    }
-    
-    //如果是今天与上周的今天之间的消息
-
-    
-    return nil;
 }
 
 -(void)insertRowWithMessage:(AVIMTypedMessage *)message{
     _user.lastMessageAt = [NSDate dateWithTimeIntervalSince1970:message.sendTimestamp];
-    [self.messages addObject:message];
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.messages.count - 1 inSection:0];
-    NSArray *indexPaths = @[indexPath];
-    [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
+    NSIndexPath *indexPath;
+    
+    AVIMTypedMessage *lastMessage = [_messagesByGroups.lastObject lastObject];
+    if ([self isMessage:message inSameGroupAsMessage:lastMessage]) {//将message加入最后一个组
+        NSMutableArray *group = _messagesByGroups.lastObject;
+        [group addObject:message];
+        
+        NSInteger section = _messagesByGroups.count - 1;
+        NSInteger row = [_messagesByGroups.lastObject count] - 1;
+        indexPath = [NSIndexPath indexPathForRow:row inSection:section];
+        
+        [self.tableView insertRowsAtIndexPaths: @[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+    }else{//创建新组
+        NSMutableArray *group = [NSMutableArray arrayWithObject:message];
+        [_messagesByGroups addObject:group];
+    
+        NSInteger section = _messagesByGroups.count - 1;
+        NSInteger row = [_messagesByGroups.lastObject count] - 1;
+        indexPath = [NSIndexPath indexPathForRow:row inSection:section];
+        
+        [self.tableView insertSections:[[NSIndexSet alloc] initWithIndex:_messagesByGroups.count - 1] withRowAnimation:UITableViewRowAnimationBottom];
+    }
+    
     [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-
     
     
 //    WEAKSELF
@@ -396,16 +367,24 @@
 //}
 
 
--(void)getMoreMessages:(NSInteger)count{
-    NSArray *indexPaths = [self getMessagesIndexPathsWithCount:count];
-    if (indexPaths) {
-        WEAKSELF
+-(void)getMoreMessages{
+    //消息总数
+    __block NSInteger count = 0;
+    [_messagesByGroups enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSMutableArray *group = (NSMutableArray *)obj;
+        count += group.count;
+    }];
+    
+    NSArray *messages = [_conversation queryMessagesFromCacheWithLimit:count + kMessageLimit];
+    if (messages.count > count) {//如果有新数据，对新数据进行分组
+        //将消息分组
+        NSArray *newMessages = [messages subarrayWithRange:NSMakeRange(0, kMessageLimit)];
+        [self divideMessagesIntoGroupsByDate: newMessages];
+        
+        
         dispatch_async(dispatch_get_main_queue(), ^{
-            [weakSelf.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationTop];
-            [weakSelf.tableView scrollToRowAtIndexPath:indexPaths.lastObject atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+            [self.tableView scrollToRowAtIndexPath:_indexPathToScroll atScrollPosition:UITableViewScrollPositionTop animated:NO];
         });
-    }else{
-        NSLog(@"没有更多消息了");
     }
 }
 
@@ -767,13 +746,20 @@
 -(void)didFindConversation:(AVIMConversation *)conversation succeeded:(BOOL)succeeded{
     if (succeeded) {
         _conversation = conversation;
+        //开启静音，不再接收此对话的离线推送
+        [_conversation muteWithCallback:^(BOOL succeeded, NSError *error) {
+            if (error) {
+                NSLog(@"%@", error);
+            }
+        }];
+        
+        //查询历史消息
+        [self queryMessages];
+        
         _user.keyedConversation = _conversation.keyedConversation;
         //本地缓存
         [[QYUserStorage sharedInstance] updateUserConversation:conversation.keyedConversation forUserId:_user.userId];
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [self queryMessages];
-        });
-        
+
     }
 }
 
@@ -783,7 +769,7 @@
         [message.file saveInBackground];
     }
 
-    message.sendTimestamp = [[NSDate date] timeIntervalSince1970];
+    message.sendTimestamp = [[NSDate date] timeIntervalSince1970] * 1000;
     //如果不是重发的消息，则直接插入
     if (_selectedCell.message != message) {
         [self insertRowWithMessage:message];
@@ -798,10 +784,11 @@
         }
     }else{//不是重发的消息，发送失败需要刷新界面，显示失败
         if (!succeeded) {
-            NSInteger row = [self.messages indexOfObject:message];
-            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
+            NSInteger section = self.messagesByGroups.count - 1;//刚刚发送的消息，一定是在最后一组
+            NSInteger row = [self.messagesByGroups.lastObject indexOfObject:message];//刚刚发送的消息，不一定是最后一条，有可能同时有接收到的新消息
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:section];
             [_tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
-            [_tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:_messages.count - 1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+            [_tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[_messagesByGroups.lastObject count] - 1 inSection:_messagesByGroups.count - 1] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
         }
     }
 }
@@ -827,12 +814,13 @@
 }
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-    UIView *titleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 20)];
-    UILabel *titleLab = [[UILabel alloc] init];
+//    UIView *titleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 20)];
+//    titleView.backgroundColor = [UIColor clearColor];
+    UILabel *titleLab = [[UILabel alloc] initWithFrame:CGRectZero];
     titleLab.textAlignment = NSTextAlignmentCenter;
-    titleLab.textColor = [UIColor whiteColor];
+    titleLab.textColor = [UIColor blackColor];
     titleLab.font = [UIFont systemFontOfSize:12];
-    titleLab.backgroundColor = [UIColor lightGrayColor];
+    titleLab.backgroundColor = [UIColor whiteColor];
     titleLab.alpha = 0.5;
     titleLab.layer.cornerRadius = 5;
     titleLab.layer.masksToBounds = YES;
@@ -840,36 +828,39 @@
     
     AVIMTypedMessage *firstMessage = _messagesByGroups[section][0];
     NSDate *date = [NSDate dateWithTimeIntervalSince1970:firstMessage.sendTimestamp / 1000];
-    NSString *time = [date stringFromDateWithFormatter:@"hh:mm"];
+    NSString *time = [date stringFromDateWithFormatter:@"HH:mm"];
     NSCalendar *calendar = [NSCalendar currentCalendar];
     if ([calendar isDateInToday:date]) {
         titleLab.text = time;
     }else if ([calendar isDateInYesterday:date]){
         titleLab.text = [NSString stringWithFormat:@"昨天 %@", time];
-    }else{
+    }else{//TODO: 昨天之前的消息时间显示
         titleLab.text = [NSString stringWithFormat:@"前天 %@", time];
     }
     
-    [titleView addSubview:titleLab];
-    [titleLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.center.equalTo(titleView);
-        make.height.equalTo(titleView);
-    }];
-    return titleView;
+//    [titleView addSubview:titleLab];
+//    [titleLab mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.center.equalTo(titleView);
+//        make.height.equalTo(titleView);
+//    }];
+    return titleLab;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     return 20;
 }
 
+-(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+    return 0.1;
+}
+
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     NSArray *messages = _messagesByGroups[section];
     return messages.count;
-//    return _messages.count;
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    AVIMTypedMessage *message = _messages[indexPath.row];
+    AVIMTypedMessage *message = _messagesByGroups[indexPath.section][indexPath.row];
     QYMessageCell *cell;
     
     switch (message.status) {
@@ -910,7 +901,7 @@
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    AVIMTypedMessage *message = _messages[indexPath.row];
+    AVIMTypedMessage *message = _messagesByGroups[indexPath.section][indexPath.row];
     QYRightMessageCell *cell;
     cell = [[NSBundle mainBundle] loadNibNamed:@"QYRightMessageCell" owner:nil options:nil][0];
     cell.message = message;
@@ -921,7 +912,7 @@
 #pragma mark - UIScrollView Delegate
 -(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
     if (scrollView.contentOffset.y < 0) {
-        [self getMoreMessages:20];//获取20条历史消息
+        [self getMoreMessages];//获取20条历史消息
     }
 }
 @end
