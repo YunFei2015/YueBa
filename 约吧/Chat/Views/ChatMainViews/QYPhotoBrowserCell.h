@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface QYPhotoBrowserCell : UICollectionViewCell
-@property (strong, nonatomic) UIImage *image;
 @property (weak, nonatomic) IBOutlet UIImageView *photoView;
+@property (strong, nonatomic) NSString *url;
 
 @end

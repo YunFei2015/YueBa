@@ -187,6 +187,8 @@
             self.photoImageView.image = image;
         }
     }];
+    
+//    [self.photoImageView sd_setImageWithURL:[NSURL URLWithString:self.message.file.url]];
 }
 
 //填充位置内容

@@ -61,20 +61,13 @@ typedef void(^markCompletionBlock)(void);
     
     [self configSubView];
     
-    [QYNetworkManager sharedInstance].delegate = self;
-    [QYLocationManager sharedInstance].radarDelegate = self;
+    
+}
 
-    _nearbyUsers = self.appDelegate.nearbyUsers;
-    if (_nearbyUsers.count > 0) {
-        self.animationView.users = _nearbyUsers;
-        [self.searchView removeFromSuperview];
-    }else{
-        if (self.appDelegate.location) {
-            _location = self.appDelegate.location;
-            self.searchView.mapView.centerCoordinate = _location.coordinate;
-            [self searchNearbyUsersWithStatus:YES];
-        }
-    }
+-(void)viewWillAppear:(BOOL)animated{
+    [self scan];
+    
+    [super viewWillAppear:animated];
 }
 
 #pragma mark - Custom Methods
@@ -105,6 +98,23 @@ typedef void(^markCompletionBlock)(void);
     [self.rightBarButtonItem setAction: @selector(rightRevealToggle:)];
 }
 
+-(void)scan{
+    [QYNetworkManager sharedInstance].delegate = self;
+    [QYLocationManager sharedInstance].radarDelegate = self;
+    
+    _nearbyUsers = self.appDelegate.nearbyUsers;
+    if (_nearbyUsers.count > 0) {
+        self.animationView.users = _nearbyUsers;
+        [self.searchView removeFromSuperview];
+    }else{
+        if (self.appDelegate.location) {
+            _location = self.appDelegate.location;
+            self.searchView.mapView.centerCoordinate = _location.coordinate;
+            [self searchNearbyUsersWithStatus:YES];
+        }
+    }
+}
+
 -(void)searchNearbyUsersWithStatus:(BOOL)searchStatus{
     self.searchView.hasMore = searchStatus;
     [[QYLocationManager sharedInstance] searchNearByUsersWithLocation:_location.coordinate];
@@ -130,6 +140,7 @@ typedef void(^markCompletionBlock)(void);
 
 
 #pragma mark - DanimationPro
+//like or dislike一个用户时，喜欢按钮和不喜欢按钮的UI变化
 -(void)ChangeValueType:(BOOL)type{
     //放大
     if (type) {

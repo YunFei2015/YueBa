@@ -41,6 +41,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.title = @"设置";
     
     SWRevealViewController *revealViewController = self.revealViewController;
     [revealViewController panGestureRecognizer];
@@ -84,7 +85,7 @@
 }
 
 #pragma mark - Events
-
+//退出当前账户
 - (IBAction)logout:(UIButton *)sender {
     [[QYAccount currentAccount] logout];
     
@@ -96,21 +97,6 @@
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:kFilterKeyMinAge];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:kFilterKeyMaxAge];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:kFilterKeyDistance];
-    
-    //清除数据库信息
-    [[QYUserStorage sharedInstance] removeDatabase];
-    
-    //清除推送设置
-    AVInstallation *installation = [AVInstallation currentInstallation];
-    [installation removeObjectForKey:@"userId"];
-    [installation saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-        if (succeeded) {
-            NSLog(@"清除推送设置成功");
-        }else{
-            NSLog(@"清除推送设置失败：%@", error);
-        }
-        
-    }];
     
     //切换到入口页
     AppDelegate *app = [UIApplication sharedApplication].delegate;
@@ -290,7 +276,7 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     if (indexPath.section == 4) {
-        UIAlertController *controller = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+        UIAlertController *controller = [UIAlertController alertControllerWithTitle:@"清理缓存" message:@"音频、图片等缓存数据将从你的设备上清除" preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             [SVProgressHUD showSuccessWithStatus:@"正在清理缓存..."];
             [AVFile clearAllCachedFiles];

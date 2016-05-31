@@ -51,5 +51,5 @@ typedef void(^QYFindConversationsCompletion)(NSArray *conversations);
 -(void)sendTypedMessage:(AVIMTypedMessage *)message withConversation:(AVIMConversation *)conversation;
 //-(void)queryMessagesFromServerWithConversation:(AVIMConversation *)conversation beforeId:(NSString *)messageId limit:(NSInteger)limit;
 
--(void)sendImageMessageWithURL:(NSURL *)url withConversation:(AVIMConversation *)conversation;
+//-(void)sendImageMessageWithURL:(NSURL *)url withConversation:(AVIMConversation *)conversation;
 @end

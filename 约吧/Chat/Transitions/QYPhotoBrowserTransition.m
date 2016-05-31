@@ -10,7 +10,7 @@
 #import "QYChatVC.h"
 #import "QYPhotoBrowser.h"
 #import "UIView+Extension.h"
-
+#import <UIImageView+WebCache.h>
 
 @implementation QYPhotoBrowserTransition
 
@@ -51,7 +51,10 @@
         }];
     }else{
         QYPhotoBrowser *fromVC = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
-        UIViewController *toVC = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
+        SWRevealViewController *toVC = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
+        UINavigationController *nav = (UINavigationController *)toVC.rightViewController;
+        QYChatVC *chatVC = (QYChatVC *)nav.viewControllers[1];
+        
         UIView *container = [transitionContext containerView];
         
         //转场动画初始视图

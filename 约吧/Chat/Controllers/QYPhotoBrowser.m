@@ -88,7 +88,7 @@
     QYPhotoBrowserCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"photoBrowserCell" forIndexPath:indexPath];
     
     NSString *url = _urls[indexPath.row];
-    [cell.photoView sd_setImageWithURL:[NSURL fileURLWithPath:url]];
+    cell.url = url;
     
     return cell;
 }

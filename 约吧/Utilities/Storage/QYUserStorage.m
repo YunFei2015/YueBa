@@ -8,6 +8,7 @@
 
 #import "QYUserStorage.h"
 #import "QYUserInfo.h"
+#import "QYAccount.h"
 #import <FMDB.h>
 #import <AVIMConversation.h>
 #import <AVIMKeyedConversation.h>
@@ -100,7 +101,7 @@
     //插入信息
     NSData *data = [NSKeyedArchiver archivedDataWithRootObject:conversation];
     NSLog(@"%d", self.database.open);
-    BOOL result = [self.database executeUpdate:@"update User set keyedConversation = ? where userId = ?", data, @(userId)];
+    BOOL result = [self.database executeUpdate:@"update User set keyedConversation = ? where userId = ? and myId = ?", data, @(userId), @([QYAccount currentAccount].userId)];
     NSLog(@"%d", result);
     
     
@@ -119,7 +120,7 @@
     
     //插入信息
     NSLog(@"%d", self.database.open);
-    BOOL result = [self.database executeUpdate:@"update User set lastMessageAt = ? where userId = ?", time, @(userId)];
+    BOOL result = [self.database executeUpdate:@"update User set lastMessageAt = ? where userId = ? and myId = ?", time, @(userId), @([QYAccount currentAccount].userId)];
     NSLog(@"%d", result);
     
     
@@ -138,7 +139,7 @@
     
     //插入信息
     NSLog(@"%d", self.database.open);
-    BOOL result = [self.database executeUpdate:@"update User set messageStatus = ? where userId = ?", @(status), @(userId)];
+    BOOL result = [self.database executeUpdate:@"update User set messageStatus = ? where userId = ? and myId = ?", @(status), @(userId), @([QYAccount currentAccount].userId)];
     NSLog(@"%d", result);
     
     
@@ -167,7 +168,7 @@
     }
     
     //创建sql语句
-    NSString *sql = [NSString stringWithFormat:@"select * from %@ where %@ > 0 order by %@ desc", kUserTable, key, key];
+    NSString *sql = [NSString stringWithFormat:@"select * from %@ where myId = %ld and %@ > 0 order by %@ desc", kUserTable, [QYAccount currentAccount].userId, key, key];
     
     //执行sql
     FMResultSet *result = [self.database executeQuery:sql];
@@ -205,7 +206,7 @@
     }
     
     //创建sql语句
-    NSString *sql = [NSString stringWithFormat:@"delete from %@ where %@ = %ld", kUserTable, kUserId, userId];\
+    NSString *sql = [NSString stringWithFormat:@"delete from %@ where %@ = %ld and myId = %ld", kUserTable, kUserId, userId, [QYAccount currentAccount].userId];
     
     //执行sql
     BOOL result = [self.database executeUpdate:sql];
@@ -286,6 +287,9 @@
             [values addObject:[dict valueForKey:obj]];
         }
     }];
+    
+    NSInteger myId = [QYAccount currentAccount].userId;
+    [dict setValue:@(myId) forKey:@"myId"];
     
     //创建sql语句、执行
     NSString *sql = [self sqlStringWithKeys:[dict allKeys] dict:dict isNew:isNew];
@@ -381,7 +385,7 @@
     }
     
     //创建表
-    NSString *sql = [NSString stringWithFormat:@"create table if not exists %@(%@ INTEGER PRIMARY KEY, %@ TEXT, %@ INTEGER, %@ BOOL, %@ BLOB, %@ INTEGER, %@ BLOB, %@ INTEGER, %@ INTEGER)", kUserTable, kUserId, kUserName, kUserAge, kUserSex, kUserPhotos, kUserMatchTime, @"keyedConversation", @"lastMessageAt", @"messageStatus"];
+    NSString *sql = [NSString stringWithFormat:@"create table if not exists %@(%@ INTEGER PRIMARY KEY, %@ INTEGER, %@ TEXT, %@ INTEGER, %@ BOOL, %@ BLOB, %@ INTEGER, %@ BLOB, %@ INTEGER, %@ INTEGER)", kUserTable, kUserId, @"myId", kUserName, kUserAge, kUserSex, kUserPhotos, kUserMatchTime, @"keyedConversation", @"lastMessageAt", @"messageStatus"];
     NSLog(@"create User table sql : %@", sql);
     [self.database executeUpdate:sql];
     

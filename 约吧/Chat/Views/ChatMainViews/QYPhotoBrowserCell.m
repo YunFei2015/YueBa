@@ -7,10 +7,9 @@
 //
 
 #import "QYPhotoBrowserCell.h"
+#import <UIImageView+WebCache.h>
 
 @interface QYPhotoBrowserCell ()
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *heightConstraint;
-
 @end
 
 @implementation QYPhotoBrowserCell
@@ -19,10 +18,10 @@
     // Initialization code
 }
 
--(void)setImage:(UIImage *)image{
-    _image = image;
+-(void)setUrl:(NSString *)url{
+    _url = url;
     
-    _photoView.image = image;
+    [_photoView sd_setImageWithURL:[NSURL fileURLWithPath:url]];
 }
 
 @end
