@@ -10,6 +10,10 @@
 @class QYSelectModel;
 typedef void (^QYSelectedSubModel)(QYSelectModel *model);
 @interface QYSubselectionController : UITableViewController
+//可供选择的数据
 @property (nonatomic, strong) NSArray *subSelectionItems;
-@property (nonatomic, strong) QYSelectedSubModel selectedSubModel;
+//当back的时候是否pop至个人信息编辑界面
+@property (nonatomic)         BOOL isPopToEditProfileInfoVCWhenBack;
+//选中后回调
+@property (nonatomic, copy) QYSelectedSubModel selectedSubModel;
 @end

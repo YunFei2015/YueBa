@@ -31,27 +31,6 @@
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"完成" style:UIBarButtonItemStyleDone target:self action:@selector(barButtonAction:)];
     self.navigationItem.rightBarButtonItem.enabled = _textContent.length ? YES : NO;
-
-    switch (self.type) {
-        case QYCreateTextTypeOccupation:
-            self.title = @"职业";
-            break;
-        case QYCreateTextTypeHometown:
-            self.title = @"来自";
-            break;
-        case QYCreateTextTypeHaunt:
-            self.title = @"经常出没";
-            break;
-        case QYCreateTextTypeSignature:
-            self.title = @"个人签名";
-            break;
-        case QYCreateTextTypeWeChat:
-            self.title = @"我的微信";
-            break;
-        case QYCreateTextTypeNone:
-            break;
-    }
-
     
     self.edgesForExtendedLayout = UIRectEdgeNone;
     
@@ -96,12 +75,12 @@
         if (_contentDidEndEdit) {
             _contentDidEndEdit(model);
         }
-        if (self.type == QYCreateTextTypeOccupation || self.type == QYCreateTextTypeHometown) {
-            [self.navigationController popToRootViewControllerAnimated:YES];
+        if (_isPopToEditProfileInfoVCWhenBack) {
+            UIViewController *popToVC = self.navigationController.viewControllers[1];
+            [self.navigationController popToViewController:popToVC animated:YES];
         }else{
             [self.navigationController popViewControllerAnimated:YES];
         }
-        
     }else{
         [self.navigationController popViewControllerAnimated:YES];
     }

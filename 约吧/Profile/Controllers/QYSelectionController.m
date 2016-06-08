@@ -11,7 +11,8 @@
 #import "QYCreateTextController.h"
 #import "QYSelectModel.h"
 #import "QYSubselectionController.h"
-
+#import "QYProfileCellModel.h"
+#import "ProfileCommon.h"
 @interface QYSelectionController ()
 {
     /** 职业 */
@@ -65,62 +66,55 @@
     
     QLCategories *categories =[QLCategories sharedCategories];
     
-    switch (self.type) {
-        case QYSelectionTypeOccupation:
-            self.title = @"职业";
-            _arrOcuupations = categories.arrOccupations;
-            _arrItems = _arrOcuupations;
-            break;
-        case QYSelectionTypeHometown:
-            self.title = @"来自";
-            _arrHometowns = categories.arrHometowns;
-            _arrItems = _arrHometowns;
-            break;
-        case QYSelectionTypePersonality:
-            self.title = @"我的个性标签";
-            _arrPersonalities = categories.arrPersonalities;
-            _arrItems = _arrPersonalities;
-            self.tableView.allowsMultipleSelection = YES;
-            break;
-        case QYSelectionTypeSports:
-            self.title = @"我喜欢的运动";
-            _arrSports = categories.arrSports;
-            _arrItems = _arrSports;
-            self.tableView.allowsMultipleSelection = YES;
-            break;
-        case QYSelectionTypeMusic:
-            self.title = @"我喜欢的音乐";
-            _arrMusics = categories.arrMusics;
-            _arrItems = _arrMusics;
-            self.tableView.allowsMultipleSelection = YES;
-            break;
-        case QYSelectionTypeFood:
-            self.title = @"我喜欢的食物";
-            _arrFoods = categories.arrFoods;
-            _arrItems = _arrFoods;
-            self.tableView.allowsMultipleSelection = YES;
-            break;
-        case QYSelectionTypeMovies:
-            self.title = @"我喜欢的电影";
-            _arrMovies = categories.arrMovies;
-            _arrItems = _arrMovies;
-            self.tableView.allowsMultipleSelection = YES;
-            break;
-        case QYSelectionTypeLiterature:
-            self.title = @"我喜欢的书和动漫";
-            _arrLiteratures = categories.arrLiteratures;
-            _arrItems = _arrLiteratures;
-            self.tableView.allowsMultipleSelection = YES;
-            break;
-        case QYSelectionTypePlaces:
-            self.title = @"我的旅行足迹";
-            _arrPlaces = categories.arrPlaces;
-            _arrItems = _arrPlaces;
-            self.tableView.allowsMultipleSelection = YES;
-            break;
+    if ([_selectionCellModel.key isEqualToString:kProfileOccupation]) {
+        self.title = @"职业";
+        _arrOcuupations = categories.arrOccupations;
+        _arrItems = _arrOcuupations;
+    }else if ([_selectionCellModel.key isEqualToString:kProfileHometown]){
+        self.title = @"来自";
+        _arrHometowns = categories.arrHometowns;
+        _arrItems = _arrHometowns;
+    }else if ([_selectionCellModel.key isEqualToString:kProfilePersonality]){
+        self.title = @"我的个性标签";
+        _arrPersonalities = categories.arrPersonalities;
+        _arrItems = _arrPersonalities;
+        self.tableView.allowsMultipleSelection = YES;
+    }else if ([_selectionCellModel.key isEqualToString:kProfileSports]){
+        self.title = @"我喜欢的运动";
+        _arrSports = categories.arrSports;
+        _arrItems = _arrSports;
+        self.tableView.allowsMultipleSelection = YES;
+    }else if ([_selectionCellModel.key isEqualToString:kProfileMusic]){
+        self.title = @"我喜欢的音乐";
+        _arrMusics = categories.arrMusics;
+        _arrItems = _arrMusics;
+        self.tableView.allowsMultipleSelection = YES;
+    }else if ([_selectionCellModel.key isEqualToString:kProfileFood]){
+        self.title = @"我喜欢的食物";
+        _arrFoods = categories.arrFoods;
+        _arrItems = _arrFoods;
+        self.tableView.allowsMultipleSelection = YES;
+    }else if ([_selectionCellModel.key isEqualToString:kProfileMovies]){
+        self.title = @"我喜欢的电影";
+        _arrMovies = categories.arrMovies;
+        _arrItems = _arrMovies;
+        self.tableView.allowsMultipleSelection = YES;
+    }else if ([_selectionCellModel.key isEqualToString:kProfileLiterature]){
+        self.title = @"我喜欢的书和动漫";
+        _arrLiteratures = categories.arrLiteratures;
+        _arrItems = _arrLiteratures;
+        self.tableView.allowsMultipleSelection = YES;
+    }else if ([_selectionCellModel.key isEqualToString:kProfilePlaces]){
+        self.title = @"我的旅行足迹";
+        _arrPlaces = categories.arrPlaces;
+        _arrItems = _arrPlaces;
+        self.tableView.allowsMultipleSelection = YES;
+    }
+    if (_selectionCellModel.content.length > 0) {
+        NSArray *array = [_selectionCellModel.content componentsSeparatedByString:@","];
+        [self chagngeDatas:array];
     }
     
-    [self chagngeDatas:_selectedStrings];
     
     [self.tableView reloadData];
 }
@@ -131,6 +125,7 @@
         return;
     }
     NSMutableArray *mutableArray = [NSMutableArray arrayWithArray:_arrItems];
+    
     //过滤_selectedStrings包含的model.strText
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.strText IN %@",strings];
     NSArray *filterArray = [mutableArray filteredArrayUsingPredicate:predicate];
@@ -159,6 +154,7 @@
             cell.imageView.contentMode = UIViewContentModeCenter;
             cell.textLabel.font = [UIFont systemFontOfSize:15];
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         }
         cell.textLabel.text = @"创建我自己的标签";
         cell.imageView.image = [UIImage imageNamed:@""];
@@ -182,48 +178,48 @@
     }
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    //[tableView deselectRowAtIndexPath:indexPath animated:YES];
     __weak QYSelectionController *weakSelf = self;
     if (indexPath.row == 0) {
-        QYCreateTextController *vcCreateTag = [QYCreateTextController new];
-        vcCreateTag.type = _createTextType;
-        vcCreateTag.contentDidEndEdit = ^(QYSelectModel *model){
-            if (weakSelf.createTextType == QYCreateTextTypeOccupation || weakSelf.createTextType == QYCreateTextTypeHometown) {
-                if ([weakSelf.delegate respondsToSelector:@selector(selectionController:didSelectSelectStrings:)]) {
-                    [weakSelf.delegate selectionController:self didSelectSelectStrings:@[model.strText]];
+        QYCreateTextController *createTagVC = [QYCreateTextController new];
+        createTagVC.isPopToEditProfileInfoVCWhenBack = !tableView.allowsMultipleSelection;
+        createTagVC.title = self.title;
+        createTagVC.contentDidEndEdit = ^(QYSelectModel *model){
+            if (!tableView.allowsMultipleSelection) {
+                weakSelf.selectionCellModel.content = model.strText;
+                if (weakSelf.backPreviousVC) {
+                    weakSelf.backPreviousVC(self.selectionCellModel);
                 }
             }else{
                 //当profile界面选中的单元格内容存在时，判断是否需要在_arrItems插入
                 if (model.strText.length > 0) {
-                    
                     [weakSelf chagngeDatas:@[model.strText]];
-                    
                     [weakSelf.tableView reloadData];
                 }
             }
         };
-        [self.navigationController pushViewController:vcCreateTag animated:YES];
-    } else {
+        [self.navigationController pushViewController:createTagVC animated:YES];
+    }
+    else {
         QYSelectModel *model = _arrItems[indexPath.row - 1];
         if (model.arrSubitems.count > 0) { // 有子项目
-            QYSubselectionController *vcSubselection = [QYSubselectionController new];
-            vcSubselection.subSelectionItems = model.arrSubitems;
-            vcSubselection.selectedSubModel = ^(QYSelectModel *model){
-                if ([weakSelf.delegate respondsToSelector:@selector(selectionController:didSelectSelectStrings:)]) {
-                    [weakSelf.delegate selectionController:self didSelectSelectStrings:@[model.strText]];
+            QYSubselectionController *subselectionVC = [QYSubselectionController new];
+            subselectionVC.subSelectionItems = model.arrSubitems;
+            subselectionVC.title = self.title;
+            subselectionVC.isPopToEditProfileInfoVCWhenBack = !tableView.allowsMultipleSelection;
+            subselectionVC.selectedSubModel = ^(QYSelectModel *model){
+                weakSelf.selectionCellModel.content = model.strText;
+                if (weakSelf.backPreviousVC) {
+                    weakSelf.backPreviousVC(self.selectionCellModel);
                 }
             };
-            [self.navigationController pushViewController:vcSubselection animated:YES];
+            [self.navigationController pushViewController:subselectionVC animated:YES];
         } else { // 无子项目
             if (tableView.allowsMultipleSelection) {
-//                UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-//                cell.accessoryType = UITableViewCellAccessoryCheckmark;
-//                model.selected = YES;
-//                cell.textLabel.font = [UIFont boldSystemFontOfSize:15.0];
                 [self setAppearanceForCell:indexPath];
             } else {
-                if ([self.delegate respondsToSelector:@selector(selectionController:didSelectSelectStrings:)]) {
-                    [self.delegate selectionController:self didSelectSelectStrings:@[model.strText]];
+                if (self.backPreviousVC) {
+                    self.selectionCellModel.content = model.strText;
+                    self.backPreviousVC(self.selectionCellModel);
                 }
                 [self.navigationController popViewControllerAnimated:YES];
             }
@@ -233,11 +229,6 @@
 
 -(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath{
     if (indexPath.row > 0) {
-//        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-//        cell.accessoryType = UITableViewCellAccessoryNone;
-//        QYSelectModel *model = _arrItems[indexPath.row - 1];
-//        model.selected = NO;
-//        cell.textLabel.font = [UIFont systemFontOfSize:15.0];
         [self setAppearanceForCell:indexPath];
     }
 }
@@ -252,19 +243,22 @@
 
 -(void)back:(UIBarButtonItem *)item{
     if (self.tableView.allowsMultipleSelection) {
-        NSMutableArray *didSelectedStrings = [NSMutableArray array];
-        
+        NSMutableString *didSelectedString = [NSMutableString string];
         [_arrItems enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             if ([obj isKindOfClass:[QYSelectModel class]]) {
                 QYSelectModel *selectModel = (QYSelectModel *)obj;
                 if (selectModel.selected) {
-                    [didSelectedStrings addObject:selectModel.strText];
+                    if (didSelectedString.length != 0) {
+                        [didSelectedString appendString:@","];
+                    }
+                    [didSelectedString appendString:selectModel.strText];
                 }
             }
         }];
         
-        if ([self.delegate respondsToSelector:@selector(selectionController:didSelectSelectStrings:)]) {
-            [self.delegate selectionController:self didSelectSelectStrings:didSelectedStrings];
+        if (self.backPreviousVC) {
+            self.selectionCellModel.content = didSelectedString;
+            self.backPreviousVC(self.selectionCellModel);
         }
  
     }

@@ -1,12 +1,12 @@
 //
-//  QYAutoHeightCell.m
+//  QYMultipleSelectionCell.m
 //  约吧
 //
-//  Created by Shreker on 16/4/29.
+//  Created by 青云-wjl on 16/6/7.
 //  Copyright © 2016年 云菲. All rights reserved.
 //
 
-#import "QYAutoHeightCell.h"
+#import "QYMultipleSelectionCell.h"
 #import "Masonry.h"
 
 /** Color Related */
@@ -16,47 +16,43 @@
 
 #define kTagSpace 5
 
-@implementation QYAutoHeightCell
-{
-    __weak IBOutlet UIImageView *_imageView;
-    __weak IBOutlet UILabel *_lblTitle;
-    __weak IBOutlet UIView *_viewTags;
-}
+@interface QYMultipleSelectionCell ()
+@property (weak, nonatomic) IBOutlet UIImageView *iconView;
+@property (weak, nonatomic) IBOutlet UIView *personalityView;
+@property (weak, nonatomic) IBOutlet UILabel *personalityLabel;
 
-/** 返回循环利用的cell */
-+ (instancetype)cellWithTableView:(UITableView *)tableView {
-    static NSString *strId = @"QYAutoHeightCell";
-    QYAutoHeightCell *cell = [tableView dequeueReusableCellWithIdentifier:strId];
-    if (!cell) {
-        cell = [[[NSBundle mainBundle] loadNibNamed:@"QYAutoHeightCell" owner:nil options:nil] firstObject];
-    }
+@end
+
+@implementation QYMultipleSelectionCell
+
++(instancetype)multipleSelectionCellForTableView:(UITableView *)tableView forIndexPath:(NSIndexPath *)indexPath{
+    [tableView registerNib:[UINib nibWithNibName:NSStringFromClass([self class]) bundle:nil] forCellReuseIdentifier:@"MultipleCell"];
+    QYMultipleSelectionCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MultipleCell" forIndexPath:indexPath];
+    cell.selectionStyle = UITableViewCellSelectionStyleDefault;
+    //cell.contentView.tintColor = [UIColor redColor];
     return cell;
 }
 
-- (void)setAutoHeightModel:(QYAutoHeightModel *)autoHeightModel {
-    _autoHeightModel = autoHeightModel;
+-(void)setCellModel:(QYProfileCellModel *)cellModel{
+    [super setCellModel:cellModel];
     
-    if (_autoHeightModel.arrTags.count == 0) { // 没有标签
-        _lblTitle.hidden = NO;
-        _viewTags.hidden = YES;
+    if (cellModel.content.length == 0) { // 没有标签
+        _personalityLabel.hidden = NO;
+        _personalityView.hidden = YES;
         
-        _lblTitle.text = _autoHeightModel.strTitle;
+        _personalityLabel.text = cellModel.title;
     } else { // 有标签
-        _lblTitle.hidden = YES;
-        _viewTags.hidden = NO;
+        _personalityLabel.hidden = YES;
+        _personalityView.hidden = NO;
         
-        [_viewTags.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+        [_personalityView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
         
         /** 添加标签 */
         // 添加标签的容器的最大宽度(也就是_viewTags的最大宽度)
-        CGFloat actualMaxWidth = [UIScreen mainScreen].bounds.size.width - (15 + 22 + 8 + 25);
+        CGFloat actualMaxWidth = [UIScreen mainScreen].bounds.size.width - (15 + 20 + 5 + 25);
         
-        NSArray *arrTags = _autoHeightModel.arrTags;
+        NSArray *arrTags = [cellModel.content componentsSeparatedByString:@","];
         NSUInteger count = arrTags.count;
-        
-        if (count > 0) {
-            [_lblTitle  removeFromSuperview];
-        }
         
         // 当前行目前的最大宽度
         __block CGFloat rowCurrentMaxWidth = 0;
@@ -74,8 +70,8 @@
             UIFont *font = [UIFont systemFontOfSize:13];
             lblTag.font = font;
             lblTag.textAlignment = NSTextAlignmentCenter;
-            lblTag.backgroundColor = QLColorRandom;
-            [_viewTags addSubview:lblTag];
+            lblTag.layer.backgroundColor = QLColorRandom.CGColor;
+            [_personalityView addSubview:lblTag];
             
             
             NSString *strText = arrTags[index];
@@ -89,7 +85,8 @@
                 make.height.equalTo(@(28));
                 
                 if (lblTagLast == nil) { // 第一个 UILabel
-                    make.left.top.equalTo(_viewTags);
+                    make.left.equalTo(_personalityView);
+                    make.top.mas_equalTo(2 * kTagSpace);
                     lblPreviousLine = lblTag;
                     rowCurrentMaxWidth = (lblActualWidth + kTagSpace);
                 } else {
@@ -107,11 +104,22 @@
                 
                 lblTagLast = lblTag;
                 if (index == count - 1) {
-                    make.bottom.equalTo(_viewTags);
+                    make.bottom.mas_equalTo(- 2 * kTagSpace);
                 }
             }];
         }
     }
+}
+
+- (void)awakeFromNib {
+    [super awakeFromNib];
+    // Initialization code
+}
+
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
+    [super setSelected:selected animated:animated];
+
+    // Configure the view for the selected state
 }
 
 @end

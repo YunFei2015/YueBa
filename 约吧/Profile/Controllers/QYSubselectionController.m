@@ -45,7 +45,12 @@
     NSLog(@"%s~%@", __FUNCTION__, indexPath);
     if (_selectedSubModel) {
         _selectedSubModel((QYSelectModel *)self.subSelectionItems[indexPath.row]);
-        [self.navigationController popToRootViewControllerAnimated:YES];
+        if (_isPopToEditProfileInfoVCWhenBack) {
+            UIViewController *popToVC = self.navigationController.viewControllers[1];
+            [self.navigationController popToViewController:popToVC animated:YES];
+        }else{
+            [self.navigationController popViewControllerAnimated:YES];
+        }
     }
     
 }

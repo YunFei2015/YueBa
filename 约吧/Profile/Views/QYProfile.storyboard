@@ -20,7 +20,11 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="编辑个人资料" id="OvE-e8-o7f">
-                        <barButtonItem key="rightBarButtonItem" title="保存" id="evk-ao-zGu"/>
+                        <barButtonItem key="rightBarButtonItem" title="保存" id="evk-ao-zGu">
+                            <connections>
+                                <action selector="saveEndEditProfileInfo:" destination="d3R-wx-OPH" id="JrJ-CN-6Zi"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                 </tableViewController>
@@ -567,7 +571,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8wO-YS-4CJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1813" y="2264"/>
+            <point key="canvasLocation" x="1813" y="2324"/>
         </scene>
     </scenes>
 </document>
