@@ -2,43 +2,46 @@
 //  QYProfileSectionModel.m
 //  约吧
 //
-//  Created by Shreker on 16/4/29.
+//  Created by 青云-wjl on 16/6/7.
 //  Copyright © 2016年 云菲. All rights reserved.
 //
 
 #import "QYProfileSectionModel.h"
-#import "NSString+Extension.h"
-#import "QYNormalHeightModel.h"
-#import "QYAutoHeightModel.h"
-
+#import "QYProfileCellModel.h"
 @implementation QYProfileSectionModel
 
-+ (instancetype)profileSectionModelWithDictionary:(NSDictionary *)dicData {
-    if (dicData == nil || [dicData isKindOfClass:[NSNull class]]) return nil;
-    QYProfileSectionModel *profileSection = [self new];
-    profileSection.strHeaderText = [NSString getValidStringWithObject:dicData[@"headerText"]];
-    profileSection.strFooterText = [NSString getValidStringWithObject:dicData[@"footerText"]];
-    NSArray *arrModels = dicData[@"models"];
-    if ([arrModels isKindOfClass:[NSArray class]]) {
-        
-        NSMutableArray *arrMModels = [NSMutableArray arrayWithCapacity:arrModels.count];
-        for (NSDictionary *dicModel in arrModels) {
-            NSString *strType = [NSString getValidStringWithObject:dicModel[@"type"]];
-            if ([strType isEqualToString:@"normalHeight"]) {
-                QYNormalHeightModel *normalModel = [QYNormalHeightModel normalHeightModelWithDictionary:dicModel];
-                [arrMModels addObject:normalModel];
-            } else if ([strType isEqualToString:@"autoHeight"]) {
-                QYAutoHeightModel *autoModel = [QYAutoHeightModel autoHeightModelWithDictionary:dicModel];
-                [arrMModels addObject:autoModel];
-            }
+-(instancetype)initWithDictionary:(NSDictionary *)sectionInfo{
+    if (self = [super init]) {
+        [self setValuesForKeysWithDictionary:sectionInfo];
+        NSMutableArray *cellModels = [NSMutableArray array];
+        for (NSDictionary *cellDict in self.celldatas) {
+            QYProfileCellModel *cellModel = [QYProfileCellModel profileCellModelWithDictionary:cellDict];
+            [cellModels addObject:cellModel];
         }
-        
-        profileSection.arrModels = arrMModels;
-    } else {
-        profileSection.arrModels = nil;
+        self.celldatas = cellModels;
     }
-    
-    return profileSection;
+    return self;
+}
+
++(instancetype)profileSectionModelWithDictionary:(NSDictionary *)sectionInfo{
+    return [[self alloc] initWithDictionary:sectionInfo];
+}
+#pragma mark - archiver & unarchiver
+// 解档 反序列化 解码 从data(file)->对象
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+    if (self = [super init]) {
+        _sectionheader = [aDecoder decodeObjectForKey:@"sectionheader"];
+        _celldatas = [aDecoder decodeObjectForKey:@"celldatas"];
+    }
+    return self;
+}
+
+// 归档 序列化 编码 从对象->data(file)
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [aCoder encodeObject:_sectionheader forKey:@"sectionheader"];
+    [aCoder encodeObject:_celldatas forKey:@"celldatas"];
 }
 
 @end

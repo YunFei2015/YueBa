@@ -9,53 +9,25 @@
 #ifndef ProfileCommon_h
 #define ProfileCommon_h
 
-typedef NS_ENUM(NSUInteger, QYSelectionType) {
-    /** 职业 */
-    QYSelectionTypeOccupation,
-    
-    /** 来自 */
-    QYSelectionTypeHometown,
-    
-    /** 我的个性标签 */
-    QYSelectionTypePersonality,
-    
-    /** 我喜欢的运动 */
-    QYSelectionTypeSports,
-    
-    /** 我喜欢的音乐 */
-    QYSelectionTypeMusic,
-    
-    /** 我喜欢的食物 */
-    QYSelectionTypeFood,
-    
-    /** 我喜欢的电影 */
-    QYSelectionTypeMovies,
-    
-    /** 我喜欢的书和动漫 */
-    QYSelectionTypeLiterature,
-    
-    /** 我的旅行足迹 */
-    QYSelectionTypePlaces
+typedef NS_ENUM(NSUInteger, MyProfileCellWillTransitionType) {
+    //过渡选择界面
+    MyProfileCellWillPresentedTypeSelection,
+    //过渡输入界面
+    MyProfileCellWillPresentedTypeInput
 };
 
-typedef NS_ENUM(NSUInteger, QYCreateTextType) {
-    /** 职业 */
-    QYCreateTextTypeOccupation,
-    
-    /** 来自 */
-    QYCreateTextTypeHometown,
-    
-    /** 经常出没 */
-    QYCreateTextTypeHaunt,
-    
-    /** 个人签名 */
-    QYCreateTextTypeSignature,
-    
-    /** 我的微信 */
-    QYCreateTextTypeWeChat,
-    
-    /** none */
-    QYCreateTextTypeNone,
-};
+static NSString * const kProfileOccupation = @"occupation";
+static NSString * const kProfileHometown = @"hometown";
+static NSString * const kProfileHaunt = @"haunt";
+static NSString * const kProfileSignature = @"signature";
+static NSString * const kProfileWeixin = @"weixin";
+static NSString * const kProfilePersonality = @"personality";
+static NSString * const kProfileSports = @"sports";
+static NSString * const kProfileMusic = @"music";
+static NSString * const kProfileFood = @"food";
+static NSString * const kProfileMovies = @"movies";
+static NSString * const kProfileLiterature = @"literature";
+static NSString * const kProfilePlaces = @"places";
 
+#define kProfilePath [kDocumentDirectory stringByAppendingString:@"/profileInfo.data"]
 #endif /* ProfileCommon_h */

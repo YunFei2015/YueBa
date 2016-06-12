@@ -17,6 +17,7 @@
     if (!cell) {
         cell = [[[NSBundle mainBundle] loadNibNamed:@"QYAccountInfoEntranceCell" owner:nil options:nil] firstObject];
     }
+    cell.selectionStyle = UITableViewCellSelectionStyleDefault;
     return cell;
 }
 

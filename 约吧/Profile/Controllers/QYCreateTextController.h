@@ -7,17 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ProfileCommon.h"
 @class QYSelectModel;
-
 
 typedef void(^QYContentDidEndEdit)(QYSelectModel *model);
 
 @interface QYCreateTextController : UIViewController
-
-@property (nonatomic, assign) QYCreateTextType type;
-
-@property (nonatomic, strong) NSString *titleString;
 @property (nonatomic, strong) QYContentDidEndEdit contentDidEndEdit;
 @property (nonatomic, strong) NSString *textContent;
+
+//当back的时候是否pop至个人信息编辑界面
+@property (nonatomic)         BOOL isPopToEditProfileInfoVCWhenBack;
 @end

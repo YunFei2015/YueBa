@@ -9,11 +9,13 @@
 #import <Foundation/Foundation.h>
 #import "QLSingleton.h"
 
-@interface QLProfileInfo : NSObject
+@interface QLProfileInfo : NSObject <NSCoding>
 
 QLSingletonInterface(ProfileInfo)
 
-/** 职业 */
 @property (nonatomic, copy, readonly) NSArray *arrProfileInfos;
+
++(instancetype)profileInfo;
++(instancetype)profileInfoExceptEmpty;
 
 @end
