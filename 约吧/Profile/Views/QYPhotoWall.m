@@ -22,10 +22,20 @@
 
 @implementation QYPhotoWall
 
-+(instancetype)photoWall{
++(instancetype)photoWallWithPhotos:(NSArray *)photos{
     QYPhotoWall *wall = [[QYPhotoWall alloc] initWithFrame:CGRectMake(0, 0, kScreenW, kScreenW)];
     [wall addSubImageViews];
+    
+    [wall setImagesForWall:photos];
+    
     return wall;
+}
+
+//设置图片
+-(void)setImagesForWall:(NSArray *)photos{
+    for (UIImage *image in photos) {
+        [self addImageForTile:image];
+    }
 }
 
 //添加子视图

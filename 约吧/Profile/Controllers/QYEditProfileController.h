@@ -9,7 +9,8 @@
 #import <UIKit/UIKit.h>
 
 @interface QYEditProfileController : UITableViewController
-
+@property (nonatomic, strong) void(^didEditProfile)(NSArray *photos);
+@property (nonatomic, strong) NSArray *wallPhotos;
 @end
 
 /** 跳转代码
