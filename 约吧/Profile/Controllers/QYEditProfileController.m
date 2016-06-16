@@ -45,7 +45,7 @@
 
 -(QYPhotoWall *)wall{
     if (_wall == nil) {
-        _wall = [QYPhotoWall photoWall];
+        _wall = [QYPhotoWall photoWallWithPhotos:self.wallPhotos];
     }
     return _wall;
 }
@@ -142,8 +142,26 @@
     [self.tableView reloadData];
 }
 
-//保存编辑后的个人信息
-- (IBAction)saveEndEditProfileInfo:(UIBarButtonItem *)sender {
+
+- (IBAction)done:(UIBarButtonItem *)sender {
     [NSKeyedArchiver archiveRootObject:_profileInfo toFile:kProfilePath];
+    //进行网络请求保存编辑后的个人信息
+    NSMutableDictionary *uploadDict = [NSMutableDictionary dictionary];
+    for (QYProfileSectionModel *model in _profileInfo.arrProfileInfos) {
+        [model.celldatas enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([obj isKindOfClass:[QYProfileCellModel class]]) {
+                QYProfileCellModel *cellModel = (QYProfileCellModel *)obj;
+                if (cellModel.content.length > 0) {
+                    [uploadDict setObject:cellModel.content forKey:cellModel.key];
+                }
+            }
+        }];
+    }
+    
+    if (_didEditProfile) {
+        _didEditProfile(_wall.imagesOfWall);
+        [self.navigationController popViewControllerAnimated:YES];
+    }
 }
+
 @end

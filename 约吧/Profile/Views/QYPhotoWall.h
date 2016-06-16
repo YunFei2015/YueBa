@@ -14,5 +14,5 @@
 @property (nonatomic, strong) NSArray *imagesOfWall;
 
 //声明类方法 初始化
-+(instancetype)photoWall;
++(instancetype)photoWallWithPhotos:(NSArray *)photos;
 @end

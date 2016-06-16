@@ -7,9 +7,19 @@
 //
 
 #import "QYProfileController.h"
-
+#import "QLProfileInfo.h"
+#import "QYProfileSectionModel.h"
+#import "QYAccountInfoEntranceCell.h"
+#import "QYSingleSelectionCell.h"
+#import "QYMultipleSelectionCell.h"
+#import "QYScrollPhotoView.h"
 @interface QYProfileController ()
-
+{
+    QLProfileInfo *_profileInfo;
+    NSArray *_images;
+    CGRect _bgViewFrame;
+    UIImageView *_currentDisplayPhoto;
+}
 @end
 
 @implementation QYProfileController
@@ -17,80 +27,85 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    [self loadDefaultSetting];
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+/** Load the default UI elements And prepare some datas needed. */
+- (void)loadDefaultSetting {
+    _profileInfo = [QLProfileInfo profileInfoExceptEmpty];
+    
+    self.tableView.estimatedRowHeight = 80;
 }
 
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 0;
+    return _profileInfo.arrProfileInfos.count + 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 0;
+    if (section == 0) {
+        return 1;
+    }
+    QYProfileSectionModel *sectionModel = _profileInfo.arrProfileInfos[section - 1];
+    return sectionModel.celldatas.count;
 }
 
-/*
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
-    
-    // Configure the cell...
-    
-    return cell;
+    if (indexPath.section == 0) { //个人信息修改入口
+        QYAccountInfoEntranceCell *cell = [QYAccountInfoEntranceCell cellWithTableView:tableView];
+        cell.accessoryType = UITableViewCellAccessoryNone;
+        return cell;
+    } else{
+        QYProfileSectionModel *sectionModel = _profileInfo.arrProfileInfos[indexPath.section - 1];
+        
+        if([sectionModel.sectionheader isEqualToString:@"我的信息"] || [sectionModel.sectionheader isEqualToString:@"我的社交账号"]){
+            QYSingleSelectionCell *cell = [QYSingleSelectionCell singleSelectionCellForTableView:tableView forIndexPath:indexPath];
+            cell.accessoryType = UITableViewCellAccessoryNone;
+            cell.cellModel = sectionModel.celldatas[indexPath.row];
+            return cell;
+        }else if ([sectionModel.sectionheader isEqualToString:@"我的标签"] || [sectionModel.sectionheader isEqualToString:@"我的兴趣"]) {
+            QYMultipleSelectionCell *cell = [QYMultipleSelectionCell multipleSelectionCellForTableView:tableView forIndexPath:indexPath];
+            cell.accessoryType = UITableViewCellAccessoryNone;
+            cell.cellModel = sectionModel.celldatas[indexPath.row];
+            return cell;
+        }else {
+            NSAssert(0 > 1, @"数据错误, 请检查");
+            return nil;
+        }
+    }
 }
-*/
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    if (section == 0) {
+        return nil;
+    }
+    QYProfileSectionModel *sectionModel = _profileInfo.arrProfileInfos[section - 1];
+    return sectionModel.sectionheader;
 }
-*/
 
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-/*
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+    UIViewController *destinationVC = segue.destinationViewController;
+    __weak QYProfileController *weakProfileVC = self;
+    void (^didBackFromEditProfile)(NSArray *photos) = ^(NSArray *photos){
+        [weakProfileVC updateUI:photos];
+    };
+    [destinationVC setValue:didBackFromEditProfile forKey:@"didEditProfile"];
+    [destinationVC setValue:_images forKey:@"wallPhotos"];
 }
-*/
+
+//从编辑个人信息界面返回后更新界面
+-(void)updateUI:(NSArray *)images{
+    _profileInfo = [QLProfileInfo profileInfoExceptEmpty];
+    [self.tableView reloadData];
+    
+    _images = images;
+    QYScrollPhotoView *scrollPhotoView = [QYScrollPhotoView scrollPhotoViewWithImages:images];
+    self.tableView.tableHeaderView = scrollPhotoView;
+    self.tableView.scrollIndicatorInsets = UIEdgeInsetsMake(kScreenW, 0, 0, 0);
+    
+}
 
 @end

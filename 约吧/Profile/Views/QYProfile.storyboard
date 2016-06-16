@@ -22,7 +22,7 @@
                     <navigationItem key="navigationItem" title="编辑个人资料" id="OvE-e8-o7f">
                         <barButtonItem key="rightBarButtonItem" title="保存" id="evk-ao-zGu">
                             <connections>
-                                <action selector="saveEndEditProfileInfo:" destination="d3R-wx-OPH" id="JrJ-CN-6Zi"/>
+                                <action selector="done:" destination="d3R-wx-OPH" id="0oX-53-4Xj"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -435,10 +435,10 @@
             </objects>
             <point key="canvasLocation" x="445" y="960"/>
         </scene>
-        <!--Table View Controller-->
+        <!--Profile Controller-->
         <scene sceneID="cGY-yZ-kRj">
             <objects>
-                <tableViewController id="XB6-L8-6PY" sceneMemberID="viewController">
+                <tableViewController id="XB6-L8-6PY" customClass="QYProfileController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="N5d-4y-rI4">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -461,7 +461,7 @@
                     <navigationItem key="navigationItem" id="eh9-dh-bXp">
                         <barButtonItem key="rightBarButtonItem" systemItem="edit" id="bB0-fl-NJD">
                             <connections>
-                                <segue destination="d3R-wx-OPH" kind="show" id="joA-Xj-hdI"/>
+                                <segue destination="d3R-wx-OPH" kind="show" identifier="" id="joA-Xj-hdI"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>

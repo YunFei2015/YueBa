@@ -18,6 +18,7 @@
 		2F5B38621D06C0010076CE18 /* QYMultipleSelectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F5B38601D06C0010076CE18 /* QYMultipleSelectionCell.m */; };
 		2F5B38631D06C0010076CE18 /* QYMultipleSelectionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2F5B38611D06C0010076CE18 /* QYMultipleSelectionCell.xib */; };
 		2F5B38661D07BC120076CE18 /* QYBaseSelectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F5B38651D07BC120076CE18 /* QYBaseSelectionCell.m */; };
+		2FC736421D0EB1FB005505C4 /* QYScrollPhotoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2FC736411D0EB1FB005505C4 /* QYScrollPhotoView.m */; };
 		58A098021CD99C690004B01A /* QYSelectModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 58A098011CD99C690004B01A /* QYSelectModel.m */; };
 		58A098051CD9E4320004B01A /* QYSubselectionController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58A098041CD9E4320004B01A /* QYSubselectionController.m */; };
 		58CBFAA11CD8818E001BBA84 /* QYAccountInfoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58CBFA7D1CD8818E001BBA84 /* QYAccountInfoController.m */; };
@@ -142,6 +143,8 @@
 		2F5B38611D06C0010076CE18 /* QYMultipleSelectionCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = QYMultipleSelectionCell.xib; sourceTree = "<group>"; };
 		2F5B38641D07BC120076CE18 /* QYBaseSelectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYBaseSelectionCell.h; sourceTree = "<group>"; };
 		2F5B38651D07BC120076CE18 /* QYBaseSelectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYBaseSelectionCell.m; sourceTree = "<group>"; };
+		2FC736401D0EB1FB005505C4 /* QYScrollPhotoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYScrollPhotoView.h; sourceTree = "<group>"; };
+		2FC736411D0EB1FB005505C4 /* QYScrollPhotoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYScrollPhotoView.m; sourceTree = "<group>"; };
 		53F2D9EEBB9BCB33D6F01085 /* Pods-约吧.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-约吧.debug.xcconfig"; path = "Pods/Target Support Files/Pods-约吧/Pods-约吧.debug.xcconfig"; sourceTree = "<group>"; };
 		58A098001CD99C690004B01A /* QYSelectModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYSelectModel.h; sourceTree = "<group>"; };
 		58A098011CD99C690004B01A /* QYSelectModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYSelectModel.m; sourceTree = "<group>"; };
@@ -399,6 +402,8 @@
 				2F46E8291CE4D460006D2B2F /* QYPhotoWall.m */,
 				2F46E82A1CE4D460006D2B2F /* QYImageTile.h */,
 				2F46E82B1CE4D460006D2B2F /* QYImageTile.m */,
+				2FC736401D0EB1FB005505C4 /* QYScrollPhotoView.h */,
+				2FC736411D0EB1FB005505C4 /* QYScrollPhotoView.m */,
 				58CBFAA01CD8818E001BBA84 /* QYProfile.storyboard */,
 			);
 			path = Views;
@@ -1109,6 +1114,7 @@
 				58CBFAAD1CD8818E001BBA84 /* QYAccountInfoEntranceCell.m in Sources */,
 				7C74ABC31CD30A1D003B0A44 /* QYLocationManager.m in Sources */,
 				7C45F90F1CCA02AE00F188E0 /* QYPhotoBrowserCell.m in Sources */,
+				2FC736421D0EB1FB005505C4 /* QYScrollPhotoView.m in Sources */,
 				7C4BB3B11CA8CD2500136C75 /* QYMapAddrCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
